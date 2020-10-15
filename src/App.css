@@ -1,0 +1,13 @@
+.App {
+  height: 100%;
+  text-align: center;
+}
+
+.container {
+  height: 100%;
+}
+
+.esri-widget__heading {
+  color: #fff !important;
+  text-transform: uppercase;
+}
