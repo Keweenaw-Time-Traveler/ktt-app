@@ -1,10 +1,70 @@
+### ArchGIS Tutorials
+
+Lots of example of things that can done with ArchGIS: [Link](https://developers.arcgis.com/labs/browse/?product=arcgis-online&topic=any)
+
+### ArchGIS Map Styles Editor
+
+Same idea as what we do when styling Google Maps: [Link](https://developers.arcgis.com/vector-tile-style-editor/)
+
+### ArchGIS Story Maps
+
+This is what KTT folks use to create featured stories: [Link](https://storymaps.arcgis.com/)
+
+## KTT Project
+
+Keweenaw Time Travelers App
+
+### Installing Yarn
+
+https://yarnpkg.com/getting-started/install
+
+- Install the Yarn global binary to its latest version: `npm install -g yarn`
+- Move into your project folder
+- Run the following: `yarn set version berry`
+- Commit new & updated files
+
+### Storybook for React tutorial
+
+https://www.learnstorybook.com/intro-to-storybook/react/en/get-started/
+
+Quickstart
+
+```node
+// Run the test runner (Jest) in a terminal:
+yarn test --watchAll
+
+// If using css module make sure you yarn add identity-obj-proxy
+yarn test
+
+// Start the component explorer on port 9009:
+yarn storybook
+
+// Run the frontend app proper on port 3000:
+yarn start
+```
+
+### Project Steps
+
+- Step 1: setup reat in a new folder called login`npx create-react-app login`
+- Step 2: `npm start` make sure things are working
+- Step 3: `npm install --save react-router-dom`
+- Step 4: in App.js wrap everything in the `<Router>` add `<Switch>`
+- Step 5: create 'pages' and 'components' directories
+- Step 6: import pages in App.js setup routes
+- Step 7: setup CSS - [CSS Modules](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet) - [CSS Post Process](https://create-react-app.dev/docs/post-processing-css/)
+
+### Setup Documentation
+
+- Step 1: install story book `npx -p @storybook/cli sb init`
+- Step 2: install styleguidist `npm install --save-dev react-styleguidist`
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `yarn start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -12,12 +72,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `npm test`
+### `yarn test`
 
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+### `yarn run build`
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -27,7 +87,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+### `yarn run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
