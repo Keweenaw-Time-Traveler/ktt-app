@@ -3,6 +3,8 @@ import { loadCss, loadModules } from 'esri-loader';
 import axios from 'axios';
 import styles from './Map.module.css'; // Import css modules stylesheet as styles
 
+//Utils
+import { CountPeople } from '../../util/query';
 //Components
 import { Legend } from './Legend';
 
@@ -33,8 +35,6 @@ export const WebMapView = () => {
         'esri/smartMapping/labels/clusters',
         'esri/smartMapping/popup/clusters',
         'esri/core/promiseUtils',
-        'esri/tasks/QueryTask',
-        'esri/tasks/support/Query',
       ],
       { css: true }
     ).then(
@@ -49,31 +49,13 @@ export const WebMapView = () => {
         clusterLabelCreator,
         clusterPopupCreator,
         promiseUtils,
-        QueryTask,
-        Query,
       ]) => {
         const stories =
           'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/CCHSDI_StoryPoints_watts/FeatureServer/0';
         const people =
           'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_CityDir/MapServer/0';
 
-        const queryTask = new QueryTask({
-          url: people,
-        });
-        const query = new Query();
-        query.returnGeometry = true;
-        query.outFields = ['*'];
-        query.where = '1 = 1'; // Return all cities with a population greater than 1 million
-
-        // When resolved, returns features and graphics that satisfy the query.
-        queryTask.execute(query).then(function (results) {
-          console.log(results.features);
-        });
-
-        // When resolved, returns a count of the features that satisfy the query.
-        queryTask.executeForCount(query).then(function (results) {
-          console.log(results);
-        });
+        CountPeople(''); //sending blank string will show all People
 
         const layer = new FeatureLayer({
           title: 'People',
@@ -102,13 +84,25 @@ export const WebMapView = () => {
             type: 'simple',
             symbol: {
               type: 'simple-marker',
-              size: 4,
-              color: '#69dcff',
+              size: 8,
+              color: '#3b7977',
               outline: {
-                color: 'rgba(0, 139, 174, 0.5)',
-                width: 5,
+                color: '#ffffff',
+                width: 2,
               },
             },
+            // symbol: {
+            //   type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+            //   // Arrow marker
+            //   path:
+            //     'M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z',
+            //   color: '#3b7977',
+            //   outline: {
+            //     color: '#fff',
+            //     width: 2,
+            //   },
+            //   size: 20,
+            // },
           },
         });
 
@@ -123,7 +117,7 @@ export const WebMapView = () => {
         });
 
         const map = new Map({
-          basemap: basemap,
+          basemap: 'satellite',
           layers: [layer],
         });
 
@@ -176,16 +170,43 @@ export const WebMapView = () => {
 
             view.whenLayerView(layer).then(function (layerView) {
               const filterSelect = document.getElementById('filter');
+              const searchSelect = document.getElementById('search');
+              let filterValue = '';
+              let searchValue = '';
+              searchSelect.addEventListener('keyup', function (event) {
+                if (event.key === 'Enter') {
+                  searchValue = event.target.value;
+                  const addFilter = filterValue
+                    ? ` AND year = filterValue`
+                    : '';
+                  const whereClause = searchValue
+                    ? `firstname = '${searchValue}'${addFilter}`
+                    : null;
+                  //layerView.definitionExpression = whereClause;
+                  layerView.filter = {
+                    where: whereClause,
+                  };
+                  CountPeople(whereClause);
+                  // close popup for former cluster that no longer displays
+                  view.popup.close();
+                }
+              });
               // filters the layer using a definitionExpression
               // based on a year selected by the user
               filterSelect.addEventListener('change', function (event) {
-                const newValue = event.target.value;
-
-                const whereClause = newValue ? 'year = ' + newValue : null;
+                filterValue = event.target.value;
+                const addSearch = searchValue
+                  ? ` AND firstname = '${searchValue}'`
+                  : '';
+                console.log(filterValue, searchValue);
+                const whereClause = filterValue
+                  ? `year = ${filterValue}${addSearch}`
+                  : null;
                 //layerView.definitionExpression = whereClause;
                 layerView.filter = {
                   where: whereClause,
                 };
+                CountPeople(whereClause);
                 // close popup for former cluster that no longer displays
                 view.popup.close();
               });
@@ -233,15 +254,34 @@ export const WebMapView = () => {
               const popupTemplate = result[0].value;
 
               const primaryLabelScheme = result[1].value;
-              const labelingInfo = primaryLabelScheme.labelingInfo;
+              //const labelingInfo = primaryLabelScheme.labelingInfo;
+              const labelingInfo = [
+                {
+                  labelExpressionInfo: {
+                    expression:
+                      'IIf($feature.cluster_count > 1000, Text(($feature.cluster_count/1000), "#k"), $feature.cluster_count)',
+                  },
+                  deconflictionStrategy: 'none',
+                  labelPlacement: 'center-center',
+                  symbol: {
+                    type: 'text',
+                    color: 'white',
+                    font: {
+                      size: '16px',
+                    },
+                  },
+                },
+              ];
               // Ensures the clusters are large enough to fit labels
               const clusterMinSize = primaryLabelScheme.clusterMinSize;
 
               return {
                 type: 'cluster',
+                clusterRadius: 100,
+                clusterMaxSize: 80,
                 popupTemplate: popupTemplate,
                 labelingInfo: labelingInfo,
-                clusterMinSize: clusterMinSize,
+                clusterMinSize: clusterMinSize + 20,
               };
             })
             .catch(function (error) {

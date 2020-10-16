@@ -9,3 +9,23 @@
 .selected {
   color: #fff;
 }
+.total {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+}
+.filter {
+  width: 85px;
+}
+.stats {
+  position: relative;
+  top: 5px;
+  margin-left: 8px;
+}
+.search {
+  margin-right: 8px;
+}
+.input {
+  padding: 4px 10px !important;
+}
