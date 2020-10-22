@@ -10,6 +10,16 @@ export const Legend = () => {
       >
         Disable Clustering
       </button>
+      <select
+        name="map-background"
+        id="map-background"
+        className={styles.select}
+      >
+        <option value="starter" selected>
+          Modern Satallite
+        </option>
+        <option value="professional">Historic Topo</option>
+      </select>
       <div id="legendDiv" className={styles.legend}></div>
     </div>
   );

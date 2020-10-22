@@ -20,3 +20,11 @@
   color: #fff !important;
   background: #303030 !important;
 }
+
+.slider {
+  width: 50px;
+}
+
+.select {
+  margin-top: 20px;
+}
