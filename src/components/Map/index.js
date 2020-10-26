@@ -82,23 +82,11 @@ export const WebMapView = () => {
               },
             ],
           },
-          // renderer: {
-          //   type: 'simple',
-          //   symbol: {
-          //     type: 'simple-marker',
-          //     size: 8,
-          //     color: '#3b7977',
-          //     outline: {
-          //       color: '#ffffff',
-          //       width: 2,
-          //     },
-          //   },
-          // },
           renderer: {
             type: 'simple',
             symbol: {
               type: 'simple-marker',
-              size: 8,
+              size: 12,
               color: '#3b7977',
               outline: {
                 color: '#ffffff',
@@ -171,26 +159,61 @@ export const WebMapView = () => {
           .when()
           .then(generateClusterConfig)
           .then(function (featureReduction) {
+            //console.log(featureReduction);
             layer.featureReduction = featureReduction;
 
-            const toggleButton = document.getElementById('toggle-cluster');
-            toggleButton.addEventListener('click', toggleClustering);
+            // const toggleButton = document.getElementById('toggle-cluster');
+            // toggleButton.addEventListener('click', toggleClustering);
 
-            // To turn off clustering on a layer, set the
-            // featureReduction property to null
-            function toggleClustering() {
-              if (isWithinScaleThreshold()) {
-                let fr = layer.featureReduction;
-                layer.featureReduction =
-                  fr && fr.type === 'cluster' ? null : featureReduction;
-              }
-              toggleButton.innerText =
-                toggleButton.innerText === 'Enable Clustering'
-                  ? 'Disable Clustering'
-                  : 'Enable Clustering';
-            }
+            // // To turn off clustering on a layer, set the
+            // // featureReduction property to null
+            // function toggleClustering() {
+            //   if (isWithinScaleThreshold()) {
+            //     let fr = layer.featureReduction;
+            //     layer.featureReduction =
+            //       fr && fr.type === 'cluster' ? null : featureReduction;
+            //   }
+            //   toggleButton.innerText =
+            //     toggleButton.innerText === 'Enable Clustering'
+            //       ? 'Disable Clustering'
+            //       : 'Enable Clustering';
+            // }
 
             view.whenLayerView(layer).then(function (layerView) {
+              // When the view is ready, clone the heatmap renderer
+              // from the only layer in the web map
+
+              const layer = view.map.layers.getItemAt(0);
+              const clusterRenderer = layer.renderer.clone();
+
+              // The following simple renderer will render all points as simple
+              // markers at certain scales
+
+              const simpleRenderer = {
+                type: 'simple',
+                symbol: {
+                  type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+                  // Arrow marker
+                  path:
+                    'M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z',
+                  color: '#3b7977',
+                  outline: {
+                    color: '#ffffff',
+                    width: 2,
+                  },
+                  size: 15,
+                },
+              };
+
+              // When the scale is larger than 1:72,224 (zoomed in passed that scale),
+              // then switch from a heatmap renderer to a simple renderer. When zoomed
+              // out beyond that scale, switch back to the heatmap renderer
+
+              view.watch('scale', function (newValue) {
+                layer.renderer =
+                  newValue <= 2300 ? simpleRenderer : clusterRenderer;
+              });
+
               const filterSelect = document.getElementById('filter');
               const searchSelect = document.getElementById('search');
               let filterValue = '';
@@ -234,11 +257,14 @@ export const WebMapView = () => {
             });
 
             view.watch('scale', function (scale) {
-              if (toggleButton.innerText === 'Disable Clustering') {
-                layer.featureReduction = isWithinScaleThreshold()
-                  ? featureReduction
-                  : null;
-              }
+              // if (toggleButton.innerText === 'Disable Clustering') {
+              //   layer.featureReduction = isWithinScaleThreshold()
+              //     ? featureReduction
+              //     : null;
+              // }
+              layer.featureReduction = isWithinScaleThreshold()
+                ? featureReduction
+                : null;
             });
           })
           .catch(function (error) {
@@ -246,7 +272,7 @@ export const WebMapView = () => {
           });
 
         function isWithinScaleThreshold() {
-          return view.scale > 4000;
+          return view.scale > 2300;
         }
 
         function generateClusterConfig(layer) {
@@ -273,15 +299,15 @@ export const WebMapView = () => {
             .eachAlways([popupPromise, labelPromise])
             .then(function (result) {
               const popupTemplate = result[0].value;
-
               const primaryLabelScheme = result[1].value;
-              //const labelingInfo = primaryLabelScheme.labelingInfo;
               const labelingInfo = [
                 {
                   labelExpressionInfo: {
                     expression:
-                      'IIf($feature.cluster_count > 1000, Text(($feature.cluster_count/1000), "#k"), $feature.cluster_count)',
+                      'IIf($feature.cluster_count > 1000, Text(($feature.cluster_count/1000), "#.#k"), $feature.cluster_count)',
                   },
+                  // Ensures all labels are displayed regardless
+                  // of whether they overlap
                   deconflictionStrategy: 'none',
                   labelPlacement: 'center-center',
                   symbol: {
@@ -295,14 +321,14 @@ export const WebMapView = () => {
               ];
               // Ensures the clusters are large enough to fit labels
               const clusterMinSize = primaryLabelScheme.clusterMinSize;
-
+              const lblInfo = primaryLabelScheme.labelingInfo[0].symbol;
+              //console.log(lblInfo);
               return {
                 type: 'cluster',
-                clusterRadius: 100,
-                clusterMaxSize: 80,
+                clusterRadius: 150,
                 popupTemplate: popupTemplate,
                 labelingInfo: labelingInfo,
-                clusterMinSize: clusterMinSize + 20,
+                clusterMinSize: 30,
               };
             })
             .catch(function (error) {

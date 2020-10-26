@@ -38,9 +38,25 @@ export class NavBar extends Component {
           activeClassName={styles.selected}
           to="/"
         >
-          Home
+          Cluster
         </NavLink>
         <NavLink
+          exact
+          className={styles.link}
+          activeClassName={styles.selected}
+          to="/heatmap"
+        >
+          Heatmap
+        </NavLink>
+        <NavLink
+          exact
+          className={styles.link}
+          activeClassName={styles.selected}
+          to="/wurman"
+        >
+          Wurman
+        </NavLink>
+        {/* <NavLink
           exact
           className={styles.link}
           activeClassName={styles.selected}
@@ -55,7 +71,7 @@ export class NavBar extends Component {
           to="/signup"
         >
           Signup
-        </NavLink>
+        </NavLink> */}
       </nav>
     );
   }

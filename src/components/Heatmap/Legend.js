@@ -4,12 +4,12 @@ import styles from './Map.module.css'; // Import css modules stylesheet as style
 export const Legend = () => {
   return (
     <div id="infoDiv" className={`esri-widget ${styles.clusterWidget}`}>
-      {/* <button
+      <button
         id="toggle-cluster"
         className={`esri-button ${styles.clusterButton}`}
       >
         Disable Clustering
-      </button> */}
+      </button>
       <select
         name="map-background"
         id="map-background"

@@ -7,6 +7,8 @@ import Navbar from './components/NavBar';
 
 //Pages
 import home from './pages/home';
+import heatmap from './pages/heatmap';
+import wurman from './pages/wurman';
 import login from './pages/login';
 import signup from './pages/signup';
 
@@ -18,6 +20,8 @@ function App() {
         <div className="container">
           <Switch>
             <Route exact path="/" component={home} />
+            <Route exact path="/heatmap" component={heatmap} />
+            <Route exact path="/wurman" component={wurman} />
             <Route exact path="/login" component={login} />
             <Route exact path="/signup" component={signup} />
           </Switch>

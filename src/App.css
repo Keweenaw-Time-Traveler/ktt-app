@@ -4,7 +4,7 @@
 }
 
 .container {
-  height: 100%;
+  height: calc(100% - 62px);
 }
 
 .esri-widget__heading {
@@ -12,6 +12,18 @@
   text-transform: uppercase;
 }
 
+.esri-widget__heading.esri-legend__service-label {
+  color: #000 !important;
+}
+
 .esri-slider__content {
   height: 250px;
+}
+
+.esri-slider--vertical {
+  width: 32px !important;
+}
+
+.esri-legend {
+  width: 230px !important;
 }
