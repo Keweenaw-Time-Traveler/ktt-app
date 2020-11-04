@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules } from 'esri-loader';
 import axios from 'axios';
 import styles from './Map.module.css'; // Import css modules stylesheet as styles
+import marker from './people_teardrop.svg';
 
 //Utils
 import { CountPeople } from '../../util/query';
@@ -36,6 +37,7 @@ export const WebMapView = () => {
         'esri/smartMapping/labels/clusters',
         'esri/smartMapping/popup/clusters',
         'esri/core/promiseUtils',
+        'esri/layers/TileLayer',
       ],
       { css: true }
     ).then(
@@ -51,6 +53,7 @@ export const WebMapView = () => {
         clusterLabelCreator,
         clusterPopupCreator,
         promiseUtils,
+        TileLayer,
       ]) => {
         const stories =
           'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/CCHSDI_StoryPoints_watts/FeatureServer/0';
@@ -87,7 +90,7 @@ export const WebMapView = () => {
             symbol: {
               type: 'simple-marker',
               size: 12,
-              color: '#3b7977',
+              color: '#408482',
               outline: {
                 color: '#ffffff',
                 width: 2,
@@ -95,6 +98,14 @@ export const WebMapView = () => {
             },
           },
         });
+
+        const tileLayer = new TileLayer(
+          'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_1949_FIPS/MapServer',
+          {
+            id: 'maplayer',
+            opacity: 1,
+          }
+        );
 
         var basemap = new Basemap({
           baseLayers: [
@@ -108,7 +119,8 @@ export const WebMapView = () => {
 
         const map = new Map({
           basemap: 'satellite',
-          layers: [layer],
+          layers: [tileLayer, layer],
+          minScale: 200000,
         });
 
         //load the map view at the ref's DOM node
@@ -183,25 +195,35 @@ export const WebMapView = () => {
               // When the view is ready, clone the heatmap renderer
               // from the only layer in the web map
 
-              const layer = view.map.layers.getItemAt(0);
+              const layer = view.map.layers.getItemAt(1);
               const clusterRenderer = layer.renderer.clone();
 
               // The following simple renderer will render all points as simple
               // markers at certain scales
 
+              // const simpleRenderer = {
+              //   type: 'simple',
+              //   symbol: {
+              //     type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+              //     path:
+              //       'M32.5,94.8C5.1,55,0,50.9,0,36.3C0,16.2,16.2,0,36.3,0s36.3,16.2,36.3,36.3c0,14.6-5.1,18.7-32.5,58.5C38.2,97.4,34.3,97.4,32.5,94.8L32.5,94.8z',
+              //     color: '#3b7977',
+              //     outline: {
+              //       color: '#ffffff',
+              //       width: 2,
+              //     },
+              //     size: 25,
+              //   }
+              // };
+
               const simpleRenderer = {
                 type: 'simple',
                 symbol: {
-                  type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
-                  // Arrow marker
-                  path:
-                    'M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z',
-                  color: '#3b7977',
-                  outline: {
-                    color: '#ffffff',
-                    width: 2,
-                  },
-                  size: 15,
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: marker,
+                  width: '45px',
+                  height: '60px',
+                  yoffset: '30px',
                 },
               };
 
@@ -210,8 +232,9 @@ export const WebMapView = () => {
               // out beyond that scale, switch back to the heatmap renderer
 
               view.watch('scale', function (newValue) {
+                console.log(newValue);
                 layer.renderer =
-                  newValue <= 2300 ? simpleRenderer : clusterRenderer;
+                  newValue <= 570 ? simpleRenderer : clusterRenderer;
               });
 
               const filterSelect = document.getElementById('filter');
@@ -266,13 +289,15 @@ export const WebMapView = () => {
                 ? featureReduction
                 : null;
             });
+
+            map.add(tileLayer, 0);
           })
           .catch(function (error) {
             console.error(error);
           });
 
         function isWithinScaleThreshold() {
-          return view.scale > 2300;
+          return view.scale > 570;
         }
 
         function generateClusterConfig(layer) {
@@ -325,10 +350,11 @@ export const WebMapView = () => {
               //console.log(lblInfo);
               return {
                 type: 'cluster',
-                clusterRadius: 150,
                 popupTemplate: popupTemplate,
                 labelingInfo: labelingInfo,
-                clusterMinSize: 30,
+                clusterRadius: '120px',
+                clusterMaxSize: '50px',
+                clusterMinSize: '50px',
               };
             })
             .catch(function (error) {
@@ -339,7 +365,7 @@ export const WebMapView = () => {
         return () => {
           if (view) {
             // destroy the map view
-            view.destroy();
+            //view.destroy();
           }
         };
       }
