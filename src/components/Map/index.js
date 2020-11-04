@@ -100,7 +100,7 @@ export const WebMapView = () => {
         });
 
         const tileLayer = new TileLayer(
-          'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_1949_FIPS/MapServer',
+          'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_1900_FIPS/MapServer',
           {
             id: 'maplayer',
             opacity: 1,
