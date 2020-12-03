@@ -27,3 +27,8 @@
 .esri-legend {
   width: 230px !important;
 }
+
+.esri-ui-top-right {
+  top: 50px;
+  right: 60px;
+}

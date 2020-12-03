@@ -28,9 +28,9 @@ export class NavBar extends Component {
               <option value="1949">1949</option>
             </select>
           </div>
-          <div className={styles.stats}>
+          {/* <div className={styles.stats}>
             People: <span id="total-people">loading...</span>
-          </div>
+          </div> */}
         </div>
         <NavLink
           exact
@@ -52,9 +52,9 @@ export class NavBar extends Component {
           exact
           className={styles.link}
           activeClassName={styles.selected}
-          to="/wurman"
+          to="/simon"
         >
-          Wurman
+          Simon Dots
         </NavLink>
         {/* <NavLink
           exact
