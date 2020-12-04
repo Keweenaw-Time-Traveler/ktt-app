@@ -84,7 +84,7 @@ export const SimonMapView = () => {
 
         const featureLayer = new FeatureLayer({
           url:
-            'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/kett_gridstats1/FeatureServer',
+            'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer',
           renderer: {
             type: 'simple',
             symbol: {
@@ -97,6 +97,75 @@ export const SimonMapView = () => {
                     {
                       type: 'CIMVectorMarker',
                       enable: true,
+                      anchorPoint: { x: 0, y: 0 },
+                      anchorPointUnits: 'Relative',
+                      primitiveName: 'innerSizeOverride',
+                      frame: { xmin: 0.0, ymin: 0.0, xmax: 17.0, ymax: 17.0 },
+                      markerGraphics: [
+                        {
+                          type: 'CIMMarkerGraphic',
+                          geometry: {
+                            rings: [
+                              [
+                                [8.5, 0.2],
+                                [7.06, 0.33],
+                                [5.66, 0.7],
+                                [4.35, 1.31],
+                                [3.16, 2.14],
+                                [2.14, 3.16],
+                                [1.31, 4.35],
+                                [0.7, 5.66],
+                                [0.33, 7.06],
+                                [0.2, 8.5],
+                                [0.33, 9.94],
+                                [0.7, 11.34],
+                                [1.31, 12.65],
+                                [2.14, 13.84],
+                                [3.16, 14.86],
+                                [4.35, 15.69],
+                                [5.66, 16.3],
+                                [7.06, 16.67],
+                                [8.5, 16.8],
+                                [9.94, 16.67],
+                                [11.34, 16.3],
+                                [12.65, 15.69],
+                                [13.84, 14.86],
+                                [14.86, 13.84],
+                                [15.69, 12.65],
+                                [16.3, 11.34],
+                                [16.67, 9.94],
+                                [16.8, 8.5],
+                                [16.67, 7.06],
+                                [16.3, 5.66],
+                                [15.69, 4.35],
+                                [14.86, 3.16],
+                                [13.84, 2.14],
+                                [12.65, 1.31],
+                                [11.34, 0.7],
+                                [9.94, 0.33],
+                                [8.5, 0.2],
+                              ],
+                            ],
+                          },
+                          symbol: {
+                            type: 'CIMPolygonSymbol',
+                            symbolLayers: [
+                              {
+                                type: 'CIMSolidFill',
+                                enable: true,
+                                color: [95, 149, 143, 255],
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                      scaleSymbolsProportionally: true,
+                      respectFrame: true,
+                    },
+                    {
+                      type: 'CIMVectorMarker',
+                      enable: true,
+                      colorLocked: true,
                       anchorPoint: { x: 0, y: 0 },
                       anchorPointUnits: 'Relative',
                       primitiveName: 'outerSizeOverride',
@@ -153,7 +222,7 @@ export const SimonMapView = () => {
                               {
                                 type: 'CIMSolidStroke',
                                 enable: true,
-                                color: [64, 132, 130, 100],
+                                color: [223, 94, 31, 255],
                                 width: 2,
                               },
                             ],
@@ -181,9 +250,87 @@ export const SimonMapView = () => {
                       returnType: 'Default',
                     },
                   },
+                  {
+                    type: 'CIMPrimitiveOverride',
+                    primitiveName: 'innerSizeOverride',
+                    propertyName: 'Size',
+                    valueExpressionInfo: {
+                      type: 'CIMExpressionInfo',
+                      title: 'Size in pixels of inner ring at maxScale',
+                      // outerSize is the pixel size at the largest scale
+                      // The innerSize is determined by multiplying
+                      // the outerSize by the forest ratio
+                      expression: `
+                        var peopleRatio = $feature.people / 100;
+                        var peopleFactor = IIF( peopleRatio > 1, 1, peopleRatio )
+                        var outerSize = 42 * 144447 / $view.scale;
+                        var innerSize = outerSize * peopleFactor;
+                        if (peopleRatio <= 0){
+                          return 0;
+                        } else if (peopleRatio > 0 && innerSize <= 5) {
+                          return 5;
+                        } else {
+                          return innerSize - 5;
+                        }
+                      `,
+                      returnType: 'Default',
+                    },
+                  },
                 ],
               },
             },
+            visualVariables: [
+              {
+                type: 'opacity',
+                field: 'people',
+                stops: [
+                  {
+                    value: 5,
+                    opacity: 0.5,
+                  },
+                  {
+                    value: 1,
+                    opacity: 0.6,
+                  },
+                  {
+                    value: 100,
+                    opacity: 0.7,
+                  },
+                  {
+                    value: 1000,
+                    opacity: 0.9,
+                  },
+                  {
+                    value: 1600,
+                    opacity: 1,
+                  },
+                ],
+              },
+            ],
+          },
+          popupTemplate: {
+            content: [
+              {
+                type: 'fields',
+                fieldInfos: [
+                  {
+                    fieldName: 'people',
+                    label: 'People',
+                    format: {
+                      places: 0,
+                    },
+                  },
+                  {
+                    fieldName: 'stories',
+                    label: 'Stories',
+                    format: {
+                      places: 0,
+                      digitSeparator: true,
+                    },
+                  },
+                ],
+              },
+            ],
           },
         });
         view.map.add(featureLayer);
