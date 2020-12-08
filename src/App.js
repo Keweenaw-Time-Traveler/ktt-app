@@ -6,7 +6,7 @@ import './App.css';
 import Navbar from './components/NavBar';
 
 //Pages
-import home from './pages/home';
+import clusters from './pages/home';
 import heatmap from './pages/heatmap';
 import simon from './pages/simon';
 import login from './pages/login';
@@ -19,9 +19,9 @@ function App() {
         <Navbar />
         <div className="container">
           <Switch>
-            <Route exact path="/" component={home} />
+            <Route exact path="/" component={simon} />
             <Route exact path="/heatmap" component={heatmap} />
-            <Route exact path="/simon" component={simon} />
+            <Route exact path="/clusters" component={clusters} />
             <Route exact path="/login" component={login} />
             <Route exact path="/signup" component={signup} />
           </Switch>

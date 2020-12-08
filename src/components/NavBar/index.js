@@ -38,7 +38,15 @@ export class NavBar extends Component {
           activeClassName={styles.selected}
           to="/"
         >
-          Cluster
+          Simon Dots
+        </NavLink>
+        <NavLink
+          exact
+          className={styles.link}
+          activeClassName={styles.selected}
+          to="/clusters"
+        >
+          Clusters
         </NavLink>
         <NavLink
           exact
@@ -47,14 +55,6 @@ export class NavBar extends Component {
           to="/heatmap"
         >
           Heatmap
-        </NavLink>
-        <NavLink
-          exact
-          className={styles.link}
-          activeClassName={styles.selected}
-          to="/simon"
-        >
-          Simon Dots
         </NavLink>
         {/* <NavLink
           exact
