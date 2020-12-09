@@ -61,7 +61,7 @@ export const SimonMapView = () => {
         CountPeople(''); //sending blank string will show all People
 
         const map = new Map({
-          basemap: 'satellite',
+          basemap: 'gray-vector',
         });
 
         const view = new MapView({
