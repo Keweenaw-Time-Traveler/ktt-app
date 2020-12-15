@@ -597,7 +597,6 @@ export const SimonMapView = () => {
         ];
 
         function changeColor(layer) {
-          console.log(layer);
           const picker = document.getElementById('picker');
           const custom = document.getElementById('custom-color');
           const add = document.getElementById('add');
@@ -605,15 +604,17 @@ export const SimonMapView = () => {
           picker.addEventListener('click', function (event) {
             const newSymbol = simonGrid.renderer.symbol.clone();
             const length = window.colors.length;
+
             const nextColor = window.currentColor + 1;
+
             if (nextColor > length - 1) {
-              window.currentColor = -1;
+              window.currentColor = 0;
             } else {
               window.currentColor = nextColor;
             }
             cimSymbolUtils.applyCIMSymbolColor(
               newSymbol,
-              window.colors[nextColor]
+              window.colors[window.currentColor]
             );
             simonGrid.renderer = {
               type: 'simple',
@@ -623,14 +624,13 @@ export const SimonMapView = () => {
 
           add.addEventListener('click', function (event) {
             const hex = custom.value;
-            console.log(hex);
             window.colors.push(hex);
             const newSymbol = simonGrid.renderer.symbol.clone();
-
             const length = window.colors.length;
+            window.currentColor = length - 1;
             cimSymbolUtils.applyCIMSymbolColor(
               newSymbol,
-              window.colors[length - 1]
+              window.colors[window.currentColor]
             );
             simonGrid.renderer = {
               type: 'simple',
