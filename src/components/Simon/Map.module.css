@@ -1,4 +1,5 @@
 .wrapper {
+  position: relative;
   width: 100%;
   height: 100%;
 }
@@ -27,4 +28,12 @@
 
 .dropdown {
   margin-top: 20px;
+}
+
+.picker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 20px;
+  margin: 30px;
 }
