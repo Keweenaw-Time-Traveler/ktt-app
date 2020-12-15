@@ -595,6 +595,7 @@ export const SimonMapView = () => {
             const newSymbol = simonGrid.renderer.symbol.clone();
             const colors = [
               '#FFFFFF',
+              '#272626',
               '#5F958F',
               '#027487',
               '#CE344F',
