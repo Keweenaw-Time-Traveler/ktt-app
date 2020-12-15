@@ -32,8 +32,27 @@
 
 .picker {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 30px;
+  left: 30px;
+  width: 205px;
   padding: 10px 20px;
-  margin: 30px;
+}
+
+.custom {
+  position: absolute;
+  top: 80px;
+  left: 30px;
+  width: 150px;
+  padding: 5px 10px !important;
+}
+
+.add {
+  position: absolute;
+  top: 80px;
+  left: 180px;
+  height: 34px;
+  width: 55px;
+  padding: 5px 10px !important;
+  background: #999;
+  color: #fff;
 }

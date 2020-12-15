@@ -406,7 +406,7 @@ export const SimonMapView = () => {
                                 type: 'CIMSolidStroke',
                                 enable: true,
                                 color: [255, 255, 255, 255],
-                                width: 1,
+                                width: 0.5,
                               },
                             ],
                           },
@@ -449,10 +449,11 @@ export const SimonMapView = () => {
                         var stories = $feature.stories;
                         var total = people + buildings + places + stories;
                         var ratio = total / 1800;
-                        var mutiplier = IIF( ratio >= 1, 0.8, ratio );
+                        var mutiplier = IIF( ratio >= 0.7, 0.7, ratio );
                         var outerSize = 42 * 144447 / $view.scale;
+                        var innerSizeMin = outerSize * 0.2;
                         var innerSize = outerSize * mutiplier;
-                        return IIF( innerSize < 2, 2, innerSize );
+                        return IIF( innerSize < 3, innerSizeMin, innerSize );
                       `,
                       returnType: 'Default',
                     },
@@ -586,29 +587,51 @@ export const SimonMapView = () => {
           });
 
         window.currentColor = 0;
+        window.colors = [
+          '#FFFFFF',
+          '#272626',
+          '#5F958F',
+          '#027487',
+          '#CE344F',
+          '#DF5E1F',
+        ];
 
         function changeColor(layer) {
           console.log(layer);
           const picker = document.getElementById('picker');
+          const custom = document.getElementById('custom-color');
+          const add = document.getElementById('add');
 
           picker.addEventListener('click', function (event) {
             const newSymbol = simonGrid.renderer.symbol.clone();
-            const colors = [
-              '#FFFFFF',
-              '#272626',
-              '#5F958F',
-              '#027487',
-              '#CE344F',
-              '#DF5E1F',
-            ];
+            const length = window.colors.length;
             const nextColor = window.currentColor + 1;
-            if (nextColor > 4) {
-              window.currentColor = 0;
+            if (nextColor > length - 1) {
+              window.currentColor = -1;
             } else {
               window.currentColor = nextColor;
             }
-            cimSymbolUtils.applyCIMSymbolColor(newSymbol, colors[nextColor]);
-            console.log(newSymbol);
+            cimSymbolUtils.applyCIMSymbolColor(
+              newSymbol,
+              window.colors[nextColor]
+            );
+            simonGrid.renderer = {
+              type: 'simple',
+              symbol: newSymbol,
+            };
+          });
+
+          add.addEventListener('click', function (event) {
+            const hex = custom.value;
+            console.log(hex);
+            window.colors.push(hex);
+            const newSymbol = simonGrid.renderer.symbol.clone();
+
+            const length = window.colors.length;
+            cimSymbolUtils.applyCIMSymbolColor(
+              newSymbol,
+              window.colors[length - 1]
+            );
             simonGrid.renderer = {
               type: 'simple',
               symbol: newSymbol,
@@ -857,6 +880,15 @@ export const SimonMapView = () => {
       <div className={`webmap ${styles.map}`} ref={mapRef} />
       <button id="picker" className={styles.picker}>
         Change Color
+      </button>
+      <input
+        type="text"
+        id="custom-color"
+        className={styles.custom}
+        placeholder="Custom Color Hex"
+      ></input>
+      <button id="add" className={styles.add}>
+        Add
       </button>
     </div>
   );
