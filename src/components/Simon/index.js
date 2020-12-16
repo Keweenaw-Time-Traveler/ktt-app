@@ -29,6 +29,7 @@ export const SimonMapView = () => {
         'esri/views/MapView',
         'esri/Basemap',
         'esri/layers/VectorTileLayer',
+        'esri/layers/TileLayer',
         'esri/widgets/Legend',
         'esri/widgets/Expand',
         'esri/widgets/Slider',
@@ -48,6 +49,7 @@ export const SimonMapView = () => {
         MapView,
         Basemap,
         VectorTileLayer,
+        TileLayer,
         Legend,
         Expand,
         Slider,
@@ -546,13 +548,24 @@ export const SimonMapView = () => {
           // definitionExpression: 'NLCDfrstPt > 1',
         });
 
+        var modern_antique = new Basemap({
+          baseLayers: [
+            new TileLayer({
+              portalItem: {
+                id: '1b243539f4514b6ba35e7d995890db1d', // World Hillshade
+              },
+            }),
+            new VectorTileLayer({
+              portalItem: {
+                id: 'effe3475f05a4d608e66fd6eeb2113c0', // Modern Antique
+              },
+            }),
+          ],
+        });
+
         const map = new Map({
           //basemap: 'gray-vector',
-          basemap: {
-            portalItem: {
-              id: '71463912e8ce4ee3a3e4fd307095484b',
-            },
-          },
+          basemap: modern_antique,
           layers: [simonGrid], // add layers to the map
         });
 
@@ -577,7 +590,8 @@ export const SimonMapView = () => {
         const toggle = new BasemapToggle({
           // 2 - Set properties
           view: view, // view that provides access to the map's 'topo-vector' basemap
-          nextBasemap: 'gray-vector', // allows for toggling to the 'hybrid' basemap
+          //nextBasemap: 'gray-vector', // allows for toggling to the 'hybrid' basemap
+          nextBasemap: 'satellite', // allows for toggling to the 'hybrid' basemap
         });
 
         // Add widget to the top right corner of the view
