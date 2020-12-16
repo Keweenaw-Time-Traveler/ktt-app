@@ -548,7 +548,11 @@ export const SimonMapView = () => {
 
         const map = new Map({
           //basemap: 'gray-vector',
-          basemap: 'satellite',
+          basemap: {
+            portalItem: {
+              id: '71463912e8ce4ee3a3e4fd307095484b',
+            },
+          },
           layers: [simonGrid], // add layers to the map
         });
 
