@@ -4,6 +4,8 @@ import styles from './Map.module.css'; // Import css modules stylesheet as style
 
 //Utils
 import { CountPeople } from '../../util/query';
+import { BaseMap } from '../../util/basemaps';
+
 //Components
 import { Legend } from './Legend';
 
@@ -556,9 +558,8 @@ export const SimonMapView = () => {
               },
             }),
             new VectorTileLayer({
-              portalItem: {
-                id: 'effe3475f05a4d608e66fd6eeb2113c0', // Modern Antique
-              },
+              //style: BaseMap('Open Street'),
+              style: BaseMap('Modern Antique'),
             }),
           ],
         });

@@ -11,6 +11,8 @@ import heatmap from './pages/heatmap';
 import simon from './pages/simon';
 import login from './pages/login';
 import signup from './pages/signup';
+import markers from './pages/markers';
+import rest from './pages/rest';
 
 function App() {
   return (
@@ -19,9 +21,11 @@ function App() {
         <Navbar />
         <div className="container">
           <Switch>
-            <Route exact path="/" component={simon} />
+            <Route exact path="/" component={markers} />
+            <Route exact path="/rest" component={rest} />
             <Route exact path="/heatmap" component={heatmap} />
             <Route exact path="/clusters" component={clusters} />
+            <Route exact path="/simon" component={simon} />
             <Route exact path="/login" component={login} />
             <Route exact path="/signup" component={signup} />
           </Switch>

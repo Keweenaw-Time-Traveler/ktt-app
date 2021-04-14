@@ -1,0 +1,30 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.clusterWidget {
+  background: #303030 !important;
+}
+
+.clusterButton {
+  color: #fff !important;
+  background: #3b7977 !important;
+}
+
+.legend {
+  color: #fff !important;
+  background: #303030 !important;
+}
+
+.slider {
+  width: 50px;
+}
+
+.dropdown {
+  margin-top: 20px;
+}
