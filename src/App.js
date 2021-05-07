@@ -1,9 +1,12 @@
+//React
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import './App.css';
-
+//Redux
+import { useDispatch } from 'react-redux';
+import { loadMarkersAsync } from './redux/reducers/markersSlice';
 //Components
 import Navbar from './components/NavBar';
+import FilterBar from './components/FilterBar';
 
 //Pages
 import clusters from './pages/home';
@@ -12,17 +15,21 @@ import simon from './pages/simon';
 import login from './pages/login';
 import signup from './pages/signup';
 import markers from './pages/markers';
-import rest from './pages/rest';
+import Rest from './pages/rest';
+
+//Styles
+import './App.scss';
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Navbar />
-        <div className="container">
+        <FilterBar />
+        <div className="page-content">
           <Switch>
-            <Route exact path="/" component={markers} />
-            <Route exact path="/rest" component={rest} />
+            <Route exact path="/" component={Rest} />
+            <Route exact path="/feature-service" component={markers} />
             <Route exact path="/heatmap" component={heatmap} />
             <Route exact path="/clusters" component={clusters} />
             <Route exact path="/simon" component={simon} />

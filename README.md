@@ -45,13 +45,16 @@ yarn start
 
 ### Project Steps
 
-- Step 1: setup reat in a new folder called login`npx create-react-app login`
+- Step 1: setup react in a new folder called login`npx create-react-app login`
+- Step 1.1: consider redux `npx create-react-app my-app --template redux` [Docs](https://react-redux.js.org/introduction/getting-started)
+- STeo 1.2: redux dev tools [Yarn Install](https://yarnpkg.com/package/redux-devtools-extension)
 - Step 2: `npm start` make sure things are working
 - Step 3: `npm install --save react-router-dom`
 - Step 4: in App.js wrap everything in the `<Router>` add `<Switch>`
 - Step 5: create 'pages' and 'components' directories
 - Step 6: import pages in App.js setup routes
 - Step 7: setup CSS - [CSS Modules](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet) - [CSS Post Process](https://create-react-app.dev/docs/post-processing-css/)
+- Step 8: setup FontAwesome - [Yarn Config](https://github.com/FortAwesome/Font-Awesome/issues/16156) - [Font Awesome Install](https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers) - [Font Awesome React](https://fontawesome.com/how-to-use/on-the-web/using-with/react)
 
 ### Setup Documentation
 

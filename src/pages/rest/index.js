@@ -1,7 +1,16 @@
+//React
 import React from 'react';
+//Components
+import RestView from '../../components/Rest';
 
-import { RestView } from '../../components/Rest';
+function Rest() {
+  //console.log('PAGE');
 
-export default function rest() {
-  return <RestView />;
+  return (
+    <>
+      <RestView />
+    </>
+  );
 }
+
+export default Rest;

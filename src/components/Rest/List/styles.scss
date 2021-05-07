@@ -1,0 +1,65 @@
+@import '../../../colors.scss';
+
+.list-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: 100%;
+  padding: 20px;
+  background: $color-kett-green-secondary;
+  color: $color-kett-white;
+  text-align: left;
+}
+.list-loader {
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  border-bottom: solid thin $color-kett-white;
+}
+.list-results {
+  padding-left: 20px;
+  direction: rtl;
+  overflow: auto;
+  flex-grow: 1;
+
+  /* width */
+  &::-webkit-scrollbar {
+    width: 15px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: $color-kett-white;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $color-kett-gold;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: $color-kett-gold;
+  }
+
+  .list-results-item {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: ltr;
+  }
+
+  .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+  }
+  &:hover {
+    > .tooltiptext {
+      visibility: visible;
+    }
+  }
+}

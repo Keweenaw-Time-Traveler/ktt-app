@@ -1,0 +1,27 @@
+.results {
+  width: 350px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: #408482;
+  color: #fff;
+  font-size: 30px;
+  font-size: 3rem;
+  line-height: 36px;
+  line-height: 3.6rem;
+  letter-spacing: 0.75px;
+  font-weight: 300;
+}
+
+.results span {
+  position: relative;
+  top: 2px;
+  margin-left: 10px;
+  font-size: 20px;
+  font-size: 2rem;
+  line-height: 24px;
+  line-height: 2.4rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+}

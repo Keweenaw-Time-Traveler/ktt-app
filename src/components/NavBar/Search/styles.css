@@ -1,0 +1,32 @@
+.search {
+  display: flex;
+}
+.search-nav {
+  padding: 0 10px;
+}
+.search-nav .fa-icon {
+  color: #8f8d8d;
+  cursor: pointer;
+  margin: 0 10px;
+}
+.search-nav .fa-icon:hover {
+  color: #fff;
+}
+.search-input {
+  display: flex;
+}
+.search-input input {
+  border: none;
+  padding: 0 10px;
+}
+.search-input-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 33px;
+  height: 33px;
+  background: #e6a100;
+}
+.search-input-icon .fa-icon {
+  color: #fff;
+}

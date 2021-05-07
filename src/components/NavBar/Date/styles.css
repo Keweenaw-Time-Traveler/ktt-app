@@ -1,0 +1,8 @@
+.navbar-date {
+  display: flex;
+  padding: 0 10px;
+}
+.navbar-date .esri-select {
+  max-width: 185px;
+  margin: 0 10px;
+}
