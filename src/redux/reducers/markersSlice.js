@@ -41,7 +41,18 @@ export const markersSlice = createSlice({
       console.log('MARKER PAYLOAD', action.payload);
       state.active = action.payload.active;
       state.length = action.payload.active.length;
-      state.inactive = action.payload.inactive;
+      const inactive = action.payload.inactive;
+      if (inactive) {
+        state.inactive = inactive;
+      } else {
+        state.inactive = {
+          length: 0,
+          people: {
+            length: 0,
+            results: [],
+          },
+        };
+      }
     },
     updateMakerMessage: (state, action) => {
       state.message = action.payload;
@@ -84,9 +95,29 @@ export function loadMarkersAsync(filters) {
 export const { updateMarkers, updateMakerMessage } = markersSlice.actions;
 export const selectLength = (state) => state.markers.length;
 export const selectMarkerMessage = (state) => state.markers.message;
-export const selectPeopleData = (state) => state.markers.active.people.results;
-export const selectStoriesData = (state) =>
-  state.markers.active.stories.results;
-export const selectHasLoaded = (state) => state.markers.hasLoaded;
+export const selectPeopleData = (state) => {
+  const peopleData = state.markers.active.people;
+  if (peopleData) {
+    return peopleData.results;
+  } else {
+    return [];
+  }
+};
+export const selectPlacesData = (state) => {
+  const placesData = state.markers.active.places;
+  if (placesData) {
+    return placesData.results;
+  } else {
+    return [];
+  }
+};
+export const selectStoriesData = (state) => {
+  const storiesData = state.markers.active.stories;
+  if (storiesData) {
+    return storiesData.results;
+  } else {
+    return [];
+  }
+};
 
 export default markersSlice.reducer;

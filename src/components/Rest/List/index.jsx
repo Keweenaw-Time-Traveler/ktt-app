@@ -7,6 +7,7 @@ import { selectServiceMarkers } from '../../../redux/reducers/dataSlice';
 import {
   selectMarkerMessage,
   selectPeopleData,
+  selectPlacesData,
   selectStoriesData,
 } from '../../../redux/reducers/markersSlice';
 //Styles
@@ -20,6 +21,7 @@ const List = () => {
 
   const messageData = useSelector(selectMarkerMessage);
   const peopleData = useSelector(selectPeopleData);
+  const placesData = useSelector(selectPlacesData);
   const storiesData = useSelector(selectStoriesData);
 
   useEffect(() => {
