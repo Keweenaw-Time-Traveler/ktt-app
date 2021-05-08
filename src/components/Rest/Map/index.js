@@ -279,7 +279,7 @@ export const Map = (props) => {
             }
             //LOAD MARKERS
             asyncMarkers(view, filters, extent).then((res) => {
-              console.log('MARKER RESPONCE', res.active.length);
+              console.log('MARKER RESPONCE', res.active);
               dispatch(updateMarkers(res));
               if (view.zoom > 12 && res.active.length) {
                 generateGraphics(res.active);
@@ -620,19 +620,23 @@ export const Map = (props) => {
                   `,
                   stops: [
                     {
-                      value: '1',
+                      value: 0,
+                      color: [0, 0, 0],
+                    },
+                    {
+                      value: 1,
                       color: [64, 132, 130],
                     },
                     {
-                      value: '2',
+                      value: 2,
                       color: [204, 97, 49],
                     },
                     {
-                      value: '3',
+                      value: 3,
                       color: [54, 98, 181],
                     },
                     {
-                      value: '4',
+                      value: 4,
                       color: [0, 0, 0],
                     },
                   ],
@@ -879,19 +883,23 @@ export const Map = (props) => {
                   `,
                   stops: [
                     {
-                      value: '1',
+                      value: 0,
+                      color: [0, 0, 0],
+                    },
+                    {
+                      value: 1,
                       color: [64, 132, 130],
                     },
                     {
-                      value: '2',
+                      value: 2,
                       color: [204, 97, 49],
                     },
                     {
-                      value: '3',
+                      value: 3,
                       color: [54, 98, 181],
                     },
                     {
-                      value: '4',
+                      value: 4,
                       color: [0, 0, 0],
                     },
                   ],
@@ -899,7 +907,8 @@ export const Map = (props) => {
               ],
             },
             popupTemplate: {
-              title: 'INACTIVE GRID: {ID}, {Type}, {Percent}',
+              title: 'INACTIVE GRID',
+              content: asyncPopUp,
             },
           });
           //console.log('GRID INACTIVE', grid);
@@ -997,10 +1006,19 @@ export const Map = (props) => {
     return axios
       .post('http://geospatialresearch.mtu.edu/grid_cell.php', filters)
       .then((res) => {
-        //console.log(res.data);
+        //console.log('POPUP DATA', res.data);
+        const people = res.data.active.people
+          ? res.data.active.people.length
+          : 0;
+        const places = res.data.active.places
+          ? res.data.active.places.length
+          : 0;
+        const stories = res.data.active.stories
+          ? res.data.active.stories.length
+          : 0;
         return `
         <p>ID: ${target.graphic.attributes.id}, TYPE: ${target.graphic.attributes.type}, PERCENT: ${target.graphic.attributes.percent}</p>
-        <p>PEOPLE: ${res.data.active.people.length}, PLACES: ${res.data.active.places.length}, STORIES: ${res.data.active.stories.length}</p>
+        <p>PEOPLE: ${people}, PLACES: ${places}, STORIES: ${stories}</p>
         `;
       });
   };
@@ -1019,18 +1037,20 @@ export const Map = (props) => {
     updateLoader('Loading Grid...');
     let ms = 0;
     let timer = setInterval(() => ms++, 1);
-    //console.log('asyncGrid', filters);
     const { search, date_range, photos, featured, type } = filters;
+    const payload = {
+      search: search,
+      size: size,
+      filters: {
+        date_range: date_range,
+        photos: photos,
+        featured: featured,
+        type: 'stories',
+      },
+    };
+    //console.log('asyncGrid', payload);
     return axios
-      .post('http://geospatialresearch.mtu.edu/grid3.php', {
-        search: search,
-        size: size,
-        filters: {
-          date_range: date_range,
-          photos: photos,
-          featured: featured,
-        },
-      })
+      .post('http://geospatialresearch.mtu.edu/grid3.php', payload)
       .then((res) => {
         clearInterval(timer);
         updateLoader(`Grid Loaded: ${ms}ms`);
