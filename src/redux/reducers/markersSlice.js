@@ -38,7 +38,7 @@ export const markersSlice = createSlice({
   },
   reducers: {
     updateMarkers: (state, action) => {
-      //console.log('MARKER PAYLOAD', action.payload);
+      console.log('MARKER RESPONCE', action.payload.active);
       state.active = action.payload.active;
       state.length = action.payload.active.length;
       const inactive = action.payload.inactive;

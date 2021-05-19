@@ -34,24 +34,28 @@ const List = () => {
     <div className="list-wrapper">
       <div className="list-loader">{loader}</div>
       <div className="list-results">
-        {Object.keys(people).map((item, index) => (
-          <div
-            className="list-results-item tooltip"
-            key={index}
-            title={people[index].title}
-          >
-            {people[index].title}
-          </div>
-        ))}
-        {Object.keys(stories).map((item, index) => (
-          <div
-            className="list-results-item tooltip"
-            key={index}
-            title={stories[index].title}
-          >
-            {stories[index].title}
-          </div>
-        ))}
+        {Object.keys(people)
+          .slice(0, 100)
+          .map((item, index) => (
+            <div
+              className="list-results-item tooltip"
+              key={index}
+              title={people[index].title}
+            >
+              {people[index].title}
+            </div>
+          ))}
+        {Object.keys(stories)
+          .slice(0, 100)
+          .map((item, index) => (
+            <div
+              className="list-results-item tooltip"
+              key={index}
+              title={stories[index].title}
+            >
+              {stories[index].title}
+            </div>
+          ))}
       </div>
     </div>
   );

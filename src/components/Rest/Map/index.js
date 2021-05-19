@@ -10,10 +10,13 @@ import {
 } from '../../../redux/reducers/markersSlice';
 //ArchGIS
 import { loadCss, loadModules } from 'esri-loader';
+import { BaseMap } from '../../../util/basemaps';
 //Styles
 import './styles.scss';
 //Images
-import marker from './images/people.png';
+import peopleMarkerImage from './images/marker_person.png';
+import placeMarkerImage from './images/marker_place.png';
+import storyMarkerImage from './images/marker_story.png';
 //Functional Component
 export const Map = (props) => {
   const [loader, updateLoader] = useState('Loading Grid...');
@@ -21,10 +24,10 @@ export const Map = (props) => {
   const [startDate, setStartDate] = useState('1800');
   const [endDate, setEndDate] = useState('2020');
   const [extent, setExtent] = useState({
-    xmin: -9920719.972697698,
-    xmax: -9774266.626503244,
-    ymin: 5917275.180502997,
-    ymax: 6005865.6962855505,
+    xmin: -9907458.148290215,
+    xmax: -9787528.450910727,
+    ymin: 5915096.725196868,
+    ymax: 6008044.151591677,
   });
   const dispatch = useDispatch();
   const mapRef = useRef();
@@ -42,6 +45,9 @@ export const Map = (props) => {
       [
         'esri/Map',
         'esri/views/MapView',
+        'esri/Basemap',
+        'esri/layers/VectorTileLayer',
+        'esri/layers/TileLayer',
         'esri/layers/FeatureLayer',
         'esri/geometry/Point',
         'esri/Graphic',
@@ -59,6 +65,9 @@ export const Map = (props) => {
       ([
         Map,
         MapView,
+        Basemap,
+        VectorTileLayer,
+        TileLayer,
         FeatureLayer,
         Point,
         Graphic,
@@ -72,14 +81,27 @@ export const Map = (props) => {
         Color,
       ]) => {
         const startingExtent = {
-          xmin: -9920719.972697698,
-          xmax: -9774266.626503244,
-          ymin: 5917275.180502997,
-          ymax: 6005865.6962855505,
+          xmin: -9907458.148290215,
+          xmax: -9787528.450910727,
+          ymin: 5915096.725196868,
+          ymax: 6008044.151591677,
         };
+        var modern_antique = new Basemap({
+          baseLayers: [
+            new TileLayer({
+              portalItem: {
+                id: '1b243539f4514b6ba35e7d995890db1d', // World Hillshade
+              },
+            }),
+            new VectorTileLayer({
+              //style: BaseMap('Open Street'),
+              style: BaseMap('Modern Antique'),
+            }),
+          ],
+        });
         const view = new MapView({
           map: new Map({
-            basemap: 'gray-vector',
+            basemap: modern_antique,
           }),
           container: mapRef.current,
           extent: {
@@ -240,13 +262,20 @@ export const Map = (props) => {
             const search = document.getElementById('search');
             const dateStart = document.getElementById('navbar-date-start');
             const dateEnd = document.getElementById('navbar-date-end');
+            //document.querySelectorAll('.radio-button');
+            const typeRadio = document.querySelector(
+              'input[name="filterType"]:checked'
+            );
+            console.log('RADIO', typeRadio);
+            // const typeRadio = document.querySelector('input[name="filterType"]:checked').value;
+            // const typeToggle = document.querySelectorAll('.filter-toogle');
             const { xmin, xmax, ymin, ymax } = view.extent;
             const filters = {
-              search: 'mill',
+              search: search.value,
               date_range: `${dateStart.value}-${dateEnd.value}`,
               photos: 'false',
               featured: 'false',
-              type: 'all',
+              type: typeRadio.value,
             };
             const extent = {
               xmin: xmin,
@@ -259,27 +288,34 @@ export const Map = (props) => {
             const layers = view.map.layers;
             if (layers) {
               layers.forEach((layer, index) => {
-                if (view.zoom > 12 && layer.id == 'grid_layer') {
-                  console.log('HIDE', layer.id);
-                  view.popup.close();
-                  layer.visible = false;
-                } else if (view.zoom <= 12 && layer.id == 'grid_layer') {
-                  console.log('SHOW', layer.id);
-                  layer.visible = true;
+                if (
+                  layer.id == 'grid_layer' ||
+                  layer.id == 'grid_inactive_layer'
+                ) {
+                  if (view.zoom > 12) {
+                    console.log('HIDE', layer.id);
+                    view.popup.close();
+                    layer.visible = false;
+                  } else {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
                 }
-                if (view.zoom > 12 && layer.id == 'marker_layer') {
-                  console.log('SHOW', layer.id);
-                  layer.visible = true;
-                } else if (view.zoom <= 12 && layer.id == 'marker_layer') {
-                  console.log('HIDE', layer.id);
-                  view.popup.close();
-                  layer.visible = false;
+                if (layer.id == 'marker_layer') {
+                  if (view.zoom <= 12) {
+                    console.log('HIDE', layer.id);
+                    view.popup.close();
+                    layer.visible = false;
+                  } else {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
                 }
               });
             }
             //LOAD MARKERS
             asyncMarkers(view, filters, extent).then((res) => {
-              console.log('MARKER RESPONCE', res.active);
+              //console.log('MARKER RESPONCE', res.active);
               dispatch(updateMarkers(res));
               if (view.zoom > 12 && res.active.length) {
                 generateGraphics(res.active);
@@ -351,38 +387,39 @@ export const Map = (props) => {
         }
 
         function generateGraphics(markers) {
-          const peopleActive = markers.people.results;
-          const placesActive = markers.places.results;
-          const storiesActive = markers.stories.results;
+          //console.log('generateGraphics', markers);
+          const peopleActive = markers.people ? markers.people.results : [];
+          const placesActive = markers.places ? markers.places.results : [];
+          const storiesActive = markers.stories ? markers.stories.results : [];
           const allActive = [
             ...peopleActive,
             ...placesActive,
             ...storiesActive,
           ];
           const graphics = [];
-          allActive.forEach((person) => {
-            if (person.lon) {
+          allActive.forEach((marker) => {
+            if (marker.x) {
               const point = {
                 type: 'point',
-                x: person.lon,
-                y: person.lat,
+                x: marker.x,
+                y: marker.y,
                 spatialReference: new SpatialReference({ wkid: 3857 }),
               };
               const graphic = new Graphic({
                 geometry: point,
-                attributes: person,
+                attributes: marker,
               });
               graphics.push(graphic);
             } else {
               console.log(
                 'EMPTY MARKER VALUE - ID: ',
-                person.id,
+                marker.id,
                 'X: ',
-                person.lon
+                marker.x
               );
             }
           });
-          if (graphics.length !== 0) {
+          if (graphics.length) {
             createLayer(graphics);
           } else {
             console.log('No markers in this area');
@@ -456,7 +493,7 @@ export const Map = (props) => {
                             {
                               type: 'CIMSolidFill',
                               enable: true,
-                              color: [71, 71, 71],
+                              color: [150, 150, 150],
                             },
                           ],
                         },
@@ -633,7 +670,7 @@ export const Map = (props) => {
                     },
                     {
                       value: 3,
-                      color: [54, 98, 181],
+                      color: [154, 98, 181],
                     },
                     {
                       value: 4,
@@ -644,7 +681,7 @@ export const Map = (props) => {
               ],
             },
             popupTemplate: {
-              title: 'ACTIVE GRID',
+              title: 'ACTIVE | {id} | {percent} | {type}',
               content: asyncPopUp,
             },
           });
@@ -896,7 +933,7 @@ export const Map = (props) => {
                     },
                     {
                       value: 3,
-                      color: [54, 98, 181],
+                      color: [154, 98, 181],
                     },
                     {
                       value: 4,
@@ -907,7 +944,7 @@ export const Map = (props) => {
               ],
             },
             popupTemplate: {
-              title: 'INACTIVE GRID',
+              title: 'INACTIVE | {id} | {percent} | {type}',
               content: asyncPopUp,
             },
           });
@@ -917,17 +954,63 @@ export const Map = (props) => {
 
         //  Creates a client-side FeatureLayer from an array of graphics
         function createLayer(graphics) {
-          const symbol = {
-            type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
-            url: marker,
-            width: '30px',
-            height: '30px',
-          };
+          // const symbolPeople = {
+          //   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+          //   url: peopleMarkerImage,
+          //   width: '30px',
+          //   height: '30px',
+          // };
+          // const symbolPlace = {
+          //   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+          //   url: placeMarkerImage,
+          //   width: '30px',
+          //   height: '30px',
+          // };
+          // const symbolStory = {
+          //   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+          //   url: storyMarkerImage,
+          //   width: '30px',
+          //   height: '30px',
+          // };
+
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
-          // const renderer = {
-          //   type: 'simple',
-          //   field:
-          // }
+          const markerRenderer = {
+            type: 'unique-value',
+            field: 'type',
+            uniqueValueInfos: [
+              {
+                value: 'person',
+                label: 'Person',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: peopleMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              {
+                value: 'place',
+                label: 'Place',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: placeMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              {
+                value: 'story',
+                label: 'Story',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: storyMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+            ],
+          };
+
           const layer = new FeatureLayer({
             id: 'marker_layer',
             source: graphics,
@@ -947,13 +1030,15 @@ export const Map = (props) => {
                 alias: 'Title',
                 type: 'string',
               },
+              {
+                name: 'type',
+                alias: 'Type',
+                type: 'string',
+              },
             ],
             objectIdField: 'ObjectID',
             geometryType: 'point',
-            renderer: {
-              type: 'simple',
-              symbol: symbol,
-            },
+            renderer: markerRenderer,
             popupTemplate: {
               title: '{Title}',
             },
@@ -963,7 +1048,7 @@ export const Map = (props) => {
 
         // Adds a given layer to the map in the view
         function addToView(layer) {
-          //console.log('LAYER', layer.id);
+          console.log('LAYER', layer);
           view.map.add(layer);
         }
       }
@@ -1016,9 +1101,25 @@ export const Map = (props) => {
         const stories = res.data.active.stories
           ? res.data.active.stories.length
           : 0;
+        const peopleData = res.data.active.people.results;
+        console.log(peopleData);
+        const peopleTitles = peopleData.map((person) => person.title);
+        console.log(peopleTitles);
+        let string = '';
+        peopleTitles.forEach((title) => {
+          string = string + `<li>${title}</li>`;
+        });
         return `
-        <p>ID: ${target.graphic.attributes.id}, TYPE: ${target.graphic.attributes.type}, PERCENT: ${target.graphic.attributes.percent}</p>
-        <p>PEOPLE: ${people}, PLACES: ${places}, STORIES: ${stories}</p>
+        <div class="tabs">
+          <div class="tab tab-people"><i class="fas fa-user"></i> <span>(${people})</span></div>
+          <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
+          <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
+        </div>
+        <div class="data">
+        <ul>
+        ${string}
+        </ul>
+        </div>
         `;
       });
   };
@@ -1072,7 +1173,8 @@ export const Map = (props) => {
     dispatch(updateMakerMessage('Loading List...'));
     let ms = 0;
     let timer = setInterval(() => ms++, 1);
-    //console.log('asyncMarkers', filters);
+    console.log('asyncMarkers', filters);
+    console.log('asyncMarkers', extent);
     const { search, date_range, photos, featured, type } = filters;
     const { xmin, xmax, ymin, ymax } = extent;
     return axios

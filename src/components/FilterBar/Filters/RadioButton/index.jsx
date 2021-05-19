@@ -13,6 +13,7 @@ const RadioButton = (props) => {
         className="radio-button-input"
         onChange={props.changed}
         value={props.value}
+        name="filterType"
         type="radio"
         checked={props.isSelected}
       />

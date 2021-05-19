@@ -17,6 +17,7 @@
   right: 20px;
   padding: 15px;
   background: rgba(0, 0, 0, 0.5);
+  color: #fff;
 }
 .esri-popup__main-container {
   background: #1e3633 !important;
@@ -33,7 +34,7 @@
   width: 3px !important;
 }
 .esri-popup__header {
-  background: #408482;
+  background: #74716b;
 }
 .esri-popup__header-buttons {
   background: #000;
@@ -64,10 +65,50 @@
 .esri-popup__main-container {
   background: $color-kett-green-secondary !important;
 }
+.esri-popup__content {
+  margin: 0 0 20px !important;
+}
 .esri-feature {
   background: none !important;
   color: $color-kett-white !important;
 }
 .esri-feature-content {
-  padding: 20px 20px 0;
+  padding: 0;
+}
+.tabs {
+  display: flex;
+  width: 100%;
+
+  .tab {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+
+    span {
+      margin-left: 5px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+  }
+
+  .tab-people {
+    background: $color-kett-people;
+    color: $color-kett-white;
+  }
+  .tab-places {
+    background: $color-kett-places;
+    color: $color-kett-white;
+  }
+  .tab-stories {
+    background: $color-kett-stories;
+    color: $color-kett-white;
+  }
+}
+
+.data {
+  li {
+    text-align: left;
+  }
 }
