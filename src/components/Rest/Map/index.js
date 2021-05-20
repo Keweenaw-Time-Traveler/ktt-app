@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateDate } from '../../../redux/reducers/filtersSlice';
 import {
   updateMarkers,
-  updateMakerMessage,
+  updateListMessage,
 } from '../../../redux/reducers/markersSlice';
 //ArchGIS
 import { loadCss, loadModules } from 'esri-loader';
@@ -131,7 +131,7 @@ export const Map = (props) => {
               ymax: ymax,
             };
             //GRID
-            asyncGrid(view, filters, '5').then((res) => {
+            asyncGrid(view, filters, '10').then((res) => {
               console.log('GRID RESPONCE', res);
               generateGridInactive(res.inactive);
               generateGrid(res.active);
@@ -147,9 +147,16 @@ export const Map = (props) => {
             search.addEventListener('change', (event) => {
               event.preventDefault();
               filters = { ...filters, search: `${search.value}` };
+              const { xmin, xmax, ymin, ymax } = view.extent;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
               console.log('SEARCH', filters);
               if (view.zoom <= 12) {
-                asyncGrid(view, filters, '5').then((res) => {
+                asyncGrid(view, filters, '10').then((res) => {
                   console.log('GRID RESPONCE', res);
                   generateGridInactive(res.inactive);
                   generateGrid(res.active);
@@ -172,9 +179,16 @@ export const Map = (props) => {
                   ...filters,
                   date_range: `${dateStart.value}-${dateEnd.value}`,
                 };
+                const { xmin, xmax, ymin, ymax } = view.extent;
+                const extent = {
+                  xmin: xmin,
+                  xmax: xmax,
+                  ymin: ymin,
+                  ymax: ymax,
+                };
                 console.log('DATE CHANGE', filters);
                 if (view.zoom <= 12) {
-                  asyncGrid(view, filters, '5').then((res) => {
+                  asyncGrid(view, filters, '10').then((res) => {
                     console.log('GRID DATE RESPONCE', res);
                     generateGridInactive(res.inactive);
                     generateGrid(res.active);
@@ -194,9 +208,16 @@ export const Map = (props) => {
               el.addEventListener('change', (event) => {
                 event.preventDefault();
                 filters = { ...filters, type: event.target.value };
-                console.log('RADIO', filters);
+                const { xmin, xmax, ymin, ymax } = view.extent;
+                const extent = {
+                  xmin: xmin,
+                  xmax: xmax,
+                  ymin: ymin,
+                  ymax: ymax,
+                };
+                //console.log('RADIO', filters);
                 if (view.zoom <= 12) {
-                  asyncGrid(view, filters, '5').then((res) => {
+                  asyncGrid(view, filters, '10').then((res) => {
                     console.log('GRID TYPE RESPONCE', res);
                     generateGridInactive(res.inactive);
                     generateGrid(res.active);
@@ -217,7 +238,14 @@ export const Map = (props) => {
                 event.preventDefault();
                 const id = event.target.id;
                 const checked = event.target.checked;
-                console.log(event.target.id);
+                const { xmin, xmax, ymin, ymax } = view.extent;
+                const extent = {
+                  xmin: xmin,
+                  xmax: xmax,
+                  ymin: ymin,
+                  ymax: ymax,
+                };
+                //console.log(event.target.id);
                 if (id == 'photos') {
                   filters = { ...filters, photos: `${checked}` };
                 }
@@ -226,7 +254,7 @@ export const Map = (props) => {
                 }
                 console.log('TOGGLE', filters);
                 if (view.zoom <= 12) {
-                  asyncGrid(view, filters, '5').then((res) => {
+                  asyncGrid(view, filters, '10').then((res) => {
                     console.log('GRID TYPE RESPONCE', res);
                     generateGridInactive(res.inactive);
                     generateGrid(res.active);
@@ -250,13 +278,14 @@ export const Map = (props) => {
           view.hitTest(event).then(function (response) {
             // do something with the result graphic
             var graphic = response.results[0].graphic;
-            console.log('GRAPHIC ATTR', graphic.attributes);
+            //console.log('GRAPHIC ATTR', graphic.attributes);
           });
         });
 
         watchUtils.whenTrue(view, 'stationary', function () {
           if (view.ready && view.extent) {
-            console.log('VIEW EXTENT', view.extent);
+            //console.log('VIEW EXTENT', view.extent);
+            //console.log('VIEW SCALE', view.scale);
             //console.log('VIEW ZOOM', view.zoom);
             setZoom(view.zoom);
             const search = document.getElementById('search');
@@ -266,7 +295,7 @@ export const Map = (props) => {
             const typeRadio = document.querySelector(
               'input[name="filterType"]:checked'
             );
-            console.log('RADIO', typeRadio);
+            //console.log('RADIO', typeRadio);
             // const typeRadio = document.querySelector('input[name="filterType"]:checked').value;
             // const typeToggle = document.querySelectorAll('.filter-toogle');
             const { xmin, xmax, ymin, ymax } = view.extent;
@@ -584,7 +613,7 @@ export const Map = (props) => {
                     // the pixel size at the largest scale
                     // 42 represents the pixel size of the
                     // circles at the view's largest scale (1:2,311,161)
-                    expression: '42 * 144447 / $view.scale',
+                    expression: '56 * 577790 / $view.scale',
                     returnType: 'Default',
                   },
                 },
@@ -599,7 +628,7 @@ export const Map = (props) => {
                     // The innerSize is determined by multiplying
                     // the outerSize by the forest ratio
                     expression: `
-                      var outerSize = 42 * 144447 / $view.scale;
+                      var outerSize = 56 * 577790 / $view.scale;
                       var innerSizeMin = outerSize * 0.3;
                       var innerSize = outerSize * $feature.percent;
                       return IIF( innerSize < 3, innerSizeMin, innerSize-2 );
@@ -846,7 +875,7 @@ export const Map = (props) => {
                     // the pixel size at the largest scale
                     // 42 represents the pixel size of the
                     // circles at the view's largest scale (1:2,311,161)
-                    expression: '42 * 144447 / $view.scale',
+                    expression: '56 * 577790 / $view.scale',
                     returnType: 'Default',
                   },
                 },
@@ -861,7 +890,7 @@ export const Map = (props) => {
                     // The innerSize is determined by multiplying
                     // the outerSize by the forest ratio
                     expression: `
-                      var outerSize = 42 * 144447 / $view.scale;
+                      var outerSize = 56 * 577790 / $view.scale;
                       var innerSizeMin = outerSize * 0.3;
                       var innerSize = outerSize * $feature.percent;
                       return IIF( innerSize < 3, innerSizeMin, innerSize-2 );
@@ -1048,7 +1077,7 @@ export const Map = (props) => {
 
         // Adds a given layer to the map in the view
         function addToView(layer) {
-          console.log('LAYER', layer);
+          //console.log('LAYER', layer);
           view.map.add(layer);
         }
       }
@@ -1080,7 +1109,7 @@ export const Map = (props) => {
     let filters = {
       search: `${search.value}`,
       id: target.graphic.attributes.id,
-      size: '5',
+      size: '10',
       filters: {
         date_range: `${dateStart.value}-${dateEnd.value}`,
         photos: photos,
@@ -1102,23 +1131,48 @@ export const Map = (props) => {
           ? res.data.active.stories.length
           : 0;
         const peopleData = res.data.active.people.results;
-        console.log(peopleData);
+        const placesData = res.data.active.places.results;
+        const storiesData = res.data.active.stories.results;
         const peopleTitles = peopleData.map((person) => person.title);
-        console.log(peopleTitles);
-        let string = '';
+        const placesTitles = placesData.map((place) => place.title);
+        const storiesTitles = storiesData.map((story) => story.title);
+        let stringPeople = '';
+        let stringPlaces = '';
+        let stringStories = '';
         peopleTitles.forEach((title) => {
-          string = string + `<li>${title}</li>`;
+          stringPeople = stringPeople + `<li>${title}</li>`;
         });
+        placesTitles.forEach((title) => {
+          stringPlaces = stringPlaces + `<li>${title}</li>`;
+        });
+        storiesTitles.forEach((title) => {
+          stringStories = stringStories + `<li>${title}</li>`;
+        });
+
         return `
-        <div class="tabs">
-          <div class="tab tab-people"><i class="fas fa-user"></i> <span>(${people})</span></div>
-          <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
-          <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
-        </div>
-        <div class="data">
-        <ul>
-        ${string}
-        </ul>
+        <div class="grid-popup">
+          <div class="grid-popup-tabs">
+            <div class="tab tab-people active"><i class="fas fa-user"></i> <span>(${people})</span></div>
+            <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
+            <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
+          </div>
+          <div class="grid-popup-data">
+            <div class="data data-people active">
+              <ul>
+              ${stringPeople}
+              </ul>
+            </div>
+            <div class="data data-places">
+              <ul>
+              ${stringPlaces}
+              </ul>
+            </div>
+            <div class="data data-stories">
+              <ul>
+              ${stringStories}
+              </ul>
+            </div>
+          </div>
         </div>
         `;
       });
@@ -1146,12 +1200,12 @@ export const Map = (props) => {
         date_range: date_range,
         photos: photos,
         featured: featured,
-        type: 'stories',
+        type: type,
       },
     };
-    //console.log('asyncGrid', payload);
+    console.log('asyncGrid', payload);
     return axios
-      .post('http://geospatialresearch.mtu.edu/grid3.php', payload)
+      .post('http://geospatialresearch.mtu.edu/grid4.php', payload)
       .then((res) => {
         clearInterval(timer);
         updateLoader(`Grid Loaded: ${ms}ms`);
@@ -1170,11 +1224,11 @@ export const Map = (props) => {
       view.map.layers.removeMany(currentLayers);
     }
     //updateLoader('Loading Markers...');
-    dispatch(updateMakerMessage('Loading List...'));
+    dispatch(updateListMessage('Loading List...'));
     let ms = 0;
     let timer = setInterval(() => ms++, 1);
-    console.log('asyncMarkers', filters);
-    console.log('asyncMarkers', extent);
+    //console.log('asyncMarkers', filters);
+    //console.log('asyncMarkers', extent);
     const { search, date_range, photos, featured, type } = filters;
     const { xmin, xmax, ymin, ymax } = extent;
     return axios
@@ -1197,7 +1251,7 @@ export const Map = (props) => {
       .then((res) => {
         clearInterval(timer);
         //updateLoader(`Markers Loaded: ${ms}ms`);
-        dispatch(updateMakerMessage(`List Loaded: ${ms}ms`));
+        dispatch(updateListMessage(`List Loaded: ${ms}ms`));
         return res.data;
       });
   };

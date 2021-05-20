@@ -4,7 +4,7 @@ import axios from 'axios';
 export const markersSlice = createSlice({
   name: 'markers',
   initialState: {
-    hasLoaded: false,
+    listLoading: true,
     length: 0,
     message: 'Loading List...',
     extent: {
@@ -38,7 +38,7 @@ export const markersSlice = createSlice({
   },
   reducers: {
     updateMarkers: (state, action) => {
-      console.log('MARKER RESPONCE', action.payload.active);
+      //console.log('MARKER RESPONCE', action.payload.active);
       state.active = action.payload.active;
       state.length = action.payload.active.length;
       const inactive = action.payload.inactive;
@@ -54,8 +54,13 @@ export const markersSlice = createSlice({
         };
       }
     },
-    updateMakerMessage: (state, action) => {
+    updateListMessage: (state, action) => {
       state.message = action.payload;
+      if (action.payload == 'Loading List...') {
+        state.listLoading = true;
+      } else {
+        state.listLoading = false;
+      }
     },
   },
 });
@@ -92,9 +97,10 @@ export function loadMarkersAsync(filters) {
   };
 }
 
-export const { updateMarkers, updateMakerMessage } = markersSlice.actions;
+export const { updateMarkers, updateListMessage } = markersSlice.actions;
 export const selectLength = (state) => state.markers.length;
-export const selectMarkerMessage = (state) => state.markers.message;
+export const selectListMessage = (state) => state.markers.message;
+export const selectListLoading = (state) => state.markers.listLoading;
 export const selectPeopleData = (state) => {
   const peopleData = state.markers.active.people;
   if (peopleData) {

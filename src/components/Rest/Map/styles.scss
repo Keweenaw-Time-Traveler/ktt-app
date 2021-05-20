@@ -75,7 +75,7 @@
 .esri-feature-content {
   padding: 0;
 }
-.tabs {
+.grid-popup-tabs {
   display: flex;
   width: 100%;
 
@@ -85,11 +85,17 @@
     justify-content: center;
     align-items: center;
     height: 35px;
+    cursor: pointer;
+    opacity: 0.3;
 
     span {
       margin-left: 5px;
       font-weight: bold;
       font-size: 16px;
+    }
+
+    &.active {
+      opacity: 1;
     }
   }
 
@@ -107,7 +113,14 @@
   }
 }
 
-.data {
+.grid-popup-data {
+  .data {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
   li {
     text-align: left;
   }
