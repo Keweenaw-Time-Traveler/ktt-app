@@ -5,6 +5,20 @@ __metadata:
   version: 4
   cacheKey: 7
 
+"@arcgis/core@npm:^4.19.3":
+  version: 4.19.3
+  resolution: "@arcgis/core@npm:4.19.3"
+  dependencies:
+    "@esri/arcgis-html-sanitizer": ~2.5.0
+    "@esri/calcite-colors": ~5.0.0
+    "@popperjs/core": ~2.6.0
+    focus-trap: ~6.3.0
+    moment: ~2.29.1
+    sortablejs: ~1.13.0
+  checksum: 345801c2a4d25ddc6d72c18040a60db9f079bc47ed3328eb613e842a34755d6c61415b0ef076384a1eb32c9ceb9e82fc69247ab3ca014cde260ff884f7fe3d9c
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:7.8.3":
   version: 7.8.3
   resolution: "@babel/code-frame@npm:7.8.3"
@@ -1838,6 +1852,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esri/arcgis-html-sanitizer@npm:~2.5.0":
+  version: 2.5.0
+  resolution: "@esri/arcgis-html-sanitizer@npm:2.5.0"
+  dependencies:
+    lodash.isplainobject: ^4.0.6
+    xss: ^1.0.8
+  checksum: ebb60857b163942e0561e5059b98171a6143eee22fc1051c08991f4aa90a826bf528bec3fce152c236e0c2730c7a7d1cd27ffb186e1d9b7d90e555e75e401236
+  languageName: node
+  linkType: hard
+
+"@esri/calcite-colors@npm:~5.0.0":
+  version: 5.0.0
+  resolution: "@esri/calcite-colors@npm:5.0.0"
+  checksum: aae7c16ab63a385a84ddd99b8fd899ce0750ccb8db2b931bcf06ebb3c4aafd3a174358246a55ab08a58af0c189acd1e53bc4a148f3ac1c59fe72b0bde61ca624
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-common-types@npm:^0.2.35":
   version: 0.2.35
   resolution: "@fortawesome/fontawesome-common-types@npm:0.2.35::__archiveUrl=https%3A%2F%2Fnpm.fontawesome.com%2F%40fortawesome%2Ffontawesome-common-types%2F-%2F0.2.35%2Ffontawesome-common-types-0.2.35.tgz"
@@ -2300,6 +2331,13 @@ __metadata:
   dependencies:
     mkdirp: ^1.0.4
   checksum: ed2cb75eefe218113794416fae43b5307f7c30476506942ed6c6c51f702713323842f81102ae1327f9134130bec0360312e6f858ddef143c21d9e269e90737ac
+  languageName: node
+  linkType: hard
+
+"@popperjs/core@npm:~2.6.0":
+  version: 2.6.0
+  resolution: "@popperjs/core@npm:2.6.0"
+  checksum: b05148a11586c3d622973d4968355e694471ae86620eaf28d78360e4e48323123428c963dbc76182777a91837203de4060a0e76603a4b275df3ebcdaaf1e4ded
   languageName: node
   linkType: hard
 
@@ -6588,7 +6626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^2.11.0, commander@npm:^2.19.0, commander@npm:^2.20.0":
+"commander@npm:^2.11.0, commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.20.3":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
   checksum: b73428e97de7624323f81ba13f8ed9271de487017432d18b4da3f07cfc528ad754bbd199004bd5d14e0ccd67d1fdfe0ec8dbbd4c438b401df3c4cc387bfd1daa
@@ -7168,6 +7206,13 @@ __metadata:
   bin:
     cssesc: bin/cssesc
   checksum: 673783eda1f89af3faefc0e4b833f40621f484ce102a23396e7a65cc4c42798bd91ee3656c8b04a0a5ca38d40ada5bc8663e4541c380a7a81af2de5b2322e443
+  languageName: node
+  linkType: hard
+
+"cssfilter@npm:0.0.10":
+  version: 0.0.10
+  resolution: "cssfilter@npm:0.0.10"
+  checksum: 0a5cdc209e35ff0db9b0271846162ad9c0fdd7e612b217b88cfe6f1da5428b156369f17bab7f5f32f9d49b66daec912c188ef836735f499d87cafd824f3e9308
   languageName: node
   linkType: hard
 
@@ -8466,10 +8511,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esri-loader@npm:^2.16.0":
-  version: 2.16.0
-  resolution: "esri-loader@npm:2.16.0"
-  checksum: 449935fcc0952a6b30a8090e7328128093d4fb928f397e103b35a09d708275f715553f8d5d0792ef4aabbaca9d74d0a846cadb3bf78091f5c1fd0f90593e9b13
+"esri-loader@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "esri-loader@npm:3.1.0"
+  checksum: a045d66fc6ee4e74303cf0518c730f350c91b260a499555a26d5723ecb936683c48769f0b5c1770ee4dc89029388ad70db791a20a05c674418f7a362a4927ab3
   languageName: node
   linkType: hard
 
@@ -9021,6 +9066,15 @@ __metadata:
     inherits: ^2.0.3
     readable-stream: ^2.3.6
   checksum: b8fa1fbfadd5c4b6df3cf2c34b3c408fe508a2899c536bafa339f679de545689997e907bd4ff61dd292942f8044fb2f293a5956dd8b601f6a5601617842d0dda
+  languageName: node
+  linkType: hard
+
+"focus-trap@npm:~6.3.0":
+  version: 6.3.0
+  resolution: "focus-trap@npm:6.3.0"
+  dependencies:
+    tabbable: ^5.1.5
+  checksum: eb3f2c304fbce4b0428d94e563519e263998e973185629224e7b21eb009d0bf377779923d631fd2c65c255e809fe279dfbc7b938548d26f772a44c8273df50ed
   languageName: node
   linkType: hard
 
@@ -12165,6 +12219,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "ktt@workspace:."
   dependencies:
+    "@arcgis/core": ^4.19.3
     "@babel/core": ^7.11.6
     "@fortawesome/fontawesome-pro": ^5.15.3
     "@fortawesome/fontawesome-svg-core": ^1.2.35
@@ -12189,7 +12244,7 @@ fsevents@^1.2.7:
     "@testing-library/user-event": ^7.2.1
     axios: ^0.21.1
     babel-loader: ^8.1.0
-    esri-loader: ^2.16.0
+    esri-loader: ^3.1.0
     identity-obj-proxy: ^3.0.0
     node-sass: 4.14.1
     prop-types: ^15.7.2
@@ -12402,6 +12457,13 @@ fsevents@^1.2.7:
   version: 3.0.0
   resolution: "lodash._reinterpolate@npm:3.0.0"
   checksum: 27513557d6fe526296324f1de9e1b8e8ac88ef2a2544a655e825f3ab0f52c5a675f1a73a0c9ff3c64fda031c56dfb4deb9dac7c7d21f9a04bc63dd7db5a5a73d
+  languageName: node
+  linkType: hard
+
+"lodash.isplainobject@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "lodash.isplainobject@npm:4.0.6"
+  checksum: 72a114b610ec32a42b8cb47680d1729398caea0ee0631c0b220b97b21e7df19312377cb077acb6593bf6c5abdbdb43c530aa66b440e30d53324986d386808cd0
   languageName: node
   linkType: hard
 
@@ -13091,6 +13153,13 @@ fsevents@^1.2.7:
   bin:
     mkdirp: bin/cmd.js
   checksum: 1aa3a6a2d7514f094a91329ec09994f5d32d2955a4985ecbb3d86f2aaeafc4aa11521f98d606144c1d49cd9835004d9a73342709b8c692c92e59eacf37412468
+  languageName: node
+  linkType: hard
+
+"moment@npm:~2.29.1":
+  version: 2.29.1
+  resolution: "moment@npm:2.29.1"
+  checksum: 86729013febf7160de5b93da69273dd304d674b0224f9544b3abd09a87671ddd2cdd57598261ce57588910d63747ffd5590965e83c790d8bf327083c0e0a06e0
   languageName: node
   linkType: hard
 
@@ -17432,6 +17501,13 @@ resolve@1.15.0:
   languageName: node
   linkType: hard
 
+"sortablejs@npm:~1.13.0":
+  version: 1.13.0
+  resolution: "sortablejs@npm:1.13.0"
+  checksum: 96bef6c83baebc6e5c259d9141af3700636cdbea3af47b3986dda03d04c8e5ca33e3a8139358c1d60a1d5d65670faecb66882949f53f66068b7f363f34e6d0cb
+  languageName: node
+  linkType: hard
+
 "source-list-map@npm:^2.0.0":
   version: 2.0.1
   resolution: "source-list-map@npm:2.0.1"
@@ -18108,6 +18184,13 @@ resolve@1.15.0:
     es-abstract: ^1.17.0-next.1
     has-symbols: ^1.0.1
   checksum: 6f3edf4676c4bb0454e86bcefcddc1609b41f954e688bd92dbacd77b0564f90fec3d8876a724329fb8d9695e4d077971adde6cf17e3bc356562c056e24ee985e
+  languageName: node
+  linkType: hard
+
+"tabbable@npm:^5.1.5":
+  version: 5.2.0
+  resolution: "tabbable@npm:5.2.0"
+  checksum: d8662aeb2d05c16521bc595f088c2c9217aa19b7cad223f0133eacd1c542a16cacefd0af9c0cec535308dce7d546168a3fd6245bbb733987ac1499434491464d
   languageName: node
   linkType: hard
 
@@ -19828,6 +19911,18 @@ resolve@1.15.0:
   dependencies:
     "@babel/runtime-corejs3": ^7.8.3
   checksum: 2dcef4888ea32e7c01b8f42d1ee3df24970de14b299a8f534ccecf2252d297092f92d037502176ec334b6c8d7cd1dd3dba0d3cf949e26f418d50b46846268839
+  languageName: node
+  linkType: hard
+
+"xss@npm:^1.0.8":
+  version: 1.0.9
+  resolution: "xss@npm:1.0.9"
+  dependencies:
+    commander: ^2.20.3
+    cssfilter: 0.0.10
+  bin:
+    xss: bin/xss
+  checksum: 95544f369dd740199e054810ca6124caa6fc20d806708a6dade6ca2c3277072c78197439213c1d317c9906558bec5ce8241ea433e6a0410d6ea721b86452dcb2
   languageName: node
   linkType: hard
 

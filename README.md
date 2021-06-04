@@ -55,6 +55,7 @@ yarn start
 - Step 6: import pages in App.js setup routes
 - Step 7: setup CSS - [CSS Modules](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet) - [CSS Post Process](https://create-react-app.dev/docs/post-processing-css/)
 - Step 8: setup FontAwesome - [Yarn Config](https://github.com/FortAwesome/Font-Awesome/issues/16156) - [Font Awesome Install](https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers) - [Font Awesome React](https://fontawesome.com/how-to-use/on-the-web/using-with/react)
+- Step 9: arcgis install - started sandbox using esri-loader but ArchGIS JS API 4.19 moved to using ES Modules (note style sheet now in index.html) - [ArcGIS Install](https://developers.arcgis.com/javascript/latest/es-modules/)
 
 ### Setup Documentation
 
