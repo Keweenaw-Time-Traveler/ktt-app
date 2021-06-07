@@ -46,10 +46,10 @@ export const KeTTMap = (props) => {
 
   useEffect(() => {
     const startingExtent = {
-      xmin: -9907458.148290215,
-      xmax: -9787528.450910727,
-      ymin: 5915096.725196868,
-      ymax: 6008044.151591677,
+      xmin: -9967422.996979957,
+      xmax: -9727563.602220984,
+      ymin: 5868928.760112602,
+      ymax: 6054212.116675941,
     };
     const modern_antique = new Basemap({
       baseLayers: [
@@ -231,9 +231,9 @@ export const KeTTMap = (props) => {
     watchUtils.whenTrue(view, 'stationary', function () {
       //console.log('STATIONARY');
       if (view.ready && view.extent) {
-        //console.log('VIEW EXTENT', view.extent);
+        console.log('VIEW EXTENT', view.extent);
         //console.log('VIEW SCALE', view.scale);
-        console.log('VIEW ZOOM', view.zoom);
+        //console.log('VIEW ZOOM', view.zoom);
         setZoom(view.zoom);
         const search = document.getElementById('search');
         const dateStart = document.getElementById('navbar-date-start');
@@ -265,7 +265,7 @@ export const KeTTMap = (props) => {
         if (layers) {
           //console.log('LAYERS', layers.length);
           layers.items.forEach((layer, index) => {
-            if (view.zoom <= 11) {
+            if (view.zoom <= 10) {
               if (layer.id == 'grid_layer_10') {
                 console.log('SHOW', layer.id);
                 layer.visible = true;
@@ -282,7 +282,7 @@ export const KeTTMap = (props) => {
                 console.log('HIDE', layer.id);
                 layer.visible = false;
               }
-            } else if (view.zoom > 11 && view.zoom <= 13) {
+            } else if (view.zoom > 10 && view.zoom <= 13) {
               if (layer.id == 'grid_layer_10') {
                 console.log('HIDE', layer.id);
                 layer.visible = false;
