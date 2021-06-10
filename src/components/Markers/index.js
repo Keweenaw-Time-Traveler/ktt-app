@@ -21,8 +21,7 @@ export const MarkersView = () => {
     ).then(([Map, MapView, FeatureLayer, Graphic, GraphicsLayer]) => {
       const layer = new FeatureLayer({
         title: 'People',
-        url:
-          'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/kett_markers/FeatureServer',
+        url: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/kett_markers/FeatureServer',
         outFields: ['*'],
         popupTemplate: {
           title: '{descr}',
@@ -43,17 +42,17 @@ export const MarkersView = () => {
 
       layer.definitionExpression = "photos = 'true'";
 
-      const map = new Map({
-        basemap: 'gray-vector',
-        layers: [layer],
-      });
+      // const map = new Map({
+      //   basemap: 'gray-vector',
+      //   layers: [layer],
+      // });
 
-      const view = new MapView({
-        container: mapRef.current,
-        map: map,
-        center: [-88.453743, 47.246247],
-        zoom: 19,
-      });
+      // const view = new MapView({
+      //   container: mapRef.current,
+      //   map: map,
+      //   center: [-88.453743, 47.246247],
+      //   zoom: 19,
+      // });
     });
   });
 

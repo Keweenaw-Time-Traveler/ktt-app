@@ -3,11 +3,11 @@ import { loadCss, loadModules } from 'esri-loader';
 import styles from './Map.module.css'; // Import css modules stylesheet as styles
 
 //Utils
-import { CountPeople } from '../../util/query';
+//import { CountPeople } from '../../util/query';
 import { BaseMap } from '../../util/basemaps';
 
 //Components
-import { Legend } from './Legend';
+//import { Legend } from './Legend';
 
 export const SimonMapView = () => {
   const mapRef = useRef();
@@ -64,8 +64,7 @@ export const SimonMapView = () => {
         BasemapToggle,
       ]) => {
         const hexGrid = new FeatureLayer({
-          url:
-            'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer',
+          url: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer',
           outFields: ['*'],
           renderer: {
             type: 'simple',
@@ -142,8 +141,7 @@ export const SimonMapView = () => {
         });
 
         const dotsGrid = new FeatureLayer({
-          url:
-            'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer',
+          url: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer',
           outFields: ['*'],
           renderer: {
             type: 'simple',
@@ -270,8 +268,7 @@ export const SimonMapView = () => {
         });
 
         const simonGrid = new FeatureLayer({
-          url:
-            'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer',
+          url: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer',
           outFields: ['*'],
           renderer: {
             type: 'simple',
@@ -663,13 +660,8 @@ export const SimonMapView = () => {
           // and display select attribute values from the
           // graphic to the user
           const graphic = response.graphic;
-          const {
-            grid_id,
-            buildings,
-            people,
-            places,
-            stories,
-          } = graphic.attributes;
+          const { grid_id, buildings, people, places, stories } =
+            graphic.attributes;
           console.log(grid_id, buildings, people, places, stories);
           console.log(graphic);
 

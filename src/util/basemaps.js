@@ -1,5 +1,5 @@
 export const BaseMap = (type) => {
-  if (type == 'Modern Antique') {
+  if (type === 'Modern Antique') {
     const modernAntiqueJson = {
       version: 8,
       sprite:
@@ -9,8 +9,7 @@ export const BaseMap = (type) => {
       sources: {
         esri: {
           type: 'vector',
-          url:
-            'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer',
+          url: 'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer',
         },
       },
       layers: [
@@ -69,7 +68,7 @@ export const BaseMap = (type) => {
           type: 'fill',
           source: 'esri',
           'source-layer': 'Vegetation small scale',
-          filter: ['==', '_symbol', 0],
+          filter: ['===', '_symbol', 0],
           maxzoom: 11,
           layout: {},
           paint: {
@@ -8087,7 +8086,7 @@ export const BaseMap = (type) => {
     };
 
     return modernAntiqueJson;
-  } else if (type == 'Open Street') {
+  } else if (type === 'Open Street') {
     const openStreetJson = {
       version: 8,
       sprite:
@@ -8097,8 +8096,7 @@ export const BaseMap = (type) => {
       sources: {
         esri: {
           type: 'vector',
-          url:
-            'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer',
+          url: 'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer',
         },
       },
       layers: [
@@ -11366,8 +11364,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (under construction)/bridleway, cycleway, steps/casing',
+          id: 'road (tunnel) (under construction)/bridleway, cycleway, steps/casing',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (under construction)',
@@ -11691,8 +11688,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (under construction)/bridleway, cycleway, steps/line',
+          id: 'road (tunnel) (under construction)/bridleway, cycleway, steps/line',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (under construction)',
@@ -13299,8 +13295,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (access type)/service road (minor) (no public access)',
+          id: 'road (tunnel) (access type)/service road (minor) (no public access)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (access type)',
@@ -13323,8 +13318,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (access type)/service road (normal) (no public access)',
+          id: 'road (tunnel) (access type)/service road (normal) (no public access)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (access type)',
@@ -13380,8 +13374,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (access type)/motorway, trunk, primary, secondary, tertiary, residential road (no public access)',
+          id: 'road (tunnel) (access type)/motorway, trunk, primary, secondary, tertiary, residential road (no public access)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (access type)',
@@ -13409,8 +13402,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (access type)/service road (minor) (destination access only)',
+          id: 'road (tunnel) (access type)/service road (minor) (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (access type)',
@@ -13433,8 +13425,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (access type)/service road (normal) (destination access only)',
+          id: 'road (tunnel) (access type)/service road (normal) (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (access type)',
@@ -13457,8 +13448,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (access type)/living street (destination access only)',
+          id: 'road (tunnel) (access type)/living street (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (access type)',
@@ -13481,8 +13471,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (access type)/secondary, tertiary, residential road (destination access only)',
+          id: 'road (tunnel) (access type)/secondary, tertiary, residential road (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (tunnel) (access type)',
@@ -16604,8 +16593,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (access type)/motorway, trunk, primary, secondary, tertiary, residential road (no public access)',
+          id: 'road (access type)/motorway, trunk, primary, secondary, tertiary, residential road (no public access)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (access type)',
@@ -16633,8 +16621,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (access type)/service road (minor) (destination access only)',
+          id: 'road (access type)/service road (minor) (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (access type)',
@@ -16657,8 +16644,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (access type)/service road (normal) (destination access only)',
+          id: 'road (access type)/service road (normal) (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (access type)',
@@ -16704,8 +16690,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (access type)/secondary, tertiary, residential road (destination access only)',
+          id: 'road (access type)/secondary, tertiary, residential road (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (access type)',
@@ -17565,8 +17550,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'aerialway/chair lift, drag lift, t-bar, j-bar, platter, rope tow, zip line/line',
+          id: 'aerialway/chair lift, drag lift, t-bar, j-bar, platter, rope tow, zip line/line',
           type: 'line',
           source: 'esri',
           'source-layer': 'aerialway',
@@ -17581,8 +17565,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'aerialway/chair lift, drag lift, t-bar, j-bar, platter, rope tow, zip line/symbol',
+          id: 'aerialway/chair lift, drag lift, t-bar, j-bar, platter, rope tow, zip line/symbol',
           type: 'symbol',
           source: 'esri',
           'source-layer': 'aerialway',
@@ -18033,8 +18016,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'railway (bridge)/light rail, funicular, narrow gauge/outer casing',
+          id: 'railway (bridge)/light rail, funicular, narrow gauge/outer casing',
           type: 'line',
           source: 'esri',
           'source-layer': 'railway (bridge)',
@@ -18160,8 +18142,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (under construction)/bridleway, cycleway, steps/casing',
+          id: 'road (bridge) (under construction)/bridleway, cycleway, steps/casing',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (under construction)',
@@ -19178,8 +19159,7 @@ export const BaseMap = (type) => {
           paint: {},
         },
         {
-          id:
-            'railway (bridge)/light rail, funicular, narrow gauge/inner casing',
+          id: 'railway (bridge)/light rail, funicular, narrow gauge/inner casing',
           type: 'line',
           source: 'esri',
           'source-layer': 'railway (bridge)',
@@ -19436,8 +19416,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (under construction)/bridleway, cycleway, steps/line',
+          id: 'road (bridge) (under construction)/bridleway, cycleway, steps/line',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (under construction)',
@@ -20407,8 +20386,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (access type)/service road (minor) (no public access)',
+          id: 'road (bridge) (access type)/service road (minor) (no public access)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (access type)',
@@ -20431,8 +20409,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (access type)/service road (normal) (no public access)',
+          id: 'road (bridge) (access type)/service road (normal) (no public access)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (access type)',
@@ -20488,8 +20465,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (access type)/motorway, trunk, primary, secondary, tertiary, residential road (no public access)',
+          id: 'road (bridge) (access type)/motorway, trunk, primary, secondary, tertiary, residential road (no public access)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (access type)',
@@ -20517,8 +20493,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (access type)/service road (minor) (destination access only)',
+          id: 'road (bridge) (access type)/service road (minor) (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (access type)',
@@ -20541,8 +20516,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (access type)/service road (normal) (destination access only)',
+          id: 'road (bridge) (access type)/service road (normal) (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (access type)',
@@ -20565,8 +20539,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (access type)/living street (destination access only)',
+          id: 'road (bridge) (access type)/living street (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (access type)',
@@ -20589,8 +20562,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (access type)/secondary, tertiary, residential road (destination access only)',
+          id: 'road (bridge) (access type)/secondary, tertiary, residential road (destination access only)',
           type: 'line',
           source: 'esri',
           'source-layer': 'road (bridge) (access type)',
@@ -27078,8 +27050,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (tunnel) (under construction)/label/bridleway, cycleway, steps',
+          id: 'road (tunnel) (under construction)/label/bridleway, cycleway, steps',
           type: 'symbol',
           source: 'esri',
           'source-layer': 'road (tunnel) (under construction)/label',
@@ -27677,8 +27648,7 @@ export const BaseMap = (type) => {
           },
         },
         {
-          id:
-            'road (bridge) (under construction)/label/bridleway, cycleway, steps',
+          id: 'road (bridge) (under construction)/label/bridleway, cycleway, steps',
           type: 'symbol',
           source: 'esri',
           'source-layer': 'road (bridge) (under construction)/label',

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules } from 'esri-loader';
-import axios from 'axios';
+//import axios from 'axios';
 import styles from './Map.module.css'; // Import css modules stylesheet as styles
 import marker from './people_teardrop.svg';
 
@@ -55,8 +55,8 @@ export const WebMapView = () => {
         promiseUtils,
         TileLayer,
       ]) => {
-        const stories =
-          'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/CCHSDI_StoryPoints_watts/FeatureServer/0';
+        // const stories =
+        //   'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/CCHSDI_StoryPoints_watts/FeatureServer/0';
         //const people =
         //  'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_CityDir/MapServer/0';
         const people =
@@ -109,15 +109,15 @@ export const WebMapView = () => {
           }
         );
 
-        var basemap = new Basemap({
-          baseLayers: [
-            new VectorTileLayer({
-              portalItem: {
-                id: 'c11ce4f7801740b2905eb03ddc963ac8', // Dark Gray Canvas
-              },
-            }),
-          ],
-        });
+        // var basemap = new Basemap({
+        //   baseLayers: [
+        //     new VectorTileLayer({
+        //       portalItem: {
+        //         id: 'c11ce4f7801740b2905eb03ddc963ac8', // Dark Gray Canvas
+        //       },
+        //     }),
+        //   ],
+        // });
 
         const map = new Map({
           basemap: 'satellite',
@@ -133,10 +133,10 @@ export const WebMapView = () => {
           zoom: 15,
         });
 
-        const legend = new Legend({
-          view: view,
-          container: 'legendDiv',
-        });
+        // const legend = new Legend({
+        //   view: view,
+        //   container: 'legendDiv',
+        // });
 
         const infoDiv = document.getElementById('infoDiv');
         const expand = new Expand({
@@ -326,7 +326,7 @@ export const WebMapView = () => {
             .eachAlways([popupPromise, labelPromise])
             .then(function (result) {
               const popupTemplate = result[0].value;
-              const primaryLabelScheme = result[1].value;
+              //const primaryLabelScheme = result[1].value;
               const labelingInfo = [
                 {
                   labelExpressionInfo: {
@@ -347,8 +347,8 @@ export const WebMapView = () => {
                 },
               ];
               // Ensures the clusters are large enough to fit labels
-              const clusterMinSize = primaryLabelScheme.clusterMinSize;
-              const lblInfo = primaryLabelScheme.labelingInfo[0].symbol;
+              // const clusterMinSize = primaryLabelScheme.clusterMinSize;
+              // const lblInfo = primaryLabelScheme.labelingInfo[0].symbol;
               //console.log(lblInfo);
               return {
                 type: 'cluster',

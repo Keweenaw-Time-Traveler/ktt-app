@@ -56,7 +56,7 @@ export const markersSlice = createSlice({
     },
     updateListMessage: (state, action) => {
       state.message = action.payload;
-      if (action.payload == 'Loading List...') {
+      if (action.payload === 'Loading List...') {
         state.listLoading = true;
       } else {
         state.listLoading = false;

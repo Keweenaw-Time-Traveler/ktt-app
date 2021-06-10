@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './styles.css';
+import './styles.css';
 
 import Search from './Search';
 import Date from './Date';

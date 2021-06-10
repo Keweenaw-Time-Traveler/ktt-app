@@ -10,10 +10,10 @@ export default function Search() {
   const onChange = (event) => {
     event.preventDefault();
     const id = event.target.getAttribute('id');
-    if (id == 'navbar-date-start') {
+    if (id === 'navbar-date-start') {
       setStart(event.target.value);
     }
-    if (id == 'navbar-date-end') {
+    if (id === 'navbar-date-end') {
       setEnd(event.target.value);
     }
   };

@@ -6,8 +6,8 @@ export const CountPeople = (filter) => {
     ([QueryTask, Query]) => {
       // const url =
       //   'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_CityDir/MapServer/0';
-      const url =
-        'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/kett_linked_geometries/MapServer';
+      // const url =
+      //   'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/kett_linked_geometries/MapServer';
       // const queryTask = new QueryTask({
       //   url: url,
       // });
@@ -15,12 +15,10 @@ export const CountPeople = (filter) => {
       //query.returnGeometry = true;
       //query.outFields = ['*'];
       //query.where = filter; // Return all cities with a population greater than 1 million
-
       // When resolved, returns features and graphics that satisfy the query.
       // queryTask.execute(query).then(function (results) {
       //   //console.log(results);
       // });
-
       // When resolved, returns a count of the features that satisfy the query.
       // queryTask.executeForCount(query).then(function (results) {
       //   document.getElementById('total-people').innerHTML = `${results}`;

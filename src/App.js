@@ -1,13 +1,9 @@
 //React
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-//Redux
-import { useDispatch } from 'react-redux';
-import { loadMarkersAsync } from './redux/reducers/markersSlice';
 //Components
 import Navbar from './components/NavBar';
 import FilterBar from './components/FilterBar';
-
 //Pages
 import clusters from './pages/home';
 import heatmap from './pages/heatmap';
@@ -16,7 +12,6 @@ import login from './pages/login';
 import signup from './pages/signup';
 import markers from './pages/markers';
 import Rest from './pages/rest';
-
 //Styles
 import './App.scss';
 

@@ -8,7 +8,7 @@ import {
 } from '@fortawesome/pro-solid-svg-icons';
 
 export default function Search() {
-  const [search, updateSearch] = useState('');
+  const [search, updateSearch] = useState('mill');
   return (
     <div className="search">
       <div className="search-nav">

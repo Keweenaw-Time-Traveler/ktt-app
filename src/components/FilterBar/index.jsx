@@ -4,7 +4,7 @@ import React from 'react';
 import Results from './Results';
 import Filters from './Filters';
 //Styles
-import styles from './styles.css';
+import './styles.css';
 
 export default function FilterBar() {
   return (

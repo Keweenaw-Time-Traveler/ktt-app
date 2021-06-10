@@ -1,9 +1,9 @@
 //React
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 //Redux
-import { useSelector, useDispatch } from 'react-redux';
-import { selectServiceMarkers } from '../../../redux/reducers/dataSlice';
+import { useSelector } from 'react-redux';
+//import { selectServiceMarkers } from '../../../redux/reducers/dataSlice';
 import {
   selectListMessage,
   selectListLoading,

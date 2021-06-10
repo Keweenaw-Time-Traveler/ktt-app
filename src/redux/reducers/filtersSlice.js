@@ -11,10 +11,10 @@ export const filtersSlice = createSlice({
     type: 'all',
   },
   reducers: {
-    updateFilters: (state, action) => {
-      const { type, payload } = action;
-      //console.log('UPDATE FILTERS');
-    },
+    //updateFilters: (state, action) => {
+    //const { type, payload } = action;
+    //console.log('UPDATE FILTERS');
+    //},
     updateDate: (state, action) => {
       const { payload } = action;
       //console.log('UPDATE RANGE', payload);
@@ -23,7 +23,7 @@ export const filtersSlice = createSlice({
   },
 });
 
-export const { updateFilters, updateDate } = filtersSlice.actions;
+export const { updateDate } = filtersSlice.actions;
 
 export const selectFilterAll = (state) => state.filters;
 export const selectFilterDate = (state) => state.filters.date_range;
