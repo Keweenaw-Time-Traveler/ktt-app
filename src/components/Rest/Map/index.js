@@ -645,11 +645,12 @@ export const KeTTMap = (props) => {
                     // The innerSize is determined by multiplying
                     // the outerSize by the forest ratio
                     // return IIF( $feature.percent < 1, innerSizeMin, innerSize-2 );
+                    // return innerSize;
                     expression: `
                         var outerSize = $feature.radius * 577790.554289 / $view.scale;
-                        var innerSizeMin = outerSize * 0.3;
-                        var innerSize = outerSize * $feature.percent;
-                        return innerSize;
+                        var innerSizeMin = outerSize * 0.08;
+                        var innerSize = outerSize * $feature.montenum;
+                        return IIF( $feature.montenum < 0.1, innerSizeMin, innerSize );
                       `,
                     returnType: 'Default',
                   },
@@ -676,6 +677,16 @@ export const KeTTMap = (props) => {
               {
                 name: 'percent',
                 alias: 'Percent',
+                type: 'string',
+              },
+              {
+                name: 'montenum',
+                alias: 'Montenum',
+                type: 'string',
+              },
+              {
+                name: 'count',
+                alias: 'Count',
                 type: 'string',
               },
               {
@@ -737,7 +748,7 @@ export const KeTTMap = (props) => {
               ],
             },
             popupTemplate: {
-              title: 'ACTIVE | {id} | {percent} | {type}',
+              title: 'ACTIVE | {id} | {montenum} | {type}',
               content: asyncPopUp,
             },
           });
@@ -1126,13 +1137,13 @@ export const KeTTMap = (props) => {
 
         // Adds a given layer to the map in the view
         function addToView(layer) {
-          console.log('ADD', layer.id);
-          console.log('CURRENT LAYERS LENGTH', view.map.layers.items.length);
+          //console.log('ADD', layer.id);
+          //console.log('CURRENT LAYERS LENGTH', view.map.layers.items.length);
           const ifLayers = view.map.layers.items.length;
           if (ifLayers) {
             const existingLayers = view.map.layers.items;
             const existingLayersIDs = existingLayers.map((layer) => layer.id);
-            console.log('existingLayersIDs', existingLayersIDs);
+            //console.log('existingLayersIDs', existingLayersIDs);
             existingLayers.forEach(function (item, i) {
               if (layer.id === item.id) {
                 view.map.layers.remove(item);
