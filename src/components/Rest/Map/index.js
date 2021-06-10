@@ -645,12 +645,13 @@ export const KeTTMap = (props) => {
                     // The innerSize is determined by multiplying
                     // the outerSize by the forest ratio
                     // return IIF( $feature.percent < 1, innerSizeMin, innerSize-2 );
+                    // return IIF( $feature.montenum < 0.1, innerSizeMin, innerSize );
                     // return innerSize;
                     expression: `
                         var outerSize = $feature.radius * 577790.554289 / $view.scale;
                         var innerSizeMin = outerSize * 0.08;
                         var innerSize = outerSize * $feature.montenum;
-                        return IIF( $feature.montenum < 0.1, innerSizeMin, innerSize );
+                        return innerSize;
                       `,
                     returnType: 'Default',
                   },
