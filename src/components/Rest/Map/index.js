@@ -1217,13 +1217,24 @@ export const KeTTMap = (props) => {
         storiesTitles.forEach((title) => {
           stringStories = stringStories + `<li>${title}</li>`;
         });
-
-        let template = document.createElement('div');
-        let peopleButton = document.createElement('button');
-        let peopleButtonText = document.createTextNode('People');
-        peopleButton.appendChild(peopleButtonText);
-        peopleButton.classList.add('people');
-        template.appendChild(peopleButton);
+        //****** */
+        // let template = document.createElement('div');
+        // let peopleButton = document.createElement('button');
+        // let peopleButtonText = document.createTextNode('People');
+        // peopleButton.appendChild(peopleButtonText);
+        // peopleButton.classList.add('people');
+        // template.appendChild(peopleButton);
+        //****** */
+        // node.addEventListener('click', function () {
+        //   console.log('TEST');
+        // });
+        //****** */
+        // let peopleButton = document.createElement('button');
+        // let peopleButtonText = document.createTextNode('People');
+        // peopleButton.appendChild(peopleButtonText);
+        // peopleButton.classList.add('people');
+        // template.appendChild(peopleButton);
+        //****** */
         // let html =
         //   '<button>People</button><button>Place</button><button>Story</button>';
         // html = html.trim(); // Never return a text node of whitespace as the result
@@ -1238,33 +1249,33 @@ export const KeTTMap = (props) => {
         //   console.log('TEST');
         // });
 
-        return template;
-        // return `
-        // <div class="grid-popup">
-        //   <div class="grid-popup-tabs">
-        //     <div class="tab tab-people active"><i class="fas fa-user"></i> <span>(${people})</span></div>
-        //     <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
-        //     <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
-        //   </div>
-        //   <div class="grid-popup-data">
-        //     <div class="data data-people active">
-        //       <ul>
-        //       ${stringPeople}
-        //       </ul>
-        //     </div>
-        //     <div class="data data-places">
-        //       <ul>
-        //       ${stringPlaces}
-        //       </ul>
-        //     </div>
-        //     <div class="data data-stories">
-        //       <ul>
-        //       ${stringStories}
-        //       </ul>
-        //     </div>
-        //   </div>
-        // </div>
-        // `;
+        //return template;
+        return `
+        <div class="grid-popup">
+          <div class="grid-popup-tabs">
+            <div class="tab tab-people active"><i class="fas fa-user"></i> <span>(${people})</span></div>
+            <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
+            <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
+          </div>
+          <div class="grid-popup-data">
+            <div class="data data-people active">
+              <ul>
+              ${stringPeople}
+              </ul>
+            </div>
+            <div class="data data-places">
+              <ul>
+              ${stringPlaces}
+              </ul>
+            </div>
+            <div class="data data-stories">
+              <ul>
+              ${stringStories}
+              </ul>
+            </div>
+          </div>
+        </div>
+        `;
       });
   };
 
