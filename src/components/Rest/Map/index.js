@@ -22,7 +22,7 @@ import { loadModules } from 'esri-loader';
 //Styles
 import './styles.scss';
 //Images
-import everythingMarkerImage from './images/marker_person.png';
+import everythingMarkerImage from './images/marker_everything.png';
 import peopleMarkerImage from './images/marker_person.png';
 import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
@@ -1199,7 +1199,7 @@ export const KeTTMap = (props) => {
             renderer: markerRenderer,
             popupTemplate: {
               title: '{ID}',
-              content: 'Active | Count: {Count}',
+              content: asyncMarkerPopUp,
             },
           });
           addToView(layer);
@@ -1411,6 +1411,99 @@ export const KeTTMap = (props) => {
         // });
 
         //return template;
+        return `
+        <div class="grid-popup">
+          <div class="grid-popup-tabs">
+            <div class="tab tab-people active"><i class="fas fa-user"></i> <span>(${people})</span></div>
+            <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
+            <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
+          </div>
+          <div class="grid-popup-data">
+            <div class="data data-people active">
+              <ul>
+              ${stringPeople}
+              </ul>
+            </div>
+            <div class="data data-places">
+              <ul>
+              ${stringPlaces}
+              </ul>
+            </div>
+            <div class="data data-stories">
+              <ul>
+              ${stringStories}
+              </ul>
+            </div>
+          </div>
+        </div>
+        `;
+      });
+  };
+
+  const asyncMarkerPopUp = (target) => {
+    const search = document.getElementById('search');
+    const dateStart = document.getElementById('navbar-date-start');
+    const dateEnd = document.getElementById('navbar-date-end');
+    const typeRadio = document.querySelectorAll('.radio-button-input');
+    const typeToggle = document.querySelectorAll('.toggle-switch-checkbox');
+    let type = 'all';
+    let photos = 'false';
+    let featured = 'false';
+    typeRadio.forEach((el) => {
+      if (el.checked) {
+        //console.log(el.value);
+        type = el.value;
+      }
+    });
+    typeToggle.forEach((el) => {
+      if (el.checked) {
+        //console.log(el.id);
+        photos = el.id === 'photos' ? 'true' : 'false';
+        featured = el.id === 'featured' ? 'true' : 'false';
+      }
+    });
+    let filters = {
+      search: `${search.value}`,
+      id: target.graphic.attributes.id,
+      size: '10',
+      filters: {
+        date_range: `${dateStart.value}-${dateEnd.value}`,
+        photos: photos,
+        featured: featured,
+        type: type,
+      },
+    };
+    return axios
+      .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
+      .then((res) => {
+        //console.log('POPUP DATA', res.data);
+        const people = res.data.active.people
+          ? res.data.active.people.length
+          : 0;
+        const places = res.data.active.places
+          ? res.data.active.places.length
+          : 0;
+        const stories = res.data.active.stories
+          ? res.data.active.stories.length
+          : 0;
+        const peopleData = res.data.active.people.results;
+        const placesData = res.data.active.places.results;
+        const storiesData = res.data.active.stories.results;
+        const peopleTitles = peopleData.map((person) => person.title);
+        const placesTitles = placesData.map((place) => place.title);
+        const storiesTitles = storiesData.map((story) => story.title);
+        let stringPeople = '';
+        let stringPlaces = '';
+        let stringStories = '';
+        peopleTitles.forEach((title) => {
+          stringPeople = stringPeople + `<li>${title}</li>`;
+        });
+        placesTitles.forEach((title) => {
+          stringPlaces = stringPlaces + `<li>${title}</li>`;
+        });
+        storiesTitles.forEach((title) => {
+          stringStories = stringStories + `<li>${title}</li>`;
+        });
         return `
         <div class="grid-popup">
           <div class="grid-popup-tabs">
