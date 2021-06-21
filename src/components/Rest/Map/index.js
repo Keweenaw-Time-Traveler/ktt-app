@@ -22,6 +22,7 @@ import { loadModules } from 'esri-loader';
 //Styles
 import './styles.scss';
 //Images
+import everythingMarkerImage from './images/marker_person.png';
 import peopleMarkerImage from './images/marker_person.png';
 import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
@@ -157,11 +158,20 @@ export const KeTTMap = (props) => {
               if (view.zoom <= 16) {
                 updateGrid(view, filters);
               }
+              //LOAD MARKERS (LIST)
               asyncMarkers(view, filters, extent).then((res) => {
-                //console.log('SEARCH RESPONCE', res.active.people.length);
+                console.log('MARKER LIST RESPONCE', res.active);
                 dispatch(updateMarkers(res));
-                if (view.zoom > 16 && res.active.length) {
-                  generateMarkers(res.active);
+                // if (view.zoom > 16 && res.active.length) {
+                //   generateMarkers(res.active);
+                // }
+              });
+              //LOAD MARKERS (MAP)
+              asyncMarkers2(view, filters, extent).then((res) => {
+                console.log('MARKER MAP RESPONCE', res);
+                //dispatch(updateMarkers(res));
+                if (view.zoom > 16) {
+                  generateMarkers(res);
                 }
               });
             });
@@ -315,7 +325,10 @@ export const KeTTMap = (props) => {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'marker_layer') {
+                  if (
+                    layer.id === 'marker_layer_active' ||
+                    layer.id === 'marker_layer_inactive'
+                  ) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
@@ -332,7 +345,10 @@ export const KeTTMap = (props) => {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'marker_layer') {
+                  if (
+                    layer.id === 'marker_layer_active' ||
+                    layer.id === 'marker_layer_inactive'
+                  ) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
@@ -349,7 +365,10 @@ export const KeTTMap = (props) => {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
                   }
-                  if (layer.id === 'marker_layer') {
+                  if (
+                    layer.id === 'marker_layer_active' ||
+                    layer.id === 'marker_layer_inactive'
+                  ) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
@@ -366,19 +385,30 @@ export const KeTTMap = (props) => {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'marker_layer') {
+                  if (
+                    layer.id === 'marker_layer_active' ||
+                    layer.id === 'marker_layer_inactive'
+                  ) {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
                   }
                 }
               });
             }
-            //LOAD MARKERS
+            //LOAD MARKERS (LIST)
             asyncMarkers(view, filters, extent).then((res) => {
-              console.log('MARKER RESPONCE', res.active);
+              console.log('MARKER LIST RESPONCE', res.active);
               dispatch(updateMarkers(res));
-              if (view.zoom > 16 && res.active.length) {
-                generateMarkers(res.active);
+              // if (view.zoom > 16 && res.active.length) {
+              //   generateMarkers(res.active);
+              // }
+            });
+            //LOAD MARKERS (MAP)
+            asyncMarkers2(view, filters, extent).then((res) => {
+              console.log('MARKER MAP RESPONCE', res);
+              //dispatch(updateMarkers(res));
+              if (view.zoom > 16) {
+                generateMarkers(res);
               }
             });
           }
@@ -1017,16 +1047,21 @@ export const KeTTMap = (props) => {
 
         function generateMarkers(markers) {
           //console.log('generateMarkers', markers);
-          const peopleActive = markers.people ? markers.people.results : [];
-          const placesActive = markers.places ? markers.places.results : [];
-          const storiesActive = markers.stories ? markers.stories.results : [];
-          const allActive = [
-            ...peopleActive,
-            ...placesActive,
-            ...storiesActive,
-          ];
+          // const peopleActive = markers.active.people ? markers.active.people.results : [];
+          // const placesActive = markers.active.places ? markers.active.places.results : [];
+          // const storiesActive = markers.active.stories ? markers.active.stories.results : [];
+          // const allActive = [
+          //   ...peopleActive,
+          //   ...placesActive,
+          //   ...storiesActive,
+          // ];
+          const allActive = markers.active.length ? markers.active.results : [];
+          const allInActive = markers.inactive.length
+            ? markers.inactive.results
+            : [];
           //console.log('allActive', allActive);
-          const graphics = [];
+          const activeGraphics = [];
+          const inactiveGraphics = [];
           allActive.forEach((marker) => {
             if (marker.x) {
               const point = {
@@ -1039,7 +1074,7 @@ export const KeTTMap = (props) => {
                 geometry: point,
                 attributes: marker,
               });
-              graphics.push(graphic);
+              activeGraphics.push(graphic);
             } else {
               console.log(
                 'EMPTY MARKER VALUE - ID: ',
@@ -1049,21 +1084,58 @@ export const KeTTMap = (props) => {
               );
             }
           });
-          if (graphics.length) {
-            createMarkerLayer(graphics);
+          allInActive.forEach((marker) => {
+            if (marker.x) {
+              const point = {
+                type: 'point',
+                x: marker.x,
+                y: marker.y,
+                spatialReference: new SpatialReference({ wkid: 3857 }),
+              };
+              const graphic = new Graphic({
+                geometry: point,
+                attributes: marker,
+              });
+              inactiveGraphics.push(graphic);
+            } else {
+              console.log(
+                'EMPTY MARKER VALUE - ID: ',
+                marker.id,
+                'X: ',
+                marker.x
+              );
+            }
+          });
+          if (activeGraphics.length > 0) {
+            createActiveMarkerLayer(activeGraphics);
           } else {
-            console.log('No markers in this area');
+            console.log('No Active markers in this area');
+          }
+          if (inactiveGraphics.length > 0) {
+            createInactiveMarkerLayer(inactiveGraphics);
+          } else {
+            console.log('No Inactive markers in this area');
           }
         }
 
         //  Creates a client-side FeatureLayer from an array of graphics
-        function createMarkerLayer(graphics) {
-          console.log('createMarkerLayer', graphics);
+        function createActiveMarkerLayer(graphics) {
+          console.log('createActiveMarkerLayer', graphics);
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
           const markerRenderer = {
             type: 'unique-value',
             field: 'type',
             uniqueValueInfos: [
+              {
+                value: 'everything',
+                label: 'Everything',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: everythingMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
               {
                 value: 'person',
                 label: 'Person',
@@ -1075,8 +1147,8 @@ export const KeTTMap = (props) => {
                 },
               },
               {
-                value: 'place',
-                label: 'Place',
+                value: 'building',
+                label: 'Building',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: placeMarkerImage,
@@ -1098,7 +1170,8 @@ export const KeTTMap = (props) => {
           };
 
           const layer = new FeatureLayer({
-            id: 'marker_layer',
+            id: 'marker_layer_active',
+            opacity: 1,
             source: graphics,
             fields: [
               {
@@ -1107,13 +1180,13 @@ export const KeTTMap = (props) => {
                 type: 'oid',
               },
               {
-                name: 'recnumber',
-                alias: 'RecNum',
+                name: 'id',
+                alias: 'ID',
                 type: 'string',
               },
               {
-                name: 'title',
-                alias: 'Title',
+                name: 'count',
+                alias: 'Count',
                 type: 'string',
               },
               {
@@ -1125,7 +1198,95 @@ export const KeTTMap = (props) => {
             geometryType: 'point',
             renderer: markerRenderer,
             popupTemplate: {
-              title: '{Title}',
+              title: '{ID}',
+              content: 'Active | Count: {Count}',
+            },
+          });
+          addToView(layer);
+        }
+
+        //  Creates a client-side FeatureLayer from an array of graphics
+        function createInactiveMarkerLayer(graphics) {
+          console.log('createInactiveMarkerLayer', graphics);
+          //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
+          const markerRenderer = {
+            type: 'unique-value',
+            field: 'type',
+            uniqueValueInfos: [
+              {
+                value: 'everything',
+                label: 'Everything',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: everythingMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              {
+                value: 'person',
+                label: 'Person',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: peopleMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              {
+                value: 'building',
+                label: 'Building',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: placeMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              {
+                value: 'story',
+                label: 'Story',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: storyMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+            ],
+          };
+
+          const layer = new FeatureLayer({
+            id: 'marker_layer_inactive',
+            opacity: 0.3,
+            source: graphics,
+            fields: [
+              {
+                name: 'ObjectID',
+                alias: 'ObjectID',
+                type: 'oid',
+              },
+              {
+                name: 'id',
+                alias: 'ID',
+                type: 'string',
+              },
+              {
+                name: 'count',
+                alias: 'Count',
+                type: 'string',
+              },
+              {
+                name: 'type',
+                alias: 'Type',
+                type: 'string',
+              },
+            ],
+            geometryType: 'point',
+            renderer: markerRenderer,
+            popupTemplate: {
+              title: '{ID}',
+              content: 'Inactive | Count: {Count}',
             },
           });
           addToView(layer);
@@ -1333,6 +1494,31 @@ export const KeTTMap = (props) => {
         clearInterval(timer);
         //updateLoader(`Markers Loaded: ${ms}ms`);
         dispatch(updateListMessage(`List Loaded: ${ms}ms`));
+        return res.data;
+      });
+  };
+  const asyncMarkers2 = (view, filters, extent) => {
+    console.log('asyncMarkers2', filters, extent);
+    const { search, date_range, photos, featured, type } = filters;
+    const { xmin, xmax, ymin, ymax } = extent;
+    return axios
+      .post('http://geospatialresearch.mtu.edu/markers2.php', {
+        search: search,
+        geometry: {
+          xmin: xmin,
+          ymin: ymin,
+          xmax: xmax,
+          ymax: ymax,
+          spatialReference: { wkid: 3857 },
+        },
+        filters: {
+          date_range: date_range,
+          photos: photos,
+          featured: featured,
+          type: type,
+        },
+      })
+      .then((res) => {
         return res.data;
       });
   };
