@@ -650,7 +650,7 @@ export const KeTTMap = (props) => {
                     expression: `
                         var outerSize = $feature.radius * 577790.554289 / $view.scale;
                         var innerSizeMin = outerSize * 0.08;
-                        var innerSize = outerSize * $feature.montenum;
+                        var innerSize = (outerSize * $feature.montenum)*0.8;
                         return innerSize;
                       `,
                     returnType: 'Default',
@@ -665,11 +665,6 @@ export const KeTTMap = (props) => {
             visible: show,
             source: graphics,
             fields: [
-              {
-                name: 'ObjectID',
-                alias: 'ObjectID',
-                type: 'oid',
-              },
               {
                 name: 'id',
                 alias: 'ID',
@@ -1223,32 +1218,53 @@ export const KeTTMap = (props) => {
           stringStories = stringStories + `<li>${title}</li>`;
         });
 
-        return `
-        <div class="grid-popup">
-          <div class="grid-popup-tabs">
-            <div class="tab tab-people active"><i class="fas fa-user"></i> <span>(${people})</span></div>
-            <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
-            <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
-          </div>
-          <div class="grid-popup-data">
-            <div class="data data-people active">
-              <ul>
-              ${stringPeople}
-              </ul>
-            </div>
-            <div class="data data-places">
-              <ul>
-              ${stringPlaces}
-              </ul>
-            </div>
-            <div class="data data-stories">
-              <ul>
-              ${stringStories}
-              </ul>
-            </div>
-          </div>
-        </div>
-        `;
+        let template = document.createElement('div');
+        let peopleButton = document.createElement('button');
+        let peopleButtonText = document.createTextNode('People');
+        peopleButton.appendChild(peopleButtonText);
+        peopleButton.classList.add('people');
+        template.appendChild(peopleButton);
+        // let html =
+        //   '<button>People</button><button>Place</button><button>Story</button>';
+        // html = html.trim(); // Never return a text node of whitespace as the result
+        // template.innerHTML = html;
+
+        // let node = document.createElement('button');
+        // node.classList.add('test');
+        // let text = document.createTextNode('Test');
+        // node.appendChild(text);
+        // //let button = document.getElementById('test');
+        // node.addEventListener('click', function () {
+        //   console.log('TEST');
+        // });
+
+        return template;
+        // return `
+        // <div class="grid-popup">
+        //   <div class="grid-popup-tabs">
+        //     <div class="tab tab-people active"><i class="fas fa-user"></i> <span>(${people})</span></div>
+        //     <div class="tab tab-places"><i class="fas fa-building"></i> <span>(${places})</span></div>
+        //     <div class="tab tab-stories"><i class="fas fa-book-open"></i> <span>(${stories})</span></div>
+        //   </div>
+        //   <div class="grid-popup-data">
+        //     <div class="data data-people active">
+        //       <ul>
+        //       ${stringPeople}
+        //       </ul>
+        //     </div>
+        //     <div class="data data-places">
+        //       <ul>
+        //       ${stringPlaces}
+        //       </ul>
+        //     </div>
+        //     <div class="data data-stories">
+        //       <ul>
+        //       ${stringStories}
+        //       </ul>
+        //     </div>
+        //   </div>
+        // </div>
+        // `;
       });
   };
 
