@@ -154,7 +154,7 @@ export const KeTTMap = (props) => {
                 ymin: ymin,
                 ymax: ymax,
               };
-              console.log('SEARCH', filters);
+              //console.log('SEARCH', filters);
               if (view.zoom <= 16) {
                 updateGrid(view, filters);
               }
@@ -195,11 +195,20 @@ export const KeTTMap = (props) => {
                 if (view.zoom <= 16) {
                   updateGrid(view, filters);
                 }
+                //LOAD MARKERS (LIST)
                 asyncMarkers(view, filters, extent).then((res) => {
-                  //console.log('MARKER DATE RESPONCE', res.active.people.length);
+                  console.log('MARKER LIST RESPONCE', res.active);
                   dispatch(updateMarkers(res));
-                  if (view.zoom > 16 && res.active.length) {
-                    generateMarkers(res.active);
+                  // if (view.zoom > 16 && res.active.length) {
+                  //   generateMarkers(res.active);
+                  // }
+                });
+                //LOAD MARKERS (MAP)
+                asyncMarkers2(view, filters, extent).then((res) => {
+                  console.log('MARKER MAP RESPONCE', res);
+                  //dispatch(updateMarkers(res));
+                  if (view.zoom > 16) {
+                    generateMarkers(res);
                   }
                 });
               })
@@ -220,11 +229,20 @@ export const KeTTMap = (props) => {
                 if (view.zoom <= 16) {
                   updateGrid(view, filters);
                 }
+                //LOAD MARKERS (LIST)
                 asyncMarkers(view, filters, extent).then((res) => {
-                  //console.log('MARKER DATE RESPONCE', res.active.people.length);
+                  console.log('MARKER LIST RESPONCE', res.active);
                   dispatch(updateMarkers(res));
-                  if (view.zoom > 16 && res.active.length) {
-                    generateMarkers(res.active);
+                  // if (view.zoom > 16 && res.active.length) {
+                  //   generateMarkers(res.active);
+                  // }
+                });
+                //LOAD MARKERS (MAP)
+                asyncMarkers2(view, filters, extent).then((res) => {
+                  console.log('MARKER MAP RESPONCE', res);
+                  //dispatch(updateMarkers(res));
+                  if (view.zoom > 16) {
+                    generateMarkers(res);
                   }
                 });
               })
@@ -253,11 +271,20 @@ export const KeTTMap = (props) => {
                 if (view.zoom <= 16) {
                   updateGrid(view, filters);
                 }
+                //LOAD MARKERS (LIST)
                 asyncMarkers(view, filters, extent).then((res) => {
-                  console.log('MARKER DATA RESPONCE', res.active.length);
+                  console.log('MARKER LIST RESPONCE', res.active);
                   dispatch(updateMarkers(res));
-                  if (view.zoom > 16 && res.active.length) {
-                    generateMarkers(res.active);
+                  // if (view.zoom > 16 && res.active.length) {
+                  //   generateMarkers(res.active);
+                  // }
+                });
+                //LOAD MARKERS (MAP)
+                asyncMarkers2(view, filters, extent).then((res) => {
+                  console.log('MARKER MAP RESPONCE', res);
+                  //dispatch(updateMarkers(res));
+                  if (view.zoom > 16) {
+                    generateMarkers(res);
                   }
                 });
               })
@@ -1106,21 +1133,21 @@ export const KeTTMap = (props) => {
               );
             }
           });
-          if (activeGraphics.length > 0) {
-            createActiveMarkerLayer(activeGraphics);
-          } else {
-            console.log('No Active markers in this area');
-          }
           if (inactiveGraphics.length > 0) {
             createInactiveMarkerLayer(inactiveGraphics);
           } else {
             console.log('No Inactive markers in this area');
           }
+          if (activeGraphics.length > 0) {
+            createActiveMarkerLayer(activeGraphics);
+          } else {
+            console.log('No Active markers in this area');
+          }
         }
 
         //  Creates a client-side FeatureLayer from an array of graphics
         function createActiveMarkerLayer(graphics) {
-          console.log('createActiveMarkerLayer', graphics);
+          //console.log('createActiveMarkerLayer', graphics);
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
           const markerRenderer = {
             type: 'unique-value',
@@ -1147,8 +1174,8 @@ export const KeTTMap = (props) => {
                 },
               },
               {
-                value: 'building',
-                label: 'Building',
+                value: 'place',
+                label: 'Place',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: placeMarkerImage,
@@ -1207,7 +1234,7 @@ export const KeTTMap = (props) => {
 
         //  Creates a client-side FeatureLayer from an array of graphics
         function createInactiveMarkerLayer(graphics) {
-          console.log('createInactiveMarkerLayer', graphics);
+          //console.log('createInactiveMarkerLayer', graphics);
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
           const markerRenderer = {
             type: 'unique-value',
@@ -1234,8 +1261,8 @@ export const KeTTMap = (props) => {
                 },
               },
               {
-                value: 'building',
-                label: 'Building',
+                value: 'place',
+                label: 'Place',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: placeMarkerImage,
