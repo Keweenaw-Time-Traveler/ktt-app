@@ -6,16 +6,15 @@ export const getList = createAsyncThunk(
   'list/getList',
   async ({}, { dispatch, getState }) => {
     const stateBefore = getState();
-    console.log(stateBefore.filters.type);
     return axios
       .post('http://geospatialresearch.mtu.edu/list.php', {
         search: stateBefore.filters.search,
         geometry: null,
         filters: {
           date_range: '1800-2020',
-          photos: 'false',
+          photos: stateBefore.filters.photos,
           featured: 'false',
-          type: stateBefore.filters.type,
+          type: 'all',
         },
       })
       .then((res) => {

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 //Redux
 import { useDispatch } from 'react-redux';
-import { updateType } from '../../../redux/reducers/filtersSlice';
+import { updateType, updatePhotos } from '../../../redux/reducers/filtersSlice';
 import { getList } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
@@ -31,7 +31,20 @@ export default function Filters() {
   const handleRadioChange = (e) => {
     setType(e.target.value);
     dispatch(updateType(e.target.value));
-    dispatch(getList({}));
+    //dispatch(getList({}));
+  };
+
+  const handleChange = (checked, id) => {
+    switch (id) {
+      case 'photos':
+        setPhotos(checked);
+        dispatch(updatePhotos(`${checked}`));
+        dispatch(getList({}));
+        break;
+      case 'featured':
+        setFeatured(checked);
+        break;
+    }
   };
 
   return (
@@ -85,7 +98,7 @@ export default function Filters() {
               small
               disabled={false}
               checked={photos}
-              onChange={setPhotos}
+              onChange={handleChange}
             />
           </div>
           <div className="filter-toogle">

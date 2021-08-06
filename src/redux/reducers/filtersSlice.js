@@ -20,10 +20,13 @@ export const filtersSlice = createSlice({
     updateType: (state, { payload }) => {
       state.type = payload;
     },
+    updatePhotos: (state, { payload }) => {
+      state.photos = payload;
+    },
   },
 });
 
-export const { updateSearch, updateStartDate, updateType } =
+export const { updateSearch, updateStartDate, updateType, updatePhotos } =
   filtersSlice.actions;
 
 export const selectFiltersAll = (state) => state.filters;
