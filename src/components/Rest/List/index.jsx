@@ -1,97 +1,107 @@
 //React
 import React, { useEffect, useState } from 'react';
-//import axios from 'axios';
 //Redux
-import { useSelector } from 'react-redux';
-//import { selectServiceMarkers } from '../../../redux/reducers/dataSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectListMessage,
-  selectListLoading,
-  selectPeopleData,
-  selectPlacesData,
-  selectStoriesData,
-} from '../../../redux/reducers/markersSlice';
+  getList,
+  selectAllList,
+  selectListStatus,
+} from '../../../redux/reducers/listSlice';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/pro-solid-svg-icons';
 //Styles
 import './styles.scss';
 
-const List = () => {
-  const [loader, setLoader] = useState('Loading List...');
-  const [loading, setLoading] = useState(true);
-  const [people, setPeople] = useState({});
-  const [places, setPlaces] = useState({});
-  const [stories, setStories] = useState({});
-
-  const messageData = useSelector(selectListMessage);
-  const loadingData = useSelector(selectListLoading);
-  const peopleData = useSelector(selectPeopleData);
-  const placesData = useSelector(selectPlacesData);
-  const storiesData = useSelector(selectStoriesData);
+const List = (props) => {
+  const dispatch = useDispatch();
+  const list = useSelector(selectAllList);
+  const peopleList = list.active.people.results;
+  const placesList = list.active.places.results;
+  const storiesList = list.active.stories.results;
+  const listStatus = useSelector(selectListStatus);
 
   useEffect(() => {
-    setLoader(messageData);
-    setLoading(loadingData);
-    setPeople(peopleData);
-    setPlaces(placesData);
-    setStories(storiesData);
-  });
+    if (listStatus === 'idle') {
+      dispatch(getList({}));
+    }
+  }, [listStatus, dispatch]);
+
+  const handleListClick = (e) => {
+    // const itemId = e.target.getAttribute('data-id');
+    // dispatch(updateListItem(itemId));
+    // const view = window.kettView;
+    // const graphics = window.activeGraphics;
+    // console.log('ACTIVE GRAPHICS', graphics);
+    // view.popup.open({
+    //   features: graphics[0], // array of graphics or a single graphic in an array
+    // });
+    // const layers = view.map.layers;
+    // layers.items.forEach((layer, index) => {
+    //   if (layer.id === 'marker_layer_active') {
+    //     console.log('RETURN MARKER LAYER', layer);
+    //   }
+    // });
+  };
 
   return (
-    <div className="list-wrapper">
-      <div className="list-loader">{loader}</div>
+    <div className={`list-wrapper ${props.show ? 'show' : 'hide'}`}>
       <div className="list-results">
-        {loading ? (
+        <div className="list-results-heading people">
+          <span className="txt">({list.active.people.length}) People </span>
+        </div>
+        {listStatus === 'idle' ? (
           <div>
             Finding People <FontAwesomeIcon icon={faCircleNotch} spin />
           </div>
         ) : (
-          Object.keys(people)
-            .slice(0, 100)
-            .map((item, index) => (
-              <div
-                className="list-results-item tooltip"
-                key={index}
-                title={people[index].title}
-              >
-                {people[index].title}
-              </div>
-            ))
+          peopleList.map((people, index) => (
+            <div
+              className="list-results-item tooltip"
+              key={index}
+              title={people.title}
+              data-id={people.id}
+              onClick={handleListClick}
+            >
+              {people.title}
+            </div>
+          ))
         )}
-        {loading ? (
+        <div className="list-results-heading places">
+          <span className="txt">({list.active.places.length}) Places</span>
+        </div>
+        {listStatus === 'idle' ? (
           <div>
             Finding Places <FontAwesomeIcon icon={faCircleNotch} spin />
           </div>
         ) : (
-          Object.keys(places)
-            .slice(0, 100)
-            .map((item, index) => (
-              <div
-                className="list-results-item tooltip"
-                key={index}
-                title={places[index].title}
-              >
-                {places[index].title}
-              </div>
-            ))
+          placesList.map((places, index) => (
+            <div
+              className="list-results-item tooltip"
+              key={index}
+              title={places.title}
+            >
+              {places.title}
+            </div>
+          ))
         )}
-        {loading ? (
+        <div className="list-results-heading stories">
+          <span className="txt">({list.active.stories.length}) Stories</span>
+        </div>
+        {listStatus === 'idle' ? (
           <div>
             Finding Stories <FontAwesomeIcon icon={faCircleNotch} spin />
           </div>
         ) : (
-          Object.keys(stories)
-            .slice(0, 100)
-            .map((item, index) => (
-              <div
-                className="list-results-item tooltip"
-                key={index}
-                title={stories[index].title}
-              >
-                {stories[index].title}
-              </div>
-            ))
+          storiesList.map((stories, index) => (
+            <div
+              className="list-results-item tooltip"
+              key={index}
+              title={stories.title}
+            >
+              {stories.title}
+            </div>
+          ))
         )}
       </div>
     </div>

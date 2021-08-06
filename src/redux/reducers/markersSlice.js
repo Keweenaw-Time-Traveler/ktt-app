@@ -37,7 +37,7 @@ export const markersSlice = createSlice({
     },
   },
   reducers: {
-    updateMarkers: (state, action) => {
+    updateList: (state, action) => {
       //console.log('MARKER RESPONCE', action.payload.active);
       state.active = action.payload.active;
       state.length = action.payload.active.length;
@@ -97,7 +97,7 @@ export function loadMarkersAsync(filters) {
   };
 }
 
-export const { updateMarkers, updateListMessage } = markersSlice.actions;
+export const { updateList, updateListMessage } = markersSlice.actions;
 export const selectLength = (state) => state.markers.length;
 export const selectListMessage = (state) => state.markers.message;
 export const selectListLoading = (state) => state.markers.listLoading;

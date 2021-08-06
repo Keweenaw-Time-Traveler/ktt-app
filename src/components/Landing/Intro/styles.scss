@@ -1,0 +1,56 @@
+@import '../../../colors.scss';
+
+.intro {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 817px;
+  padding: 45px 45px 55px;
+  margin: 20px;
+  background: rgba($color-kett-green-3, 0.75);
+  transition-property: opacity;
+
+  &.show {
+    opacity: 1;
+    transition-timing-function: ease-out;
+    transition-duration: 2s;
+  }
+
+  &.hide {
+    opacity: 0;
+    transition-timing-function: ease-in;
+    transition-duration: 0.8s;
+  }
+
+  .logo {
+    width: 418px;
+    height: 114px;
+    background: url(./images/kett_logo_reverse.png) no-repeat center;
+    background-size: contain;
+  }
+
+  h1 {
+    margin: 25px 0 0;
+    font-size: 60px;
+    font-size: 6rem;
+    line-height: 63;
+    line-height: 6.3rem;
+    letter-spacing: 1.5px;
+    font-weight: 300;
+    color: $color-kett-white;
+  }
+
+  h2 {
+    margin: 10px 0 0;
+    font-size: 30px;
+    font-size: 3rem;
+    line-height: 36;
+    line-height: 3.6rem;
+    letter-spacing: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $color-kett-off-white;
+  }
+}

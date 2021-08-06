@@ -1,5 +1,15 @@
+//React
 import React, { useState } from 'react';
+//Redux
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  updateSearch,
+  selectFiltersAll,
+} from '../../../redux/reducers/filtersSlice';
+import { getList } from '../../../redux/reducers/listSlice';
+//Styles
 import './styles.css';
+//Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronLeft,
@@ -8,7 +18,12 @@ import {
 } from '@fortawesome/pro-solid-svg-icons';
 
 export default function Search() {
-  const [search, updateSearch] = useState('');
+  const dispatch = useDispatch();
+  const filters = useSelector(selectFiltersAll);
+
+  const handleSearchClick = (e) => {
+    dispatch(getList({}));
+  };
   return (
     <div className="search">
       <div className="search-nav">
@@ -21,10 +36,10 @@ export default function Search() {
           id="search"
           name="search"
           placeholder="Search First Name"
-          value={search}
-          onChange={(e) => updateSearch(e.target.value)}
+          value={filters.search}
+          onChange={(e) => dispatch(updateSearch(e.target.value))}
         />
-        <div className="search-input-icon">
+        <div className="search-input-icon" onClick={handleSearchClick}>
           <FontAwesomeIcon icon={faSearch} className="fa-icon" />
         </div>
       </div>

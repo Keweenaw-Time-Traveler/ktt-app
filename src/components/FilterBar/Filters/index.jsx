@@ -1,5 +1,9 @@
 //React
 import React, { useState } from 'react';
+//Redux
+import { useDispatch } from 'react-redux';
+import { updateType } from '../../../redux/reducers/filtersSlice';
+import { getList } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
 //Font Awesome
@@ -19,12 +23,15 @@ import RadioButton from './RadioButton';
 import ToggleSwitch from './ToggleSwitch';
 
 export default function Filters() {
+  const dispatch = useDispatch();
   const [type, setType] = useState('all');
   const [photos, setPhotos] = useState(false);
   const [featured, setFeatured] = useState(false);
 
-  const radioChangeHandler = (event) => {
-    setType(event.target.value);
+  const handleRadioChange = (e) => {
+    setType(e.target.value);
+    dispatch(updateType(e.target.value));
+    dispatch(getList({}));
   };
 
   return (
@@ -35,7 +42,7 @@ export default function Filters() {
       <div className="filters-right">
         <div className="filter-radios">
           <RadioButton
-            changed={radioChangeHandler}
+            changed={handleRadioChange}
             id="1"
             isSelected={type === 'all'}
             label="Everything"
@@ -43,7 +50,7 @@ export default function Filters() {
             value="all"
           />
           <RadioButton
-            changed={radioChangeHandler}
+            changed={handleRadioChange}
             id="2"
             isSelected={type === 'people'}
             label="People"
@@ -51,7 +58,7 @@ export default function Filters() {
             value="people"
           />
           <RadioButton
-            changed={radioChangeHandler}
+            changed={handleRadioChange}
             id="3"
             isSelected={type === 'places'}
             label="Places"
@@ -59,7 +66,7 @@ export default function Filters() {
             value="places"
           />
           <RadioButton
-            changed={radioChangeHandler}
+            changed={handleRadioChange}
             id="4"
             isSelected={type === 'stories'}
             label="Stories"

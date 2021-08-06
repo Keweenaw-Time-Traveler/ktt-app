@@ -1,0 +1,154 @@
+@import '../../../colors.scss';
+
+.intro-options {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition-property: opacity;
+
+  &.show {
+    opacity: 1;
+    transition-timing-function: ease-out;
+    transition-duration: 0.5s;
+  }
+
+  &.hide {
+    opacity: 0;
+    transition-timing-function: ease-in;
+    transition-duration: 0.5s;
+  }
+}
+.intro-options-main {
+  display: flex;
+}
+.intro-options-search-input {
+  display: flex;
+  align-items: center;
+  height: 170px;
+  padding: 0 27px;
+  background: rgba($color-kett-green-3, 0.75);
+}
+.intro-options-search-input input {
+  border: none;
+  height: 55px;
+  min-width: 548px;
+  padding: 0 10px;
+  font-size: 24px;
+  font-size: 2.4rem;
+  line-height: 30;
+  line-height: 3rem;
+  letter-spacing: 0.6px;
+}
+.intro-options-search-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 55px;
+  height: 55px;
+  margin-left: 13px;
+  background: $color-kett-gold;
+  cursor: pointer;
+
+  .fa-icon {
+    transition: all 0.3s ease-in;
+    font-size: 23px;
+    color: #fff;
+  }
+
+  &:hover {
+    .fa-icon {
+      font-size: 27px;
+    }
+  }
+}
+.intro-options-button {
+  margin-left: 15px;
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 170px;
+    width: 170px;
+    padding: 20px;
+    border: none;
+    color: $color-kett-white;
+    background: $color-kett-green-3;
+    font-size: 30px;
+    font-size: 3rem;
+    line-height: 36;
+    line-height: 3.6rem;
+    letter-spacing: 0.75px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.3s ease-in;
+
+    &:hover {
+      transform: translateY(-10px);
+    }
+  }
+}
+.intro-options-mini-map {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border: solid 20px $color-kett-grey-primary;
+  transition-property: all;
+  transition-timing-function: ease-out;
+  transition-duration: 0.5s;
+
+  &.show {
+    bottom: 0;
+  }
+
+  &.hide {
+    bottom: -230px;
+  }
+}
+.intro-options-help {
+  position: absolute;
+  bottom: 55px;
+  right: -110px;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: $color-kett-green-3;
+  color: $color-kett-white;
+  transition-property: all;
+  transition-timing-function: ease-out;
+  transition-duration: 0.5s;
+
+  .fa-icon {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 20;
+    line-height: 2rem;
+    letter-spacing: 0.4px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  &.show {
+    right: 15px;
+  }
+
+  &.hide {
+    right: -110px;
+  }
+
+  &:hover {
+    transform: translateX(-4px);
+  }
+}

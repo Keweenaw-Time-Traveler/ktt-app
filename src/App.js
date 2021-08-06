@@ -1,7 +1,14 @@
 //React
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+//Redux
+import { useSelector } from 'react-redux';
+import {
+  selectShowLanding,
+  selectRemoveLanding,
+} from './redux/reducers/landingSlice';
 //Components
+import Landing from './components/Landing';
 import Navbar from './components/NavBar';
 import FilterBar from './components/FilterBar';
 //Pages
@@ -16,9 +23,13 @@ import Rest from './pages/rest';
 import './App.scss';
 
 function App() {
+  const showLanding = useSelector(selectShowLanding);
+  const removeLanding = useSelector(selectRemoveLanding);
+
   return (
     <div className="App">
       <Router>
+        {removeLanding ? null : <Landing show={showLanding} />}
         <Navbar />
         <FilterBar />
         <div className="page-content">

@@ -1,0 +1,26 @@
+.landing {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url(./images/landing_bg.jpg) no-repeat center bottom;
+  background-size: cover;
+  transition-property: opacity;
+
+  &.show {
+    opacity: 1;
+    transition-timing-function: ease-out;
+    transition-duration: 0.5s;
+  }
+
+  &.hide {
+    opacity: 0;
+    transition-timing-function: ease-in;
+    transition-duration: 0.5s;
+  }
+}

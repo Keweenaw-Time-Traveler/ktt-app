@@ -2,10 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 //Redux
-import { useDispatch } from 'react-redux';
-import { updateDate } from '../../../redux/reducers/filtersSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateStartDate } from '../../../redux/reducers/filtersSlice';
 import {
-  updateMarkers,
+  updateList,
   updateListMessage,
 } from '../../../redux/reducers/markersSlice';
 //ArchGIS
@@ -27,7 +27,7 @@ import peopleMarkerImage from './images/marker_person.png';
 import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
 //Functional Component
-export const KeTTMap = (props) => {
+function KeTTMap(props) {
   const [loader, updateLoader] = useState('Loading Grid...');
   const [zoom, setZoom] = useState(10);
   const [startDate, setStartDate] = useState('1800');
@@ -42,8 +42,7 @@ export const KeTTMap = (props) => {
   const mapRef = useRef();
 
   useEffect(() => {
-    dispatch(updateDate(startDate));
-    //dispatch(updateLength(length));
+    dispatch(updateStartDate(startDate));
   });
 
   useEffect(() => {
@@ -88,12 +87,15 @@ export const KeTTMap = (props) => {
         watchUtils,
         Color,
       ]) => {
+        //console.log('STATE LIST VALUE', listValue);
+
         const startingExtent = {
           xmin: -9967422.996979957,
           xmax: -9727563.602220984,
           ymin: 5868928.760112602,
           ymax: 6054212.116675941,
         };
+
         const modern_antique = new Basemap({
           baseLayers: [
             new TileLayer({
@@ -126,6 +128,9 @@ export const KeTTMap = (props) => {
         view
           .when()
           .then(() => {
+            //Putting the view object somewhere it can be used in other components
+            window.kettView = view;
+
             let filters = {
               search: '',
               date_range: '1800-2020',
@@ -143,8 +148,10 @@ export const KeTTMap = (props) => {
             const dateEnd = document.getElementById('navbar-date-end');
             const typeRadio = document.querySelectorAll('.radio-button');
             const typeToggle = document.querySelectorAll('.filter-toogle');
+
             //Search Field Event
             search.addEventListener('change', (event) => {
+              console.log('SEARCh CHANGE');
               event.preventDefault();
               filters = { ...filters, search: `${search.value}` };
               const { xmin, xmax, ymin, ymax } = view.extent;
@@ -158,18 +165,18 @@ export const KeTTMap = (props) => {
               if (view.zoom <= 16) {
                 updateGrid(view, filters);
               }
-              //LOAD MARKERS (LIST)
-              asyncMarkers(view, filters, extent).then((res) => {
-                console.log('MARKER LIST RESPONCE', res.active);
-                dispatch(updateMarkers(res));
+              //LOAD LIST
+              asyncList(view, filters, extent).then((res) => {
+                console.log('LIST RESPONCE', res.active);
+                dispatch(updateList(res));
                 // if (view.zoom > 16 && res.active.length) {
                 //   generateMarkers(res.active);
                 // }
               });
-              //LOAD MARKERS (MAP)
-              asyncMarkers2(view, filters, extent).then((res) => {
-                console.log('MARKER MAP RESPONCE', res);
-                //dispatch(updateMarkers(res));
+              //LOAD MARKERS
+              asyncMarkers(view, filters, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                //dispatch(updateList(res));
                 if (view.zoom > 16) {
                   generateMarkers(res);
                 }
@@ -196,17 +203,17 @@ export const KeTTMap = (props) => {
                   updateGrid(view, filters);
                 }
                 //LOAD MARKERS (LIST)
-                asyncMarkers(view, filters, extent).then((res) => {
-                  console.log('MARKER LIST RESPONCE', res.active);
-                  dispatch(updateMarkers(res));
+                asyncList(view, filters, extent).then((res) => {
+                  console.log('LIST RESPONCE', res.active);
+                  dispatch(updateList(res));
                   // if (view.zoom > 16 && res.active.length) {
                   //   generateMarkers(res.active);
                   // }
                 });
                 //LOAD MARKERS (MAP)
-                asyncMarkers2(view, filters, extent).then((res) => {
-                  console.log('MARKER MAP RESPONCE', res);
-                  //dispatch(updateMarkers(res));
+                asyncMarkers(view, filters, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  //dispatch(updateList(res));
                   if (view.zoom > 16) {
                     generateMarkers(res);
                   }
@@ -230,17 +237,17 @@ export const KeTTMap = (props) => {
                   updateGrid(view, filters);
                 }
                 //LOAD MARKERS (LIST)
-                asyncMarkers(view, filters, extent).then((res) => {
-                  console.log('MARKER LIST RESPONCE', res.active);
-                  dispatch(updateMarkers(res));
+                asyncList(view, filters, extent).then((res) => {
+                  console.log('LIST RESPONCE', res.active);
+                  dispatch(updateList(res));
                   // if (view.zoom > 16 && res.active.length) {
                   //   generateMarkers(res.active);
                   // }
                 });
                 //LOAD MARKERS (MAP)
-                asyncMarkers2(view, filters, extent).then((res) => {
-                  console.log('MARKER MAP RESPONCE', res);
-                  //dispatch(updateMarkers(res));
+                asyncMarkers(view, filters, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  //dispatch(updateList(res));
                   if (view.zoom > 16) {
                     generateMarkers(res);
                   }
@@ -272,17 +279,17 @@ export const KeTTMap = (props) => {
                   updateGrid(view, filters);
                 }
                 //LOAD MARKERS (LIST)
-                asyncMarkers(view, filters, extent).then((res) => {
-                  console.log('MARKER LIST RESPONCE', res.active);
-                  dispatch(updateMarkers(res));
+                asyncList(view, filters, extent).then((res) => {
+                  console.log('LIST RESPONCE', res.active);
+                  dispatch(updateList(res));
                   // if (view.zoom > 16 && res.active.length) {
                   //   generateMarkers(res.active);
                   // }
                 });
                 //LOAD MARKERS (MAP)
-                asyncMarkers2(view, filters, extent).then((res) => {
-                  console.log('MARKER MAP RESPONCE', res);
-                  //dispatch(updateMarkers(res));
+                asyncMarkers(view, filters, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  //dispatch(updateList(res));
                   if (view.zoom > 16) {
                     generateMarkers(res);
                   }
@@ -297,8 +304,8 @@ export const KeTTMap = (props) => {
         view.on('click', function (event) {
           view.hitTest(event).then(function (response) {
             // do something with the result graphic
-            //var graphic = response.results[0].graphic;
-            //console.log('GRAPHIC ATTR', graphic.attributes);
+            var graphic = response.results[0].graphic;
+            console.log('GRAPHIC ATTR', graphic.attributes);
           });
         });
 
@@ -308,6 +315,7 @@ export const KeTTMap = (props) => {
             console.log('VIEW EXTENT', view.extent);
             //console.log('VIEW SCALE', view.scale);
             //console.log('VIEW ZOOM', view.zoom);
+            window.kettView = view;
             setZoom(view.zoom);
             const search = document.getElementById('search');
             const dateStart = document.getElementById('navbar-date-start');
@@ -422,18 +430,18 @@ export const KeTTMap = (props) => {
                 }
               });
             }
-            //LOAD MARKERS (LIST)
+            //LOAD LIST
+            // asyncList(view, filters, extent).then((res) => {
+            //   console.log('LIST RESPONCE', res.active);
+            //   dispatch(updateList(res));
+            //   // if (view.zoom > 16 && res.active.length) {
+            //   //   generateMarkers(res.active);
+            //   // }
+            // });
+            //LOAD MARKERS
             asyncMarkers(view, filters, extent).then((res) => {
-              console.log('MARKER LIST RESPONCE', res.active);
-              dispatch(updateMarkers(res));
-              // if (view.zoom > 16 && res.active.length) {
-              //   generateMarkers(res.active);
-              // }
-            });
-            //LOAD MARKERS (MAP)
-            asyncMarkers2(view, filters, extent).then((res) => {
               console.log('MARKER MAP RESPONCE', res);
-              //dispatch(updateMarkers(res));
+              //dispatch(updateList(res));
               if (view.zoom > 16) {
                 generateMarkers(res);
               }
@@ -1147,6 +1155,7 @@ export const KeTTMap = (props) => {
 
         //  Creates a client-side FeatureLayer from an array of graphics
         function createActiveMarkerLayer(graphics) {
+          window.activeGraphics = graphics;
           //console.log('createActiveMarkerLayer', graphics);
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
           const markerRenderer = {
@@ -1336,6 +1345,7 @@ export const KeTTMap = (props) => {
           }
 
           view.map.add(layer);
+          window.kettView = view;
         }
       }
     );
@@ -1585,24 +1595,24 @@ export const KeTTMap = (props) => {
       });
   };
 
-  const asyncMarkers = (view, filters, extent) => {
+  const asyncList = (view, filters, extent) => {
     dispatch(updateListMessage('Loading List...'));
     let ms = 0;
     let timer = setInterval(() => ms++, 1);
-    console.log('asyncMarkers', filters);
-    //console.log('asyncMarkers', extent);
+    console.log('asyncList', filters);
     const { search, date_range, photos, featured, type } = filters;
     const { xmin, xmax, ymin, ymax } = extent;
+    const extentObject = {
+      xmin: xmin,
+      ymin: ymin,
+      xmax: xmax,
+      ymax: ymax,
+      spatialReference: { wkid: 3857 },
+    };
     return axios
-      .post('http://geospatialresearch.mtu.edu/markers.php', {
+      .post('http://geospatialresearch.mtu.edu/list.php', {
         search: search,
-        geometry: {
-          xmin: xmin,
-          ymin: ymin,
-          xmax: xmax,
-          ymax: ymax,
-          spatialReference: { wkid: 3857 },
-        },
+        geometry: null,
         filters: {
           date_range: date_range,
           photos: photos,
@@ -1617,8 +1627,8 @@ export const KeTTMap = (props) => {
         return res.data;
       });
   };
-  const asyncMarkers2 = (view, filters, extent) => {
-    console.log('asyncMarkers2', filters, extent);
+  const asyncMarkers = (view, filters, extent) => {
+    console.log('asyncMarkers', filters, extent);
     const { search, date_range, photos, featured, type } = filters;
     const { xmin, xmax, ymin, ymax } = extent;
     return axios
@@ -1651,4 +1661,6 @@ export const KeTTMap = (props) => {
       </div>
     </div>
   );
-};
+}
+
+export default KeTTMap;

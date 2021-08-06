@@ -2,15 +2,15 @@
 import React from 'react';
 //Redux
 import { useSelector } from 'react-redux';
-import { selectLength } from '../../../redux/reducers/markersSlice';
+import { selectAllList } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.css';
 
 export default function Results() {
-  const results = useSelector(selectLength);
+  const list = useSelector(selectAllList);
   return (
     <div className="results">
-      Results <span>({results})</span>
+      Results <span>({list.active.length})</span>
     </div>
   );
 }

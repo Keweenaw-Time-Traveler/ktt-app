@@ -1,3 +1,5 @@
+@import './colors.scss';
+
 .App {
   height: 100%;
   text-align: center;
@@ -9,12 +11,12 @@
 }
 
 .esri-widget__heading {
-  color: #fff !important;
+  color: $color-kett-white !important;
   text-transform: uppercase;
 }
 
 .esri-widget__heading.esri-legend__service-label {
-  color: #000 !important;
+  color: $color-kett-black !important;
 }
 
 .esri-slider__content {
@@ -32,4 +34,13 @@
 .esri-ui-top-right {
   top: 50px;
   right: 60px;
+}
+
+.react-tooltip-lite {
+  background: $color-kett-grey-primary;
+  color: $color-kett-white;
+}
+
+.react-tooltip-lite-arrow {
+  border-color: $color-kett-grey-primary;
 }
