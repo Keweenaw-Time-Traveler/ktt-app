@@ -4,8 +4,10 @@ export const filtersSlice = createSlice({
   name: 'filters',
   initialState: {
     search: '',
-    dateRange: '1800-2020',
+    date_range: '1800-2020',
     startDate: '1800',
+    endDate: '2020',
+    location: 'Keweenaw',
     photos: 'false',
     featured: 'false',
     type: 'all',
@@ -14,8 +16,14 @@ export const filtersSlice = createSlice({
     updateSearch: (state, { payload }) => {
       state.search = payload;
     },
+    updateDateRange: (state, { payload }) => {
+      state.dateRange = payload;
+    },
     updateStartDate: (state, { payload }) => {
       state.startDate = payload;
+    },
+    updateEndDate: (state, { payload }) => {
+      state.endDate = payload;
     },
     updateType: (state, { payload }) => {
       state.type = payload;
@@ -26,8 +34,14 @@ export const filtersSlice = createSlice({
   },
 });
 
-export const { updateSearch, updateStartDate, updateType, updatePhotos } =
-  filtersSlice.actions;
+export const {
+  updateSearch,
+  updateDateRange,
+  updateStartDate,
+  updateEndDate,
+  updateType,
+  updatePhotos,
+} = filtersSlice.actions;
 
 export const selectFiltersAll = (state) => state.filters;
 

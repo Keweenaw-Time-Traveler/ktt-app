@@ -9,11 +9,16 @@
   background: $color-kett-green-secondary;
   color: $color-kett-white;
   text-align: left;
+
+  @media screen and (max-width: 1280px) {
+    width: 280px;
+  }
 }
 .list-results {
   //padding-left: 20px;
   direction: rtl;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   flex-grow: 1;
 
   /* width */

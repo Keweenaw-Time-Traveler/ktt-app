@@ -4,11 +4,11 @@ import React from 'react';
 import Results from './Results';
 import Filters from './Filters';
 //Styles
-import './styles.css';
+import './styles.scss';
 
-export default function FilterBar() {
+export default function FilterBar(props) {
   return (
-    <div className="filter-bar">
+    <div className={`filter-bar ${props.show ? 'show' : 'hide'}`}>
       <Results />
       <Filters />
     </div>

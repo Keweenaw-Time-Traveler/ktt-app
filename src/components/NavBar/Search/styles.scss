@@ -1,5 +1,6 @@
 .search {
   display: flex;
+  justify-content: space-between;
 }
 .search-nav {
   padding: 0 10px;
@@ -14,10 +15,12 @@
 }
 .search-input {
   display: flex;
+  flex-grow: 1;
 }
 .search-input input {
   border: none;
   padding: 0 10px;
+  flex-grow: 1;
 }
 .search-input-icon {
   display: flex;

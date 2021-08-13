@@ -3,11 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { updateStartDate } from '../../../redux/reducers/filtersSlice';
-import {
-  updateList,
-  updateListMessage,
-} from '../../../redux/reducers/markersSlice';
+import { selectFiltersAll } from '../../../redux/reducers/filtersSlice';
 //ArchGIS
 import { loadModules } from 'esri-loader';
 // import Map from '@arcgis/core/Map';
@@ -30,20 +26,15 @@ import storyMarkerImage from './images/marker_story.png';
 function KeTTMap(props) {
   const [loader, updateLoader] = useState('Loading Grid...');
   const [zoom, setZoom] = useState(10);
+  const [search, setSearch] = useState('');
+  const [date_range, setDateRange] = useState('1800-2020');
   const [startDate, setStartDate] = useState('1800');
-  //const [endDate, setEndDate] = useState('2020');
-  // const [extent, setExtent] = useState({
-  //   xmin: -9907458.148290215,
-  //   xmax: -9787528.450910727,
-  //   ymin: 5915096.725196868,
-  //   ymax: 6008044.151591677,
-  // });
-  const dispatch = useDispatch();
+  const [endDate, setEndDate] = useState('2020');
+  const [location, setLocation] = useState('Keweenaw');
+  const [photos, setPhotos] = useState('false');
+  const [featured, setFeatured] = useState('false');
+  const [type, setType] = useState('all');
   const mapRef = useRef();
-
-  useEffect(() => {
-    dispatch(updateStartDate(startDate));
-  });
 
   useEffect(() => {
     loadModules(
@@ -129,18 +120,19 @@ function KeTTMap(props) {
           .when()
           .then(() => {
             //Putting the view object somewhere it can be used in other components
-            window.kettView = view;
-
-            let filters = {
+            //window.kettView = view;
+            //const { xmin, xmax, ymin, ymax } = view.extent;
+            const startingFilters = {
               search: '',
               date_range: '1800-2020',
+              startDate: '1800',
+              endDate: '2020',
+              location: 'Keweenaw',
               photos: 'false',
               featured: 'false',
               type: 'all',
             };
-            //const { xmin, xmax, ymin, ymax } = view.extent;
-
-            updateGrid(view, filters);
+            updateGrid(view, startingFilters);
 
             const search = document.getElementById('search');
             const dateSelect = document.querySelectorAll('.esri-select');
@@ -149,47 +141,23 @@ function KeTTMap(props) {
             const typeRadio = document.querySelectorAll('.radio-button');
             const typeToggle = document.querySelectorAll('.filter-toogle');
 
-            //Search Field Event
-            search.addEventListener('change', (event) => {
-              console.log('SEARCh CHANGE');
-              event.preventDefault();
-              filters = { ...filters, search: `${search.value}` };
-              const { xmin, xmax, ymin, ymax } = view.extent;
-              const extent = {
-                xmin: xmin,
-                xmax: xmax,
-                ymin: ymin,
-                ymax: ymax,
-              };
-              //console.log('SEARCH', filters);
-              if (view.zoom <= 16) {
-                updateGrid(view, filters);
-              }
-              //LOAD LIST
-              asyncList(view, filters, extent).then((res) => {
-                console.log('LIST RESPONCE', res.active);
-                dispatch(updateList(res));
-                // if (view.zoom > 16 && res.active.length) {
-                //   generateMarkers(res.active);
-                // }
-              });
-              //LOAD MARKERS
-              asyncMarkers(view, filters, extent).then((res) => {
-                console.log('MARKER RESPONCE', res);
-                //dispatch(updateList(res));
-                if (view.zoom > 16) {
-                  generateMarkers(res);
-                }
-              });
-            });
-            //Date Change Event
-            dateSelect.forEach((el) =>
-              el.addEventListener('change', (event) => {
-                event.preventDefault();
-                setStartDate(dateStart.value);
-                filters = {
-                  ...filters,
-                  date_range: `${dateStart.value}-${dateEnd.value}`,
+            //Landing Search Button Event
+            setTimeout(() => {
+              const landingSearch = document.getElementById('search-landing');
+              const landingSearchIcon = document.getElementById(
+                'intro-options-search-icon'
+              );
+              landingSearchIcon.addEventListener('click', (event) => {
+                setSearch(`${landingSearch.value}`);
+                const filterVal = {
+                  search: `${landingSearch.value}`,
+                  date_range,
+                  startDate,
+                  endDate,
+                  location,
+                  photos,
+                  featured,
+                  type,
                 };
                 const { xmin, xmax, ymin, ymax } = view.extent;
                 const extent = {
@@ -198,33 +166,136 @@ function KeTTMap(props) {
                   ymin: ymin,
                   ymax: ymax,
                 };
-                console.log('DATE CHANGE', filters);
+                console.log('LANDING BUTTON CLICKED', filterVal);
                 if (view.zoom <= 16) {
-                  updateGrid(view, filters);
+                  updateGrid(view, filterVal);
                 }
-                //LOAD MARKERS (LIST)
-                asyncList(view, filters, extent).then((res) => {
-                  console.log('LIST RESPONCE', res.active);
-                  dispatch(updateList(res));
-                  // if (view.zoom > 16 && res.active.length) {
-                  //   generateMarkers(res.active);
-                  // }
-                });
-                //LOAD MARKERS (MAP)
-                asyncMarkers(view, filters, extent).then((res) => {
+                //LOAD MARKERS
+                asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   //dispatch(updateList(res));
                   if (view.zoom > 16) {
                     generateMarkers(res);
                   }
                 });
-              })
-            );
+              });
+            }, 3000);
+            //Search Field Event
+            search.addEventListener('change', (event) => {
+              event.preventDefault();
+              setSearch(`${event.target.value}`);
+              const filterVal = {
+                search: `${event.target.value}`,
+                date_range,
+                startDate,
+                endDate,
+                location,
+                photos,
+                featured,
+                type,
+              };
+              const { xmin, xmax, ymin, ymax } = view.extent;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('SEARCH CHANGE', filterVal);
+              if (view.zoom <= 16) {
+                updateGrid(view, filterVal);
+              }
+              //LOAD MARKERS
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                //dispatch(updateList(res));
+                if (view.zoom > 16) {
+                  generateMarkers(res);
+                }
+              });
+            });
+            //Date Change Events
+            dateStart.addEventListener('change', (event) => {
+              setDateRange(`${event.target.value}-${endDate}`);
+              setStartDate(`${event.target.value}`);
+              const filterVal = {
+                search: search.value,
+                date_range: `${event.target.value}-${endDate}`,
+                startDate: `${event.target.value}`,
+                endDate,
+                location,
+                photos,
+                featured,
+                type,
+              };
+              const { xmin, xmax, ymin, ymax } = view.extent;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('START DATE CHANGE', filterVal);
+              if (view.zoom <= 16) {
+                updateGrid(view, filterVal);
+              }
+              //LOAD MARKERS (MAP)
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                //dispatch(updateList(res));
+                if (view.zoom > 16) {
+                  generateMarkers(res);
+                }
+              });
+            });
+            dateEnd.addEventListener('change', (event) => {
+              setDateRange(`${startDate}-${event.target.value}`);
+              setEndDate(`${event.target.value}`);
+              const filterVal = {
+                search: search.value,
+                date_range: `${startDate}-${event.target.value}`,
+                startDate,
+                endDate: `${event.target.value}`,
+                location,
+                photos,
+                featured,
+                type,
+              };
+              const { xmin, xmax, ymin, ymax } = view.extent;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('END DATE CHANGE', filterVal);
+              if (view.zoom <= 16) {
+                updateGrid(view, filterVal);
+              }
+              //LOAD MARKERS (MAP)
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                //dispatch(updateList(res));
+                if (view.zoom > 16) {
+                  generateMarkers(res);
+                }
+              });
+            });
             //Radio Change Event
             typeRadio.forEach((el) =>
               el.addEventListener('change', (event) => {
                 event.preventDefault();
-                filters = { ...filters, type: event.target.value };
+                setType(`${event.target.value}`);
+                const filterVal = {
+                  search: search.value,
+                  date_range,
+                  startDate,
+                  endDate,
+                  location,
+                  photos,
+                  featured,
+                  type: `${event.target.value}`,
+                };
                 const { xmin, xmax, ymin, ymax } = view.extent;
                 const extent = {
                   xmin: xmin,
@@ -234,18 +305,10 @@ function KeTTMap(props) {
                 };
                 //console.log('RADIO', filters);
                 if (view.zoom <= 16) {
-                  updateGrid(view, filters);
+                  updateGrid(view, filterVal);
                 }
-                //LOAD MARKERS (LIST)
-                asyncList(view, filters, extent).then((res) => {
-                  console.log('LIST RESPONCE', res.active);
-                  dispatch(updateList(res));
-                  // if (view.zoom > 16 && res.active.length) {
-                  //   generateMarkers(res.active);
-                  // }
-                });
                 //LOAD MARKERS (MAP)
-                asyncMarkers(view, filters, extent).then((res) => {
+                asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   //dispatch(updateList(res));
                   if (view.zoom > 16) {
@@ -260,6 +323,7 @@ function KeTTMap(props) {
                 event.preventDefault();
                 const id = event.target.id;
                 const checked = event.target.checked;
+                let filterVal = {};
                 const { xmin, xmax, ymin, ymax } = view.extent;
                 const extent = {
                   xmin: xmin,
@@ -269,25 +333,37 @@ function KeTTMap(props) {
                 };
                 //console.log(event.target.id);
                 if (id === 'photos') {
-                  filters = { ...filters, photos: `${checked}` };
+                  setPhotos(`${checked}`);
+                  filterVal = {
+                    search: search.value,
+                    date_range,
+                    startDate,
+                    endDate,
+                    location,
+                    photos: `${checked}`,
+                    featured,
+                    type,
+                  };
                 }
                 if (id === 'featured') {
-                  filters = { ...filters, featured: `${checked}` };
+                  setFeatured(`${checked}`);
+                  filterVal = {
+                    search: search.value,
+                    date_range,
+                    startDate,
+                    endDate,
+                    location,
+                    photos,
+                    featured: `${checked}`,
+                    type,
+                  };
                 }
-                console.log('TOGGLE', filters);
+                console.log('TOGGLE', filterVal);
                 if (view.zoom <= 16) {
-                  updateGrid(view, filters);
+                  updateGrid(view, filterVal);
                 }
-                //LOAD MARKERS (LIST)
-                asyncList(view, filters, extent).then((res) => {
-                  console.log('LIST RESPONCE', res.active);
-                  dispatch(updateList(res));
-                  // if (view.zoom > 16 && res.active.length) {
-                  //   generateMarkers(res.active);
-                  // }
-                });
                 //LOAD MARKERS (MAP)
-                asyncMarkers(view, filters, extent).then((res) => {
+                asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   //dispatch(updateList(res));
                   if (view.zoom > 16) {
@@ -430,14 +506,6 @@ function KeTTMap(props) {
                 }
               });
             }
-            //LOAD LIST
-            // asyncList(view, filters, extent).then((res) => {
-            //   console.log('LIST RESPONCE', res.active);
-            //   dispatch(updateList(res));
-            //   // if (view.zoom > 16 && res.active.length) {
-            //   //   generateMarkers(res.active);
-            //   // }
-            // });
             //LOAD MARKERS
             asyncMarkers(view, filters, extent).then((res) => {
               console.log('MARKER MAP RESPONCE', res);
@@ -498,10 +566,7 @@ function KeTTMap(props) {
               );
             }
           });
-          if (gridGraphics.length) {
-            //console.log('GRID GRAPHICS', gridGraphics);
-            createGridLayer(gridGraphics, size);
-          }
+          createGridLayer(gridGraphics, size);
         }
 
         // function generateGridInactive(cells) {
@@ -1591,39 +1656,6 @@ function KeTTMap(props) {
       .then((res) => {
         clearInterval(timer);
         updateLoader(`Grid Loaded: ${ms}ms`);
-        return res.data;
-      });
-  };
-
-  const asyncList = (view, filters, extent) => {
-    dispatch(updateListMessage('Loading List...'));
-    let ms = 0;
-    let timer = setInterval(() => ms++, 1);
-    console.log('asyncList', filters);
-    const { search, date_range, photos, featured, type } = filters;
-    const { xmin, xmax, ymin, ymax } = extent;
-    const extentObject = {
-      xmin: xmin,
-      ymin: ymin,
-      xmax: xmax,
-      ymax: ymax,
-      spatialReference: { wkid: 3857 },
-    };
-    return axios
-      .post('http://geospatialresearch.mtu.edu/list.php', {
-        search: search,
-        geometry: null,
-        filters: {
-          date_range: date_range,
-          photos: photos,
-          featured: featured,
-          type: type,
-        },
-      })
-      .then((res) => {
-        clearInterval(timer);
-        //updateLoader(`Markers Loaded: ${ms}ms`);
-        dispatch(updateListMessage(`List Loaded: ${ms}ms`));
         return res.data;
       });
   };

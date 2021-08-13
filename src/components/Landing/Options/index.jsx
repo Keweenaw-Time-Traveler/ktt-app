@@ -13,6 +13,7 @@ import {
   selectFiltersAll,
   updateSearch,
 } from '../../../redux/reducers/filtersSlice';
+import { updateMapView } from '../../../redux/reducers/mapSlice';
 import { toggleList } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
@@ -42,6 +43,7 @@ export default function Search(props) {
   const handleSearchClick = (e) => {
     dispatch(updateLandingView({ show: false, remove: true }));
     dispatch(toggleList('show'));
+    dispatch(updateMapView(true));
   };
 
   const handleExploreClick = (e) => {
@@ -72,6 +74,7 @@ export default function Search(props) {
                 onChange={(e) => dispatch(updateSearch(e.target.value))}
               />
               <div
+                id="intro-options-search-icon"
                 className="intro-options-search-icon"
                 onClick={handleSearchClick}
               >

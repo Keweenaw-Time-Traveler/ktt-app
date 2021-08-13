@@ -5860,6 +5860,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"breakpoint-sass@npm:^2.7.1":
+  version: 2.7.1
+  resolution: "breakpoint-sass@npm:2.7.1"
+  checksum: ae9a73f94ebf76fb18c80f6fc20bb160337f53f82d1e9c290793b16ea671ef55a99bc51a595eff3ca9b017bcb93638e76c09cab61045f7bdfd07fcab2bdbca99
+  languageName: node
+  linkType: hard
+
 "brorand@npm:^1.0.1":
   version: 1.1.0
   resolution: "brorand@npm:1.1.0"
@@ -12436,6 +12443,7 @@ fsevents@^1.2.7:
     "@testing-library/user-event": ^7.2.1
     axios: ^0.21.1
     babel-loader: ^8.1.0
+    breakpoint-sass: ^2.7.1
     esri-loader: ^3.1.0
     identity-obj-proxy: ^3.0.0
     node-sass: 4.14.1

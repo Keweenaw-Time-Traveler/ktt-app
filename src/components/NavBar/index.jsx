@@ -1,13 +1,13 @@
 import React from 'react';
-import './styles.css';
+import './styles.scss';
 
 import Search from './Search';
 import Date from './Date';
 import Menu from './Menu';
 
-export default function NavBar() {
+export default function NavBar(props) {
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${props.show ? 'show' : 'hide'}`}>
       <div className="navbar-left">
         <Search />
       </div>

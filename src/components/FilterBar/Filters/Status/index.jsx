@@ -10,7 +10,7 @@ export default function Status() {
   const filters = useSelector(selectFiltersAll);
   return (
     <div className="status">
-      <div className="status-location">Location</div>
+      <div className="status-location">{filters.location}</div>
       <div className="status-divider"></div>
       <div className="status-date">{filters.startDate}</div>
     </div>

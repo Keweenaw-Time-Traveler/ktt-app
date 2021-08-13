@@ -31,7 +31,7 @@ export default function Filters() {
   const handleRadioChange = (e) => {
     setType(e.target.value);
     dispatch(updateType(e.target.value));
-    //dispatch(getList({}));
+    dispatch(getList({}));
   };
 
   const handleChange = (checked, id) => {

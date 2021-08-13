@@ -12,6 +12,10 @@
   line-height: 3.6rem;
   letter-spacing: 0.75px;
   font-weight: 300;
+
+  @media screen and (max-width: 1280px) {
+    width: 280px;
+  }
 }
 
 .results span {

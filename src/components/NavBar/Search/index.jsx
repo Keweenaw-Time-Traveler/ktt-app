@@ -8,7 +8,7 @@ import {
 } from '../../../redux/reducers/filtersSlice';
 import { getList } from '../../../redux/reducers/listSlice';
 //Styles
-import './styles.css';
+import './styles.scss';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

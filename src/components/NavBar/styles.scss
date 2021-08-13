@@ -1,9 +1,24 @@
 .navbar {
-  display: flex;
+  display: none;
   justify-content: space-between;
   align-items: center;
   height: 60px;
   background: #424242;
+
+  &.show {
+    display: flex;
+  }
+
+  &.hide {
+    display: none;
+  }
+}
+.navbar-left {
+  width: 350px;
+
+  @media screen and (max-width: 1280px) {
+    width: 280px;
+  }
 }
 .navbar-middle {
   flex-grow: 1;

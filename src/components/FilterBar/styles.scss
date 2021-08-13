@@ -1,7 +1,15 @@
 .filter-bar {
-  display: flex;
+  display: none;
   justify-content: space-between;
   align-items: center;
   height: 60px;
   background: #74716b;
+
+  &.show {
+    display: flex;
+  }
+
+  &.hide {
+    display: none;
+  }
 }

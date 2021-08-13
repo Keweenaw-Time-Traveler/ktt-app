@@ -1,28 +1,28 @@
 //React
-import React, { useState } from 'react';
+import React from 'react';
+//Redux
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  updateStartDate,
+  updateEndDate,
+  selectFiltersAll,
+} from '../../../redux/reducers/filtersSlice';
+import { getList } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.css';
 
 export default function Search() {
-  const [start, setStart] = useState('1800');
-  const [end, setEnd] = useState('2020');
-
-  const onChange = (event) => {
-    event.preventDefault();
-    const id = event.target.getAttribute('id');
-    if (id === 'navbar-date-start') {
-      setStart(event.target.value);
-    }
-    if (id === 'navbar-date-end') {
-      setEnd(event.target.value);
-    }
-  };
+  const dispatch = useDispatch();
+  const filters = useSelector(selectFiltersAll);
 
   return (
     <div className="navbar-date">
       <select
-        value={start}
-        onChange={onChange}
+        value={filters.startDate}
+        onChange={(e) => {
+          dispatch(updateStartDate(e.target.value));
+          dispatch(getList({}));
+        }}
         id="navbar-date-start"
         className="esri-select"
       >
@@ -36,8 +36,11 @@ export default function Search() {
         <option value="1949">1949</option>
       </select>
       <select
-        value={end}
-        onChange={onChange}
+        value={filters.endDate}
+        onChange={(e) => {
+          dispatch(updateEndDate(e.target.value));
+          dispatch(getList({}));
+        }}
         id="navbar-date-end"
         className="esri-select"
       >

@@ -7,6 +7,7 @@ import {
   selectShowLanding,
   selectRemoveLanding,
 } from './redux/reducers/landingSlice';
+import { selectShowMap } from './redux/reducers/mapSlice';
 //Components
 import Landing from './components/Landing';
 import Navbar from './components/NavBar';
@@ -25,14 +26,14 @@ import './App.scss';
 function App() {
   const showLanding = useSelector(selectShowLanding);
   const removeLanding = useSelector(selectRemoveLanding);
-
+  const showMap = useSelector(selectShowMap);
   return (
     <div className="App">
       <Router>
         {removeLanding ? null : <Landing show={showLanding} />}
-        <Navbar />
-        <FilterBar />
-        <div className="page-content">
+        <Navbar show={showMap} />
+        <FilterBar show={showMap} />
+        <div className={`page-content ${showMap ? 'show' : 'hide'}`}>
           <Switch>
             <Route exact path="/" component={Rest} />
             <Route exact path="/feature-service" component={markers} />

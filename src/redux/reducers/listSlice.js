@@ -11,10 +11,10 @@ export const getList = createAsyncThunk(
         search: stateBefore.filters.search,
         geometry: null,
         filters: {
-          date_range: '1800-2020',
+          date_range: stateBefore.filters.dateRange,
           photos: stateBefore.filters.photos,
           featured: 'false',
-          type: 'all',
+          type: stateBefore.filters.type,
         },
       })
       .then((res) => {

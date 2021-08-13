@@ -4,7 +4,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectAllList } from '../../../redux/reducers/listSlice';
 //Styles
-import './styles.css';
+import './styles.scss';
 
 export default function Results() {
   const list = useSelector(selectAllList);

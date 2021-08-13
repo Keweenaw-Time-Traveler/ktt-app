@@ -12,13 +12,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/pro-solid-svg-icons';
 //Styles
 import './styles.scss';
+//Components
+import Section from './Section';
 
 const List = (props) => {
   const dispatch = useDispatch();
   const list = useSelector(selectAllList);
-  const peopleList = list.active.people.results;
-  const placesList = list.active.places.results;
-  const storiesList = list.active.stories.results;
   const listStatus = useSelector(selectListStatus);
 
   useEffect(() => {
@@ -28,7 +27,8 @@ const List = (props) => {
   }, [listStatus, dispatch]);
 
   const handleListClick = (e) => {
-    // const itemId = e.target.getAttribute('data-id');
+    const itemId = e.target.getAttribute('data-id');
+    console.log(itemId);
     // dispatch(updateListItem(itemId));
     // const view = window.kettView;
     // const graphics = window.activeGraphics;
@@ -47,61 +47,32 @@ const List = (props) => {
   return (
     <div className={`list-wrapper ${props.show ? 'show' : 'hide'}`}>
       <div className="list-results">
-        <div className="list-results-heading people">
-          <span className="txt">({list.active.people.length}) People </span>
-        </div>
-        {listStatus === 'idle' ? (
-          <div>
-            Finding People <FontAwesomeIcon icon={faCircleNotch} spin />
-          </div>
-        ) : (
-          peopleList.map((people, index) => (
-            <div
-              className="list-results-item tooltip"
-              key={index}
-              title={people.title}
-              data-id={people.id}
-              onClick={handleListClick}
-            >
-              {people.title}
-            </div>
-          ))
+        {list.active.people && (
+          <Section
+            title="People"
+            status={listStatus}
+            icon={faCircleNotch}
+            list={list.active.people}
+            onClick={handleListClick}
+          />
         )}
-        <div className="list-results-heading places">
-          <span className="txt">({list.active.places.length}) Places</span>
-        </div>
-        {listStatus === 'idle' ? (
-          <div>
-            Finding Places <FontAwesomeIcon icon={faCircleNotch} spin />
-          </div>
-        ) : (
-          placesList.map((places, index) => (
-            <div
-              className="list-results-item tooltip"
-              key={index}
-              title={places.title}
-            >
-              {places.title}
-            </div>
-          ))
+        {list.active.places && (
+          <Section
+            title="Places"
+            status={listStatus}
+            icon={faCircleNotch}
+            list={list.active.places}
+            onClick={handleListClick}
+          />
         )}
-        <div className="list-results-heading stories">
-          <span className="txt">({list.active.stories.length}) Stories</span>
-        </div>
-        {listStatus === 'idle' ? (
-          <div>
-            Finding Stories <FontAwesomeIcon icon={faCircleNotch} spin />
-          </div>
-        ) : (
-          storiesList.map((stories, index) => (
-            <div
-              className="list-results-item tooltip"
-              key={index}
-              title={stories.title}
-            >
-              {stories.title}
-            </div>
-          ))
+        {list.active.stories && (
+          <Section
+            title="Stories"
+            status={listStatus}
+            icon={faCircleNotch}
+            list={list.active.stories}
+            onClick={handleListClick}
+          />
         )}
       </div>
     </div>
