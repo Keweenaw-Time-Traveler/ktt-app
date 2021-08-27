@@ -4,8 +4,6 @@ import React from 'react';
 import RestView from '../../components/Rest';
 
 function Rest() {
-  //console.log('PAGE');
-
   return (
     <>
       <RestView />

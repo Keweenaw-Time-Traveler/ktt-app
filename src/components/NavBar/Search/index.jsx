@@ -6,7 +6,7 @@ import {
   updateSearch,
   selectFiltersAll,
 } from '../../../redux/reducers/filtersSlice';
-import { getList } from '../../../redux/reducers/listSlice';
+import { getList, toggleList } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
 //Font Awesome
@@ -22,7 +22,15 @@ export default function Search() {
   const filters = useSelector(selectFiltersAll);
 
   const handleSearchClick = (e) => {
-    dispatch(getList({}));
+    const searchDOM = document.getElementById('search');
+    const searchValue = searchDOM.value;
+    console.log(searchValue);
+    if (searchValue != '') {
+      dispatch(getList({}));
+      dispatch(toggleList('show'));
+    } else {
+      dispatch(toggleList('hide'));
+    }
   };
   return (
     <div className="search">

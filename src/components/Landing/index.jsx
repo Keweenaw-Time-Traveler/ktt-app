@@ -11,7 +11,24 @@ function Landing(props) {
   const [removeIntro, setRemoveIntro] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [removeSearch, setRemoveSearch] = useState(true);
+  //Show takes care of the opacity so fades in
+  const [showClass, setShowClass] = useState('show');
+  //Visible takes care of moving off screen so does not cover components below
+  const [visibleClass, setVisibleClass] = useState('visible');
 
+  useEffect(() => {
+    const { show } = props;
+    if (show) {
+      setShowClass('show');
+      setVisibleClass('visible');
+    } else {
+      setShowClass('hide');
+      //Delay is here to allow time to fade out before moving off screen
+      setTimeout(() => {
+        setVisibleClass('invisible');
+      }, 500);
+    }
+  });
   useEffect(() => {
     //This will fade in Intro using CSS
     setShowIntro(true);
@@ -29,7 +46,7 @@ function Landing(props) {
   }, []);
 
   return (
-    <div className={props.show ? 'landing show' : 'landing hide'}>
+    <div className={`landing ${showClass} ${visibleClass}`}>
       {removeIntro ? null : <Intro show={showIntro} />}
       {removeSearch ? null : <Options show={showSearch} />}
     </div>

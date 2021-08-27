@@ -49,6 +49,7 @@ export default function Search(props) {
   const handleExploreClick = (e) => {
     dispatch(updateLandingView({ show: false, remove: true }));
     dispatch(toggleList('hide'));
+    dispatch(updateMapView(true));
   };
 
   const handleHelpClick = (e) => {

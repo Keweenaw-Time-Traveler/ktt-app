@@ -4,7 +4,7 @@ export const filtersSlice = createSlice({
   name: 'filters',
   initialState: {
     search: '',
-    date_range: '1800-2020',
+    dateRange: '1800-2020',
     startDate: '1800',
     endDate: '2020',
     location: 'Keweenaw',

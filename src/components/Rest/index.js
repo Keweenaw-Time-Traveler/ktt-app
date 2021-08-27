@@ -21,7 +21,6 @@ export default function RestView() {
     <>
       {removeList ? null : <List show={showList} />}
       <KeTTMap />
-      {/* <EsriMap id="e691172598f04ea8881cd2a4adaa45ba" /> */}
     </>
   );
 }

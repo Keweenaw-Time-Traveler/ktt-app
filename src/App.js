@@ -24,13 +24,14 @@ import Rest from './pages/rest';
 import './App.scss';
 
 function App() {
+  //Note: the landing component is not removed only hidden,
+  //otherwise will cause error with event listeners in the Map component
   const showLanding = useSelector(selectShowLanding);
-  const removeLanding = useSelector(selectRemoveLanding);
   const showMap = useSelector(selectShowMap);
   return (
     <div className="App">
       <Router>
-        {removeLanding ? null : <Landing show={showLanding} />}
+        <Landing show={showLanding} />
         <Navbar show={showMap} />
         <FilterBar show={showMap} />
         <div className={`page-content ${showMap ? 'show' : 'hide'}`}>
