@@ -20,6 +20,8 @@ export default function Chooser(props) {
   const [showClass, setShowClass] = useState('show');
   //Visible takes care of moving off screen so does not cover components below
   const [visibleClass, setVisibleClass] = useState('visible');
+  //This just helps ensure element is hidden when app first loads
+  const [chooserStyles, setChooserStyles] = useState({ display: 'none' });
 
   useEffect(() => {
     const { show } = props;
@@ -33,6 +35,10 @@ export default function Chooser(props) {
         setVisibleClass('invisible');
       }, 500);
     }
+    //Display element after a little delay to let opening animation start
+    setTimeout(() => {
+      setChooserStyles({ display: 'flex' });
+    }, 200);
   });
 
   const handleSelect = (e) => {
@@ -44,7 +50,10 @@ export default function Chooser(props) {
   };
 
   return (
-    <div className={`time-chooser ${showClass} ${visibleClass}`}>
+    <div
+      className={`time-chooser ${showClass} ${visibleClass}`}
+      style={chooserStyles}
+    >
       <div className="time-chooser-spinner">
         <FontAwesomeIcon icon={faHistory} size="4x" />
       </div>

@@ -93,11 +93,17 @@ function KeTTMap() {
       ]) => {
         //console.log('STATE LIST VALUE', listValue);
 
+        // const startingExtent = {
+        //   xmin: -9967422.996979957,
+        //   xmax: -9727563.602220984,
+        //   ymin: 5868928.760112602,
+        //   ymax: 6054212.116675941,
+        // };
         const startingExtent = {
-          xmin: -9967422.996979957,
-          xmax: -9727563.602220984,
-          ymin: 5868928.760112602,
-          ymax: 6054212.116675941,
+          xmax: -9749653.903395409,
+          xmin: -9945332.695805537,
+          ymax: 6013547.617628212,
+          ymin: 5909593.259160333,
         };
 
         const modern_antique = new Basemap({
@@ -431,11 +437,11 @@ function KeTTMap() {
                 if (view.zoom <= 10) {
                   if (layer.id === 'grid_layer_10') {
                     console.log('SHOW', layer.id);
-                    layer.visible = true;
+                    layer.visible = false;
                   }
                   if (layer.id === 'grid_layer_1') {
                     console.log('HIDE', layer.id);
-                    layer.visible = false;
+                    layer.visible = true;
                   }
                   if (layer.id === 'grid_layer_01') {
                     console.log('HIDE', layer.id);
@@ -755,7 +761,8 @@ function KeTTMap() {
               ],
             },
           };
-          const show = size === '10' ? true : false;
+          //const show = size === '10' ? true : false;
+          const show = size === '1' ? true : false;
           const grid = new FeatureLayer({
             id: `grid_layer_${size}`,
             visible: show,
