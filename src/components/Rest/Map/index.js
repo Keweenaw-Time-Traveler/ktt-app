@@ -93,17 +93,11 @@ function KeTTMap() {
       ]) => {
         //console.log('STATE LIST VALUE', listValue);
 
-        // const startingExtent = {
-        //   xmin: -9967422.996979957,
-        //   xmax: -9727563.602220984,
-        //   ymin: 5868928.760112602,
-        //   ymax: 6054212.116675941,
-        // };
         const startingExtent = {
-          xmax: -9749653.903395409,
-          xmin: -9945332.695805537,
-          ymax: 6013547.617628212,
-          ymin: 5909593.259160333,
+          xmax: -9700657.768264594,
+          xmin: -9994328.830936352,
+          ymax: 6050160.9541768255,
+          ymin: 5872979.92261172,
         };
 
         const modern_antique = new Basemap({
@@ -433,17 +427,25 @@ function KeTTMap() {
             const layers = view.map.layers;
             if (layers) {
               //console.log('LAYERS', layers.length);
+              const level_1 = '6';
+              const level_2 = '1';
+              const level_3 = '01';
+              const level_4 = '008';
               layers.items.forEach((layer, index) => {
                 if (view.zoom <= 10) {
-                  if (layer.id === 'grid_layer_10') {
+                  if (layer.id === `grid_layer_${level_1}`) {
                     console.log('SHOW', layer.id);
-                    layer.visible = false;
-                  }
-                  if (layer.id === 'grid_layer_1') {
-                    console.log('HIDE', layer.id);
                     layer.visible = true;
                   }
-                  if (layer.id === 'grid_layer_01') {
+                  if (layer.id === `grid_layer_${level_2}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (layer.id === `grid_layer_${level_3}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (layer.id === `grid_layer_${level_4}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
@@ -455,15 +457,19 @@ function KeTTMap() {
                     layer.visible = false;
                   }
                 } else if (view.zoom > 10 && view.zoom <= 13) {
-                  if (layer.id === 'grid_layer_10') {
+                  if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'grid_layer_1') {
+                  if (layer.id === `grid_layer_${level_2}`) {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
                   }
-                  if (layer.id === 'grid_layer_01') {
+                  if (layer.id === `grid_layer_${level_3}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (layer.id === `grid_layer_${level_4}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
@@ -474,16 +480,44 @@ function KeTTMap() {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                } else if (view.zoom > 13 && view.zoom <= 18) {
-                  if (layer.id === 'grid_layer_10') {
+                } else if (view.zoom > 13 && view.zoom <= 16) {
+                  if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'grid_layer_1') {
+                  if (layer.id === `grid_layer_${level_2}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'grid_layer_01') {
+                  if (layer.id === `grid_layer_${level_3}`) {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
+                  if (layer.id === `grid_layer_${level_4}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (
+                    layer.id === 'marker_layer_active' ||
+                    layer.id === 'marker_layer_inactive'
+                  ) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                } else if (view.zoom > 16 && view.zoom <= 18) {
+                  if (layer.id === `grid_layer_${level_1}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (layer.id === `grid_layer_${level_2}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (layer.id === `grid_layer_${level_3}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (layer.id === `grid_layer_${level_4}`) {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
                   }
@@ -495,15 +529,19 @@ function KeTTMap() {
                     layer.visible = false;
                   }
                 } else if (view.zoom > 18) {
-                  if (layer.id === 'grid_layer_10') {
+                  if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'grid_layer_1') {
+                  if (layer.id === `grid_layer_${level_2}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                  if (layer.id === 'grid_layer_01') {
+                  if (layer.id === `grid_layer_${level_3}`) {
+                    console.log('HIDE', layer.id);
+                    layer.visible = false;
+                  }
+                  if (layer.id === `grid_layer_${level_4}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
@@ -521,23 +559,29 @@ function KeTTMap() {
         });
 
         function updateGrid(view, filters) {
-          //GRID 10k
-          asyncGrid(view, filters, '10').then((res) => {
-            console.log('GRID 10k RESPONCE', res);
+          //GRID LEVEL 1
+          asyncGrid(view, filters, '6').then((res) => {
+            console.log('GRID LEVEL 1 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(res.active, '10', '69');
+            generateGrid(res.active, '6', '28');
           });
-          //GRID 1k
+          //GRID LEVEL 2
           asyncGrid(view, filters, '1').then((res) => {
-            console.log('GRID 1k RESPONCE', res);
+            console.log('GRID LEVEL 2 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(res.active, '1', '6.5');
+            generateGrid(res.active, '1', '4');
           });
-          //GRID 0.1k
-          asyncGrid(view, filters, '01').then((res) => {
-            console.log('GRID 0.1k RESPONCE', res);
+          //GRID LEVEL 3
+          asyncGrid(view, filters, '0.1').then((res) => {
+            console.log('GRID LEVEL 3 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(res.active, '01', '0.6');
+            generateGrid(res.active, '01', '0.4');
+          });
+          //GRID LEVEL 4
+          asyncGrid(view, filters, '0.05').then((res) => {
+            console.log('GRID LEVEL 4 RESPONCE', res);
+            //generateGridInactive(res.inactive);
+            generateGrid(res.active, '008', '0.2');
           });
         }
 
@@ -761,8 +805,7 @@ function KeTTMap() {
               ],
             },
           };
-          //const show = size === '10' ? true : false;
-          const show = size === '1' ? true : false;
+          const show = size === '6' ? true : false;
           const grid = new FeatureLayer({
             id: `grid_layer_${size}`,
             visible: show,
