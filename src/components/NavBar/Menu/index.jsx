@@ -34,22 +34,17 @@ export default function Menu() {
           <ul>
             <li>
               <NavLink exact to="/">
-                REST API
+                Explorer
               </NavLink>
             </li>
             <li>
-              <NavLink exact to="/feature-service">
-                Feature Service
+              <NavLink exact to="/login">
+                Login
               </NavLink>
             </li>
             <li>
-              <NavLink exact to="/clusters">
-                Clusters
-              </NavLink>
-            </li>
-            <li>
-              <NavLink exact to="/simon">
-                Simon Dots
+              <NavLink exact to="/signup">
+                Signup
               </NavLink>
             </li>
           </ul>

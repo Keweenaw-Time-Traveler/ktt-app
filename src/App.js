@@ -13,13 +13,9 @@ import Landing from './components/Landing';
 import Navbar from './components/NavBar';
 import FilterBar from './components/FilterBar';
 //Pages
-import clusters from './pages/home';
-import heatmap from './pages/heatmap';
-import simon from './pages/simon';
-import login from './pages/login';
-import signup from './pages/signup';
-import markers from './pages/markers';
-import Rest from './pages/rest';
+import Explorer from './pages/Explorer';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 //Styles
 import './App.scss';
 
@@ -36,13 +32,9 @@ function App() {
         <FilterBar show={showMap} />
         <div className={`page-content ${showMap ? 'show' : 'hide'}`}>
           <Switch>
-            <Route exact path="/" component={Rest} />
-            <Route exact path="/feature-service" component={markers} />
-            <Route exact path="/heatmap" component={heatmap} />
-            <Route exact path="/clusters" component={clusters} />
-            <Route exact path="/simon" component={simon} />
-            <Route exact path="/login" component={login} />
-            <Route exact path="/signup" component={signup} />
+            <Route exact path="/" component={Explorer} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/signup" component={Signup} />
           </Switch>
         </div>
       </Router>

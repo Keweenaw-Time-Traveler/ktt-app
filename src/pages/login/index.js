@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styles from './login.module.css'; // Import css modules stylesheet as styles
 
-export class login extends Component {
+export class Login extends Component {
   render() {
     return (
       <div>
@@ -17,4 +17,4 @@ export class login extends Component {
   }
 }
 
-export default login;
+export default Login;

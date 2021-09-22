@@ -3,7 +3,7 @@ import React from 'react';
 //Components
 import RestView from '../../components/Rest';
 
-function Rest() {
+function Explorer() {
   return (
     <>
       <RestView />
@@ -11,4 +11,4 @@ function Rest() {
   );
 }
 
-export default Rest;
+export default Explorer;

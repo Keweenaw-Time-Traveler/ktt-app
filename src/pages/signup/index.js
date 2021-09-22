@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styles from './signup.module.css'; // Import css modules stylesheet as styles
 
-export class signup extends Component {
+export class Signup extends Component {
   render() {
     return (
       <div>
@@ -17,4 +17,4 @@ export class signup extends Component {
   }
 }
 
-export default signup;
+export default Signup;
