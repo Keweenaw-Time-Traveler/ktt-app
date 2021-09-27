@@ -8,19 +8,19 @@ import {
 } from '../../redux/reducers/listSlice';
 //Components
 import List from './List';
-import KeTTMap from './Map';
+import Map from './Map';
 //import EsriMap from './TestMap';
 //Styles
 import './styles.scss';
 
-export default function RestView() {
+export default function ExplorerApp() {
   const showList = useSelector(selectShowList);
   const removeList = useSelector(selectRemoveList);
 
   return (
     <>
       {removeList ? null : <List show={showList} />}
-      <KeTTMap />
+      <Map />
     </>
   );
 }

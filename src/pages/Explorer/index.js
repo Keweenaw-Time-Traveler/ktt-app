@@ -1,12 +1,12 @@
 //React
 import React from 'react';
 //Components
-import RestView from '../../components/Rest';
+import ExplorerApp from '../../components/Explorer';
 
 function Explorer() {
   return (
     <>
-      <RestView />
+      <ExplorerApp />
     </>
   );
 }
