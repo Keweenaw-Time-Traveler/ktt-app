@@ -1,0 +1,44 @@
+@import '../../../colors.scss';
+
+.navbar-date {
+  display: flex;
+  padding: 0 25px;
+  color: #fff;
+}
+.label-min {
+  padding-right: 15px;
+}
+.label-max {
+  padding-left: 15px;
+}
+.segments {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+.segment-wrapper {
+  margin-right: 2px;
+  z-index: 1;
+}
+.segment {
+  height: 8px;
+  width: 100%;
+  background: $color-kett-grey-secondary;
+  &:hover {
+    background: $color-kett-gold;
+    cursor: pointer;
+  }
+  &.active {
+    background: $color-kett-gold;
+  }
+}
+.pip {
+  position: absolute;
+  z-index: 2;
+  top: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: $color-kett-gold;
+}

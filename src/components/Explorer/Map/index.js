@@ -156,6 +156,8 @@ function KeTTMap() {
             };
             updateGrid(view, startingFilters);
 
+            //createTileLayer();
+
             // asyncMarkers(view, startingFilters, startingExtent).then((res) => {
             //   console.log('MARKER MAP RESPONCE', res);
             //   //dispatch(updateList(res));
@@ -1143,6 +1145,13 @@ function KeTTMap() {
             },
           });
           addToView(layer);
+        }
+
+        function createTileLayer() {
+          const tileLayer = new TileLayer({
+            url: 'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/KeTT_1928_FIPS/MapServer',
+          });
+          addToView(tileLayer);
         }
 
         // Adds a given layer to the map in the view

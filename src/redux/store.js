@@ -13,6 +13,7 @@ import markersReducer from './reducers/markersSlice';
 import landingReducer from './reducers/landingSlice';
 import listReducer from './reducers/listSlice';
 import mapReducer from './reducers/mapSlice';
+import timelineReducer from './reducers/timelineSlice';
 
 export default configureStore({
   reducer: {
@@ -22,5 +23,6 @@ export default configureStore({
     landing: landingReducer,
     list: listReducer,
     map: mapReducer,
+    timeline: timelineReducer,
   },
 });
