@@ -1,6 +1,5 @@
 @import '../../../colors.scss';
-
-.navbar-date {
+.navbar-timeline {
   display: flex;
   padding: 0 25px;
   color: #fff;
@@ -18,10 +17,13 @@
   flex-grow: 1;
 }
 .segment-wrapper {
-  margin-right: 2px;
   z-index: 1;
+  &.last-wrapper {
+    flex-grow: 1;
+  }
 }
 .segment {
+  position: relative;
   height: 8px;
   width: 100%;
   background: $color-kett-grey-secondary;
@@ -31,6 +33,15 @@
   }
   &.active {
     background: $color-kett-gold;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 8px;
+    background: #424242;
   }
 }
 .pip {

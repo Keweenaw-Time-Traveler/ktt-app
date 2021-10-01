@@ -11,6 +11,7 @@ import { getList } from '../../../../redux/reducers/listSlice';
 import {
   selectSegments,
   updateActiveSegment,
+  updateActiveUrl,
   updateLeftPip,
   updateRightPip,
 } from '../../../../redux/reducers/timelineSlice';
@@ -51,11 +52,13 @@ export default function Chooser(props) {
 
   const handleSelect = (e) => {
     const id = e.target.value;
+    const url = e.target.options[id].getAttribute('data-url');
     const left = e.target.options[id].getAttribute('data-left');
     const right = e.target.options[id].getAttribute('data-right');
     const min = e.target.options[id].getAttribute('data-min');
     const max = e.target.options[id].getAttribute('data-max');
     dispatch(updateActiveSegment(id));
+    dispatch(updateActiveUrl(url));
     dispatch(updateLeftPip(left));
     dispatch(updateRightPip(right));
     dispatch(updateDateRange(`${min}-${max}`));
@@ -90,6 +93,7 @@ export default function Chooser(props) {
             data-right={segment.right}
             data-min={segment.dateMin}
             data-max={segment.dateMax}
+            data-url={segment.url}
           >
             {segment.title}
           </option>

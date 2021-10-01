@@ -2,7 +2,7 @@ import React from 'react';
 import './styles.scss';
 
 import Search from './Search';
-import Date from './Date';
+import Timeline from './Timeline';
 import Menu from './Menu';
 
 export default function NavBar(props) {
@@ -12,7 +12,7 @@ export default function NavBar(props) {
         <Search />
       </div>
       <div className="navbar-middle">
-        <Date />
+        <Timeline />
       </div>
       <div className="navbar-right">
         <Menu />

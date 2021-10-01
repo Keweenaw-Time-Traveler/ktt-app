@@ -12,7 +12,7 @@ export default function Status() {
     <div className="status">
       <div className="status-location">{filters.location}</div>
       <div className="status-divider"></div>
-      <div className="status-date">{filters.startDate}</div>
+      <div className="status-date">{filters.dateRange}</div>
     </div>
   );
 }

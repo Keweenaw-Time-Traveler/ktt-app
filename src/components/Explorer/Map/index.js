@@ -4,20 +4,12 @@ import axios from 'axios';
 //Redux
 import { useSelector } from 'react-redux';
 import { selectFiltersAll } from '../../../redux/reducers/filtersSlice';
+import { selectActiveUrl } from '../../../redux/reducers/timelineSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
 //ArchGIS
 import { loadModules } from 'esri-loader';
-// import Map from '@arcgis/core/Map';
-// import MapView from '@arcgis/core/views/MapView';
-// import Basemap from '@arcgis/core/Basemap';
-// import Graphic from '@arcgis/core/Graphic';
-// import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
-// import TileLayer from '@arcgis/core/layers/TileLayer';
-// import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-// import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-// import * as watchUtils from '@arcgis/core/core/watchUtils.js';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/pro-solid-svg-icons';
@@ -30,24 +22,34 @@ import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
 //Functional Component
 function KeTTMap() {
-  const [loader, updateLoader] = useState('Loading Grid...');
   const [zoom, setZoom] = useState(10);
   const [search, setSearch] = useState('');
   const [date_range, setDateRange] = useState('1800-2020');
+  const [tileUrl, setTileUrl] = useState('');
   const [startDate, setStartDate] = useState('1800');
   const [endDate, setEndDate] = useState('2020');
   const [location, setLocation] = useState('Keweenaw');
   const [photos, setPhotos] = useState('false');
   const [featured, setFeatured] = useState('false');
-  const [type, setType] = useState('all');
+  const [type, setType] = useState('everything');
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
   const mapRef = useRef();
   const filters = useSelector(selectFiltersAll);
+  const activeUrl = useSelector(selectActiveUrl);
+  const searchRef = useRef('');
+  const dateRangeRef = useRef('1800-2020');
+  const startDateRef = useRef('1800');
+  const endDateRef = useRef('2020');
+  const typeRef = useRef('everything');
+  const photosRef = useRef('false');
+  const featuredRef = useRef('false');
+  const tileUrlRef = useRef('');
 
   useEffect(() => {
     setDateRange(filters.dateRange);
-  }, [filters]);
+    setTileUrl(activeUrl);
+  }, [filters, activeUrl]);
 
   useEffect(() => {
     loadModules(
@@ -156,20 +158,11 @@ function KeTTMap() {
             };
             updateGrid(view, startingFilters);
 
-            //createTileLayer();
-
-            // asyncMarkers(view, startingFilters, startingExtent).then((res) => {
-            //   console.log('MARKER MAP RESPONCE', res);
-            //   //dispatch(updateList(res));
-            //   if (view.zoom > 16) {
-            //     generateMarkers(res);
-            //   }
-            // });
-
             const searchField = document.getElementById('search');
+            const typeSegment = document.querySelectorAll('.segment');
             const typeRadio = document.querySelectorAll('.radio-button');
             const typeToggle = document.querySelectorAll('.filter-toogle');
-            console.log('WILL IT CHANGE', date_range);
+
             //Time Chooser Event
             //Delayed to make sure elements have loaded before listener is added
             setTimeout(() => {
@@ -178,19 +171,27 @@ function KeTTMap() {
               );
               timeChooser.addEventListener('change', (event) => {
                 event.preventDefault();
-                setDateRange(event.target.value);
+                const id = event.target.value;
+                const min = event.target.options[id].getAttribute('data-min');
+                const max = event.target.options[id].getAttribute('data-max');
+                const url = event.target.options[id].getAttribute('data-url');
+                dateRangeRef.current = `${min}-${max}`;
+                //setDateRange(`${min}-${max}`);
+                startDateRef.current = `${min}`;
+                //setStartDate(`${min}`);
+                endDateRef.current = `${max}`;
+                //setEndDate(`${max}`);
+                tileUrlRef.current = url;
+                //setTileUrl(url);
                 const filterVal = {
-                  search,
-                  date_range: `${event.target.value}`,
-                  startDate,
-                  endDate,
-                  location,
-                  photos,
-                  featured,
-                  type,
+                  search: searchRef.current,
+                  date_range: `${min}-${max}`,
+                  photos: photosRef.current,
+                  featured: featuredRef.current,
+                  type: typeRef.current,
                 };
                 const extentClone = view.extent.clone();
-                const extentExpanded = extentClone.expand(1.5);
+                const extentExpanded = extentClone.expand(10);
                 const { xmin, xmax, ymin, ymax } = extentExpanded;
                 const extent = {
                   xmin: xmin,
@@ -199,14 +200,60 @@ function KeTTMap() {
                   ymax: ymax,
                 };
                 console.log('TIME CHOOSER CHANGE', filterVal);
+                //UPDATE GRID
+                updateGrid(view, filterVal);
                 //LOAD MARKERS
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
-                  generateMarkers(res);
+                  generateMarkers(view, res);
                 });
+                //ADD TILE LAYER
+                createTileLayer(view.zoom, url);
               });
             }, 4000);
-
+            //Timeline Segment Event
+            typeSegment.forEach((el) => {
+              el.addEventListener('click', (event) => {
+                const min = event.target.getAttribute('data-min');
+                const max = event.target.getAttribute('data-max');
+                const url = event.target.getAttribute('data-url');
+                dateRangeRef.current = `${min}-${max}`;
+                //setDateRange(`${min}-${max}`);
+                startDateRef.current = `${min}`;
+                //setStartDate(`${min}`);
+                endDateRef.current = `${max}`;
+                //setEndDate(`${max}`);
+                tileUrlRef.current = url;
+                //setTileUrl(url);
+                const filterVal = {
+                  search: searchRef.current,
+                  date_range: `${min}-${max}`,
+                  photos: photosRef.current,
+                  featured: featuredRef.current,
+                  type: typeRef.current,
+                };
+                const extentClone = view.extent.clone();
+                const extentExpanded = extentClone.expand(10);
+                const { xmin, xmax, ymin, ymax } = extentExpanded;
+                const extent = {
+                  xmin: xmin,
+                  xmax: xmax,
+                  ymin: ymin,
+                  ymax: ymax,
+                };
+                console.log('TIME SEGMENT CHOOSEN', filterVal);
+                handleTimePeriod();
+                //ADD TILE LAYER
+                createTileLayer(view.zoom, url);
+                //UPDATE GRID
+                updateGrid(view, filterVal);
+                //LOAD MARKERS
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              });
+            });
             //Landing Search Button Event
             //Delayed to make sure elements have loaded before listener is added
             setTimeout(() => {
@@ -215,16 +262,14 @@ function KeTTMap() {
                 'intro-options-search-icon'
               );
               landingSearchIcon.addEventListener('click', (event) => {
-                setSearch(`${landingSearch.value}`);
+                searchRef.current = `${event.target.value}`;
+                //setSearch(`${landingSearch.value}`);
                 const filterVal = {
                   search: `${landingSearch.value}`,
-                  date_range,
-                  startDate,
-                  endDate,
-                  location,
-                  photos,
-                  featured,
-                  type,
+                  date_range: dateRangeRef.current,
+                  photos: photosRef.current,
+                  featured: featuredRef.current,
+                  type: typeRef.current,
                 };
                 console.log('LANDING BUTTON CLICKED', filterVal);
                 updateGrid(view, filterVal);
@@ -233,19 +278,17 @@ function KeTTMap() {
             //Search Field Event
             searchField.addEventListener('change', (event) => {
               event.preventDefault();
-              setSearch(`${event.target.value}`);
+              searchRef.current = `${event.target.value}`;
+              //setSearch(`${event.target.value}`);
               const filterVal = {
                 search: `${event.target.value}`,
-                date_range,
-                startDate,
-                endDate,
-                location,
-                photos,
-                featured,
-                type,
+                date_range: dateRangeRef.current,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
               };
               const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(1.5);
+              const extentExpanded = extentClone.expand(10);
               const { xmin, xmax, ymin, ymax } = extentExpanded;
               const extent = {
                 xmin: xmin,
@@ -262,9 +305,7 @@ function KeTTMap() {
               if (event.target.value != '') {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
-                  if (view.zoom > 10) {
-                    generateMarkers(res);
-                  }
+                  generateMarkers(view, res);
                 });
               }
             });
@@ -272,15 +313,13 @@ function KeTTMap() {
             typeRadio.forEach((el) =>
               el.addEventListener('change', (event) => {
                 event.preventDefault();
-                setType(`${event.target.value}`);
+                typeRef.current = `${event.target.value}`;
+                //setType(`${event.target.value}`);
                 const filterVal = {
-                  search: search.value,
-                  date_range,
-                  startDate,
-                  endDate,
-                  location,
-                  photos,
-                  featured,
+                  search: searchRef.current,
+                  date_range: dateRangeRef.current,
+                  photos: photosRef.current,
+                  featured: featuredRef.current,
                   type: `${event.target.value}`,
                 };
                 const { xmin, xmax, ymin, ymax } = view.extent;
@@ -290,17 +329,12 @@ function KeTTMap() {
                   ymin: ymin,
                   ymax: ymax,
                 };
-                //console.log('RADIO', filters);
-                if (view.zoom <= 16) {
-                  updateGrid(view, filterVal);
-                }
-                //LOAD MARKERS (MAP)
+                //UPDATE GRID
+                updateGrid(view, filterVal);
+                //LOAD MARKERS
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
-                  //dispatch(updateList(res));
-                  if (view.zoom > 16) {
-                    generateMarkers(res);
-                  }
+                  generateMarkers(view, res);
                 });
               })
             );
@@ -320,42 +354,34 @@ function KeTTMap() {
                 };
                 //console.log(event.target.id);
                 if (id === 'photos') {
-                  setPhotos(`${checked}`);
+                  photosRef.current = `${checked}`;
+                  //setPhotos(`${checked}`);
                   filterVal = {
-                    search: search.value,
-                    date_range,
-                    startDate,
-                    endDate,
-                    location,
+                    search: searchRef.current,
+                    date_range: dateRangeRef.current,
                     photos: `${checked}`,
-                    featured,
-                    type,
+                    featured: featuredRef.current,
+                    type: typeRef.current,
                   };
                 }
                 if (id === 'featured') {
-                  setFeatured(`${checked}`);
+                  featuredRef.current = `${checked}`;
+                  //setFeatured(`${checked}`);
                   filterVal = {
-                    search: search.value,
-                    date_range,
-                    startDate,
-                    endDate,
-                    location,
-                    photos,
+                    search: searchRef.current,
+                    date_range: dateRangeRef.current,
+                    photos: photosRef.current,
                     featured: `${checked}`,
-                    type,
+                    type: typeRef.current,
                   };
                 }
                 console.log('TOGGLE', filterVal);
-                if (view.zoom <= 16) {
-                  updateGrid(view, filterVal);
-                }
-                //LOAD MARKERS (MAP)
+                //UPDATE GRID
+                updateGrid(view, filterVal);
+                //LOAD MARKERS
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
-                  //dispatch(updateList(res));
-                  if (view.zoom > 16) {
-                    generateMarkers(res);
-                  }
+                  generateMarkers(view, res);
                 });
               })
             );
@@ -395,7 +421,7 @@ function KeTTMap() {
             } else if (view.zoom > 18) {
               if (!markerExtent) {
                 console.log('WINDOW', markerExtent);
-                window.markerExtent = extentClone.expand(3);
+                window.markerExtent = extentClone.expand(10);
               }
 
               const isInside = window.markerExtent.contains(extentClone);
@@ -403,7 +429,7 @@ function KeTTMap() {
 
               //LOAD MARKERS
               if (!isInside) {
-                const expanded = view.extent.clone().expand(3);
+                const expanded = view.extent.clone().expand(10);
                 window.markerExtent = expanded;
                 const { xmin, xmax, ymin, ymax } = expanded;
                 const extent = {
@@ -421,7 +447,7 @@ function KeTTMap() {
                 };
                 asyncMarkers(view, filters, extent).then((res) => {
                   console.log('MARKER MAP RESPONCE', res);
-                  generateMarkers(res);
+                  generateMarkers(view, res);
                 });
               }
             }
@@ -525,7 +551,8 @@ function KeTTMap() {
                   }
                   if (
                     layer.id === 'marker_layer_active' ||
-                    layer.id === 'marker_layer_inactive'
+                    layer.id === 'marker_layer_inactive' ||
+                    layer.id === 'title_layer'
                   ) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -549,7 +576,8 @@ function KeTTMap() {
                   }
                   if (
                     layer.id === 'marker_layer_active' ||
-                    layer.id === 'marker_layer_inactive'
+                    layer.id === 'marker_layer_inactive' ||
+                    layer.id === 'title_layer'
                   ) {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
@@ -562,32 +590,32 @@ function KeTTMap() {
 
         function updateGrid(view, filters) {
           //GRID LEVEL 1
-          asyncGrid(view, filters, '6').then((res) => {
+          asyncGrid(filters, '6').then((res) => {
             console.log('GRID LEVEL 1 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(res.active, '6', '28');
+            generateGrid(view, res.active, filters.type, '6', '28');
           });
           //GRID LEVEL 2
-          asyncGrid(view, filters, '1').then((res) => {
+          asyncGrid(filters, '1').then((res) => {
             console.log('GRID LEVEL 2 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(res.active, '1', '4');
+            generateGrid(view, res.active, filters.type, '1', '4');
           });
           //GRID LEVEL 3
-          asyncGrid(view, filters, '0.1').then((res) => {
+          asyncGrid(filters, '0.1').then((res) => {
             console.log('GRID LEVEL 3 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(res.active, '01', '0.4');
+            generateGrid(view, res.active, filters.type, '01', '0.4');
           });
           //GRID LEVEL 4
-          asyncGrid(view, filters, '0.05').then((res) => {
+          asyncGrid(filters, '0.05').then((res) => {
             console.log('GRID LEVEL 4 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(res.active, '008', '0.2');
+            generateGrid(view, res.active, filters.type, '008', '0.2');
           });
         }
 
-        function generateGrid(cells, size, radius) {
+        function generateGrid(view, cells, type, size, radius) {
           const gridActive = cells.results;
           const gridGraphics = [];
           gridActive.forEach((cell) => {
@@ -615,10 +643,22 @@ function KeTTMap() {
               );
             }
           });
-          createGridLayer(gridGraphics, size);
+          createGridLayer(view, gridGraphics, type, size);
         }
 
-        function createGridLayer(graphics, size) {
+        function createGridLayer(view, graphics, type, size) {
+          let gridColor = [0, 0, 0, 255];
+          switch (type) {
+            case 'people':
+              gridColor = [64, 132, 130, 255];
+              break;
+            case 'places':
+              gridColor = [154, 98, 181, 255];
+              break;
+            case 'stories':
+              gridColor = [204, 97, 49, 255];
+              break;
+          }
           const gridSymbol = {
             type: 'cim',
             data: {
@@ -685,7 +725,7 @@ function KeTTMap() {
                             {
                               type: 'CIMSolidFill',
                               enable: true,
-                              color: [150, 150, 150],
+                              color: gridColor,
                             },
                           ],
                         },
@@ -754,7 +794,7 @@ function KeTTMap() {
                               type: 'CIMSolidStroke',
                               enable: true,
                               colorLocked: true,
-                              color: [0, 0, 0, 255],
+                              color: gridColor,
                               width: 1,
                             },
                           ],
@@ -807,7 +847,19 @@ function KeTTMap() {
               ],
             },
           };
-          const show = size === '6' ? true : false;
+          let show = false;
+          if (size === '6' && view.zoom <= 10) {
+            show = true;
+          } else if (size === '1' && view.zoom > 10 && view.zoom <= 13) {
+            show = true;
+          } else if (size === '01' && view.zoom > 13 && view.zoom <= 16) {
+            show = true;
+          } else if (size === '008' && view.zoom > 16 && view.zoom <= 18) {
+            show = true;
+          } else if (view.zoom > 18) {
+            show = false;
+          }
+          console.log('SHOW', show);
           const grid = new FeatureLayer({
             id: `grid_layer_${size}`,
             visible: show,
@@ -849,47 +901,6 @@ function KeTTMap() {
             renderer: {
               type: 'simple',
               symbol: gridSymbol,
-              visualVariables: [
-                {
-                  type: 'color',
-                  valueExpression: `
-                    var type = $feature.type;
-                    var typeID = When(
-                      type == 'person', 1,
-                      type == 'story', 2,
-                      type == 'place', 3,
-                      type == 'everything', 4,
-                      0
-                      );
-                    return typeID;
-                    `,
-                  stops: [
-                    {
-                      value: 0,
-                      color: [0, 0, 0],
-                    },
-                    {
-                      value: 1,
-                      color: [0, 0, 0],
-                      //color: [64, 132, 130],
-                    },
-                    {
-                      value: 2,
-                      color: [0, 0, 0],
-                      //color: [204, 97, 49],
-                    },
-                    {
-                      value: 3,
-                      color: [0, 0, 0],
-                      //color: [154, 98, 181],
-                    },
-                    {
-                      value: 4,
-                      color: [0, 0, 0],
-                    },
-                  ],
-                },
-              ],
             },
             popupTemplate: {
               title: 'ACTIVE | {id} | {montenum} | {type}',
@@ -899,16 +910,7 @@ function KeTTMap() {
           addToView(grid);
         }
 
-        function generateMarkers(markers) {
-          //console.log('generateMarkers', markers);
-          // const peopleActive = markers.active.people ? markers.active.people.results : [];
-          // const placesActive = markers.active.places ? markers.active.places.results : [];
-          // const storiesActive = markers.active.stories ? markers.active.stories.results : [];
-          // const allActive = [
-          //   ...peopleActive,
-          //   ...placesActive,
-          //   ...storiesActive,
-          // ];
+        function generateMarkers(view, markers) {
           const allActive = markers.active.length ? markers.active.results : [];
           const allInActive = markers.inactive.length
             ? markers.inactive.results
@@ -961,19 +963,19 @@ function KeTTMap() {
             }
           });
           if (inactiveGraphics.length > 0) {
-            createInactiveMarkerLayer(inactiveGraphics);
+            createInactiveMarkerLayer(view, inactiveGraphics);
           } else {
             console.log('No Inactive markers in this area');
           }
           if (activeGraphics.length > 0) {
-            createActiveMarkerLayer(activeGraphics);
+            createActiveMarkerLayer(view, activeGraphics);
           } else {
             console.log('No Active markers in this area');
           }
         }
 
         //  Creates a client-side FeatureLayer from an array of graphics
-        function createActiveMarkerLayer(graphics) {
+        function createActiveMarkerLayer(view, graphics) {
           window.activeGraphics = graphics;
           //console.log('createActiveMarkerLayer', graphics);
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
@@ -1023,10 +1025,11 @@ function KeTTMap() {
               },
             ],
           };
-
+          const show = view.zoom > 18 ? true : false;
           const layer = new FeatureLayer({
             id: 'marker_layer_active',
             opacity: 1,
+            visible: show,
             source: graphics,
             fields: [
               {
@@ -1061,7 +1064,7 @@ function KeTTMap() {
         }
 
         //  Creates a client-side FeatureLayer from an array of graphics
-        function createInactiveMarkerLayer(graphics) {
+        function createInactiveMarkerLayer(view, graphics) {
           //console.log('createInactiveMarkerLayer', graphics);
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
           const markerRenderer = {
@@ -1110,10 +1113,11 @@ function KeTTMap() {
               },
             ],
           };
-
+          const show = view.zoom > 18 ? true : false;
           const layer = new FeatureLayer({
             id: 'marker_layer_inactive',
             opacity: 0.3,
+            visible: show,
             source: graphics,
             fields: [
               {
@@ -1147,9 +1151,12 @@ function KeTTMap() {
           addToView(layer);
         }
 
-        function createTileLayer() {
+        function createTileLayer(zoom, url) {
+          const show = zoom > 18 ? true : false;
           const tileLayer = new TileLayer({
-            url: 'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/KeTT_1928_FIPS/MapServer',
+            id: 'title_layer',
+            url,
+            visible: show,
           });
           addToView(tileLayer);
         }
@@ -1396,8 +1403,7 @@ function KeTTMap() {
       });
   };
 
-  const asyncGrid = (view, filters, size) => {
-    updateLoader('Loading Grid...');
+  const asyncGrid = (filters, size) => {
     let ms = 0;
     let timer = setInterval(() => ms++, 1);
     const { search, date_range, photos, featured, type } = filters;
@@ -1413,10 +1419,9 @@ function KeTTMap() {
     };
     console.log('asyncGrid', payload);
     return axios
-      .post('http://geospatialresearch.mtu.edu/grid4.php', payload)
+      .post('http://geospatialresearch.mtu.edu/grid.php', payload)
       .then((res) => {
         clearInterval(timer);
-        updateLoader(`Grid Loaded: ${ms}ms`);
         return res.data;
       });
   };
@@ -1457,7 +1462,6 @@ function KeTTMap() {
     <div className="map-wrapper">
       <div className="webmap map" ref={mapRef} />
       <div className="loader">
-        <div className="loader-text">{loader}</div>
         <div className="loader-zoom">Zoom: {zoom}</div>
       </div>
       <Chooser show={showTimeChooser} update={handleTimePeriod} />

@@ -24,6 +24,7 @@ export const timelineSlice = createSlice({
     },
     segmentData: [],
     activeSegment: null,
+    activeUrl: null,
     leftPip: '0',
     rightPip: '100%',
     timelineStatus: 'idle',
@@ -31,6 +32,9 @@ export const timelineSlice = createSlice({
   reducers: {
     updateActiveSegment: (state, action) => {
       state.activeSegment = action.payload;
+    },
+    updateActiveUrl: (state, action) => {
+      state.activeUrl = action.payload;
     },
     updateLeftPip: (state, action) => {
       state.leftPip = action.payload;
@@ -52,14 +56,16 @@ export const timelineSlice = createSlice({
       const segmentData = action.payload.segments;
       const segments = [];
       let prevPercent = 0;
+      const segmentNum = segmentData.length;
       segmentData.forEach((segment, index) => {
         const segmentMin = segment.min;
-        const segmentMax = segment.max + 1;
+        const segmentMax = segment.max;
         const segmentTotal = segmentMax - segmentMin;
         const segmentPercent = (segmentTotal / total) * 100;
-        const left = prevPercent ? `${prevPercent - 1}%` : `${prevPercent}%`;
-        const right = `${segmentPercent + prevPercent - 1}%`;
-        prevPercent = segmentPercent + prevPercent;
+        const left = `${prevPercent}%`;
+        const right =
+          segmentNum == index + 1 ? '100%' : `${prevPercent + segmentPercent}%`;
+        prevPercent = prevPercent + segmentPercent;
         segments.push({
           id: index + 1,
           size: segmentPercent,
@@ -82,11 +88,16 @@ export const timelineSlice = createSlice({
   },
 });
 
-export const { updateActiveSegment, updateLeftPip, updateRightPip } =
-  timelineSlice.actions;
+export const {
+  updateActiveSegment,
+  updateActiveUrl,
+  updateLeftPip,
+  updateRightPip,
+} = timelineSlice.actions;
 export const selectTimeline = (state) => state.timeline.timelineData;
 export const selectSegments = (state) => state.timeline.segmentData;
 export const selectActiveSegment = (state) => state.timeline.activeSegment;
+export const selectActiveUrl = (state) => state.timeline.activeUrl;
 export const selectLeft = (state) => state.timeline.leftPip;
 export const selectRight = (state) => state.timeline.rightPip;
 export const selectTimelineStatus = (state) => state.timeline.timelineStatus;
