@@ -262,7 +262,7 @@ function KeTTMap() {
                 'intro-options-search-icon'
               );
               landingSearchIcon.addEventListener('click', (event) => {
-                searchRef.current = `${event.target.value}`;
+                searchRef.current = `${landingSearch.value}`;
                 //setSearch(`${landingSearch.value}`);
                 const filterVal = {
                   search: `${landingSearch.value}`,
