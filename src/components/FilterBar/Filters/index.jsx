@@ -24,7 +24,7 @@ import ToggleSwitch from './ToggleSwitch';
 
 export default function Filters() {
   const dispatch = useDispatch();
-  const [type, setType] = useState('all');
+  const [type, setType] = useState('everything');
   const [photos, setPhotos] = useState(false);
   const [featured, setFeatured] = useState(false);
 
@@ -57,10 +57,10 @@ export default function Filters() {
           <RadioButton
             changed={handleRadioChange}
             id="1"
-            isSelected={type === 'all'}
+            isSelected={type === 'everything'}
             label="Everything"
             icon={faGlobe}
-            value="all"
+            value="everything"
           />
           <RadioButton
             changed={handleRadioChange}

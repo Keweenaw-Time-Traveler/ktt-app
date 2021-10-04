@@ -10,7 +10,7 @@ export const filtersSlice = createSlice({
     location: 'Keweenaw',
     photos: 'false',
     featured: 'false',
-    type: 'all',
+    type: 'everything',
   },
   reducers: {
     updateSearch: (state, { payload }) => {

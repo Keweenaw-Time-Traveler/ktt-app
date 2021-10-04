@@ -154,7 +154,7 @@ function KeTTMap() {
               location: 'Keweenaw',
               photos: 'false',
               featured: 'false',
-              type: 'all',
+              type: 'everything',
             };
             updateGrid(view, startingFilters);
 
@@ -1433,7 +1433,7 @@ function KeTTMap() {
     const { search, date_range, photos, featured, type } = filters;
     const { xmin, xmax, ymin, ymax } = extent;
     return axios
-      .post('http://geospatialresearch.mtu.edu/markers2.php', {
+      .post('http://geospatialresearch.mtu.edu/markers.php', {
         search: search,
         geometry: {
           xmin: xmin,
