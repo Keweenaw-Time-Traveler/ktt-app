@@ -26,10 +26,12 @@
 
   &.visible {
     left: 0;
+    width: auto;
   }
 
   &.invisible {
     left: -99999999px;
+    width: 0;
   }
 }
 .time-chooser-message {

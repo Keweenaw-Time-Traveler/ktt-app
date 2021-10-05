@@ -11,14 +11,15 @@ export default function Section(props) {
     <>
       <div className="list-results-heading people">
         <span className="txt">
-          ({list.length}) {title}
+          {status === 'success' ? (
+            `(${list.length})`
+          ) : (
+            <FontAwesomeIcon icon={icon} spin />
+          )}{' '}
+          {title}
         </span>
       </div>
-      {status === 'idle' ? (
-        <div>
-          Finding {title} <FontAwesomeIcon icon={icon} spin />
-        </div>
-      ) : (
+      {status === 'success' &&
         list.results.map((people, index) => (
           <div
             className="list-results-item tooltip"
@@ -29,8 +30,7 @@ export default function Section(props) {
           >
             {people.title}
           </div>
-        ))
-      )}
+        ))}
     </>
   );
 }

@@ -47,7 +47,11 @@ export default function Search() {
           value={filters.search}
           onChange={(e) => dispatch(updateSearch(e.target.value))}
         />
-        <div className="search-input-icon" onClick={handleSearchClick}>
+        <div
+          className="search-input-icon"
+          id="search-icon"
+          onClick={handleSearchClick}
+        >
           <FontAwesomeIcon icon={faSearch} className="fa-icon" />
         </div>
       </div>

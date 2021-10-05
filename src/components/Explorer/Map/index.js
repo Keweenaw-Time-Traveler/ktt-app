@@ -135,8 +135,6 @@ function KeTTMap() {
         view
           .when()
           .then(() => {
-            //Putting the view object somewhere it can be used in other components
-            window.kettView = view;
             const { xmin, xmax, ymin, ymax } = view.extent;
             window.markerExtent = null; //Used to determine if markers need to be updated, see watchUtils.whenTrue below
             window.timePeriod = null; //Used to determine if time period needs to be chosen, see watchUtils.whenTrue below
@@ -157,11 +155,6 @@ function KeTTMap() {
               type: 'everything',
             };
             updateGrid(view, startingFilters);
-
-            const searchField = document.getElementById('search');
-            const typeSegment = document.querySelectorAll('.segment');
-            const typeRadio = document.querySelectorAll('.radio-button');
-            const typeToggle = document.querySelectorAll('.filter-toogle');
 
             //Time Chooser Event
             //Delayed to make sure elements have loaded before listener is added
@@ -212,6 +205,7 @@ function KeTTMap() {
               });
             }, 4000);
             //Timeline Segment Event
+            const typeSegment = document.querySelectorAll('.segment');
             typeSegment.forEach((el) => {
               el.addEventListener('click', (event) => {
                 const min = event.target.getAttribute('data-min');
@@ -276,12 +270,14 @@ function KeTTMap() {
               });
             }, 4000);
             //Search Field Event
-            searchField.addEventListener('change', (event) => {
+            const searchField = document.getElementById('search');
+            const searchFieldIcon = document.getElementById('search-icon');
+            searchFieldIcon.addEventListener('click', (event) => {
               event.preventDefault();
-              searchRef.current = `${event.target.value}`;
+              searchRef.current = `${searchField.value}`;
               //setSearch(`${event.target.value}`);
               const filterVal = {
-                search: `${event.target.value}`,
+                search: `${searchField.value}`,
                 date_range: dateRangeRef.current,
                 photos: photosRef.current,
                 featured: featuredRef.current,
@@ -310,6 +306,7 @@ function KeTTMap() {
               }
             });
             //Radio Change Event
+            const typeRadio = document.querySelectorAll('.radio-button');
             typeRadio.forEach((el) =>
               el.addEventListener('change', (event) => {
                 event.preventDefault();
@@ -339,6 +336,7 @@ function KeTTMap() {
               })
             );
             //Toogle Change Event
+            const typeToggle = document.querySelectorAll('.filter-toogle');
             typeToggle.forEach((el) =>
               el.addEventListener('change', (event) => {
                 event.preventDefault();
@@ -403,7 +401,6 @@ function KeTTMap() {
             console.log('VIEW EXTENT', view.extent);
             //console.log('VIEW SCALE', view.scale);
             //console.log('VIEW ZOOM', view.zoom);
-            window.kettView = view;
             setZoom(view.zoom);
             const searchDOM = document.getElementById('search');
             const dateRangeDOM = document.getElementById('date-range');
@@ -1178,7 +1175,6 @@ function KeTTMap() {
           }
 
           view.map.add(layer);
-          window.kettView = view;
         }
       }
     );
