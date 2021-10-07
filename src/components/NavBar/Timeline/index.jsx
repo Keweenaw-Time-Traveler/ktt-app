@@ -13,12 +13,10 @@ import {
   selectTimeline,
   selectSegments,
   selectActiveSegment,
-  selectActiveUrl,
   selectLeft,
   selectRight,
   selectTimelineStatus,
   updateActiveSegment,
-  updateActiveUrl,
   updateLeftPip,
   updateRightPip,
 } from '../../../redux/reducers/timelineSlice';
@@ -51,7 +49,6 @@ export default function Timeline() {
     const min = e.target.getAttribute('data-min');
     const max = e.target.getAttribute('data-max');
     dispatch(updateActiveSegment(id));
-    dispatch(updateActiveUrl(url));
     dispatch(updateLeftPip(left));
     dispatch(updateRightPip(right));
     dispatch(updateDateRange(`${min}-${max}`));

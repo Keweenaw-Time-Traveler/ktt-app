@@ -1,4 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+// Thunks
+export const getPlaceName = createAsyncThunk(
+  'filters/getPlaceName',
+  async (geometry, { dispatch, getState }) => {
+    return axios
+      .get(
+        'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/cchsdi_placenames/FeatureServer/0/query',
+        {
+          params: {
+            geometry,
+            returnGeometry: false,
+            f: 'pjson',
+          },
+        }
+      )
+      .then((res) => {
+        return res.data;
+      });
+  }
+);
 
 export const filtersSlice = createSlice({
   name: 'filters',
@@ -7,10 +29,11 @@ export const filtersSlice = createSlice({
     dateRange: '1800-2020',
     startDate: '1800',
     endDate: '2020',
-    location: 'Keweenaw',
     photos: 'false',
     featured: 'false',
     type: 'everything',
+    placeNameStatus: 'idle',
+    placeName: 'Keweenaw',
   },
   reducers: {
     updateSearch: (state, { payload }) => {
@@ -31,6 +54,24 @@ export const filtersSlice = createSlice({
     updatePhotos: (state, { payload }) => {
       state.photos = payload;
     },
+  },
+  extraReducers: (builder) => {
+    // Add reducers for additional action types here, and handle loading state as needed
+    builder.addCase(getPlaceName.pending, (state, action) => {
+      state.placeNameStatus = 'idle';
+    });
+    builder.addCase(getPlaceName.fulfilled, (state, action) => {
+      //Process the place name data
+      const names = action.payload.features;
+      // Add reponce data to the state array
+      // Update status
+      if (names.length == 1) {
+        state.placeName = names[0].attributes.region_nam;
+      } else {
+        state.placeName = 'Keweenaw';
+      }
+      state.placeNameStatus = 'success';
+    });
   },
 });
 

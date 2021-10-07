@@ -2,17 +2,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 //Redux
-import { useSelector } from 'react-redux';
-import { selectFiltersAll } from '../../../redux/reducers/filtersSlice';
-import { selectActiveUrl } from '../../../redux/reducers/timelineSlice';
+import { useDispatch } from 'react-redux';
+import { getPlaceName } from '../../../redux/reducers/filtersSlice';
+import { updateTimelineRange } from '../../../redux/reducers/timelineSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
 //ArchGIS
 import { loadModules } from 'esri-loader';
-//Font Awesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/pro-solid-svg-icons';
 //Styles
 import './styles.scss';
 //Images
@@ -22,34 +19,19 @@ import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
 //Functional Component
 function KeTTMap() {
+  const dispatch = useDispatch();
   const [zoom, setZoom] = useState(10);
-  const [search, setSearch] = useState('');
-  const [date_range, setDateRange] = useState('1800-2020');
-  const [tileUrl, setTileUrl] = useState('');
-  const [startDate, setStartDate] = useState('1800');
-  const [endDate, setEndDate] = useState('2020');
-  const [location, setLocation] = useState('Keweenaw');
-  const [photos, setPhotos] = useState('false');
-  const [featured, setFeatured] = useState('false');
-  const [type, setType] = useState('everything');
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
   const mapRef = useRef();
-  const filters = useSelector(selectFiltersAll);
-  const activeUrl = useSelector(selectActiveUrl);
   const searchRef = useRef('');
-  const dateRangeRef = useRef('1800-2020');
+  const dateRangeRef = useRef('1875-2021');
   const startDateRef = useRef('1800');
   const endDateRef = useRef('2020');
   const typeRef = useRef('everything');
   const photosRef = useRef('false');
   const featuredRef = useRef('false');
   const tileUrlRef = useRef('');
-
-  useEffect(() => {
-    setDateRange(filters.dateRange);
-    setTileUrl(activeUrl);
-  }, [filters, activeUrl]);
 
   useEffect(() => {
     loadModules(
@@ -60,16 +42,9 @@ function KeTTMap() {
         'esri/layers/VectorTileLayer',
         'esri/layers/TileLayer',
         'esri/layers/FeatureLayer',
-        'esri/geometry/Point',
         'esri/Graphic',
-        'esri/layers/GraphicsLayer',
         'esri/geometry/SpatialReference',
-        'esri/symbols/CIMSymbol',
-        'esri/symbols/SimpleMarkerSymbol',
-        'esri/symbols/SimpleLineSymbol',
-        'esri/renderers/SimpleRenderer',
         'esri/core/watchUtils',
-        'esri/Color',
       ],
       {
         css: true,
@@ -82,16 +57,9 @@ function KeTTMap() {
         VectorTileLayer,
         TileLayer,
         FeatureLayer,
-        Point,
         Graphic,
-        GraphicsLayer,
         SpatialReference,
-        CIMSymbol,
-        SimpleMarkerSymbol,
-        SimpleLineSymbol,
-        SimpleRenderer,
         watchUtils,
-        Color,
       ]) => {
         //console.log('STATE LIST VALUE', listValue);
 
@@ -135,20 +103,14 @@ function KeTTMap() {
         view
           .when()
           .then(() => {
-            const { xmin, xmax, ymin, ymax } = view.extent;
             window.markerExtent = null; //Used to determine if markers need to be updated, see watchUtils.whenTrue below
             window.timePeriod = null; //Used to determine if time period needs to be chosen, see watchUtils.whenTrue below
-            const startingExtent = {
-              xmin: xmin,
-              xmax: xmax,
-              ymin: ymin,
-              ymax: ymax,
-            };
+
             const startingFilters = {
               search: '',
-              date_range: '1800-2020',
-              startDate: '1800',
-              endDate: '2020',
+              date_range: '1875-2021',
+              startDate: '1875',
+              endDate: '2021',
               location: 'Keweenaw',
               photos: 'false',
               featured: 'false',
@@ -156,7 +118,7 @@ function KeTTMap() {
             };
             updateGrid(view, startingFilters);
 
-            //Time Chooser Event
+            //Choose Time Popup Event
             //Delayed to make sure elements have loaded before listener is added
             setTimeout(() => {
               const timeChooser = document.getElementById(
@@ -169,13 +131,9 @@ function KeTTMap() {
                 const max = event.target.options[id].getAttribute('data-max');
                 const url = event.target.options[id].getAttribute('data-url');
                 dateRangeRef.current = `${min}-${max}`;
-                //setDateRange(`${min}-${max}`);
                 startDateRef.current = `${min}`;
-                //setStartDate(`${min}`);
                 endDateRef.current = `${max}`;
-                //setEndDate(`${max}`);
                 tileUrlRef.current = url;
-                //setTileUrl(url);
                 const filterVal = {
                   search: searchRef.current,
                   date_range: `${min}-${max}`,
@@ -193,6 +151,7 @@ function KeTTMap() {
                   ymax: ymax,
                 };
                 console.log('TIME CHOOSER CHANGE', filterVal);
+                dispatch(updateTimelineRange(`${min}-${max}`));
                 //UPDATE GRID
                 updateGrid(view, filterVal);
                 //LOAD MARKERS
@@ -212,13 +171,9 @@ function KeTTMap() {
                 const max = event.target.getAttribute('data-max');
                 const url = event.target.getAttribute('data-url');
                 dateRangeRef.current = `${min}-${max}`;
-                //setDateRange(`${min}-${max}`);
                 startDateRef.current = `${min}`;
-                //setStartDate(`${min}`);
                 endDateRef.current = `${max}`;
-                //setEndDate(`${max}`);
                 tileUrlRef.current = url;
-                //setTileUrl(url);
                 const filterVal = {
                   search: searchRef.current,
                   date_range: `${min}-${max}`,
@@ -236,6 +191,7 @@ function KeTTMap() {
                   ymax: ymax,
                 };
                 console.log('TIME SEGMENT CHOOSEN', filterVal);
+                dispatch(updateTimelineRange(`${min}-${max}`));
                 handleTimePeriod();
                 //ADD TILE LAYER
                 createTileLayer(view.zoom, url);
@@ -257,7 +213,6 @@ function KeTTMap() {
               );
               landingSearchIcon.addEventListener('click', (event) => {
                 searchRef.current = `${landingSearch.value}`;
-                //setSearch(`${landingSearch.value}`);
                 const filterVal = {
                   search: `${landingSearch.value}`,
                   date_range: dateRangeRef.current,
@@ -275,7 +230,6 @@ function KeTTMap() {
             searchFieldIcon.addEventListener('click', (event) => {
               event.preventDefault();
               searchRef.current = `${searchField.value}`;
-              //setSearch(`${event.target.value}`);
               const filterVal = {
                 search: `${searchField.value}`,
                 date_range: dateRangeRef.current,
@@ -294,9 +248,8 @@ function KeTTMap() {
               };
               const isInside = extentExpanded.contains(extentClone);
               console.log('SEARCH CHANGE', filterVal);
-              if (view.zoom <= 16) {
-                updateGrid(view, filterVal);
-              }
+              //UPDATE GRID
+              updateGrid(view, filterVal);
               //LOAD MARKERS
               if (event.target.value != '') {
                 asyncMarkers(view, filterVal, extent).then((res) => {
@@ -304,6 +257,23 @@ function KeTTMap() {
                   generateMarkers(view, res);
                 });
               }
+              //MAKE SURE TILES ARE HIDDEN
+              hideTileLayer(view.map.layers);
+              //RESET EXTENTS
+              view
+                .goTo(
+                  {
+                    zoom: 10,
+                  },
+                  {
+                    duration: 5000,
+                  }
+                )
+                .catch(function (error) {
+                  if (error.name != 'AbortError') {
+                    console.error(error);
+                  }
+                });
             });
             //Radio Change Event
             const typeRadio = document.querySelectorAll('.radio-button');
@@ -311,7 +281,6 @@ function KeTTMap() {
               el.addEventListener('change', (event) => {
                 event.preventDefault();
                 typeRef.current = `${event.target.value}`;
-                //setType(`${event.target.value}`);
                 const filterVal = {
                   search: searchRef.current,
                   date_range: dateRangeRef.current,
@@ -350,10 +319,8 @@ function KeTTMap() {
                   ymin: ymin,
                   ymax: ymax,
                 };
-                //console.log(event.target.id);
                 if (id === 'photos') {
                   photosRef.current = `${checked}`;
-                  //setPhotos(`${checked}`);
                   filterVal = {
                     search: searchRef.current,
                     date_range: dateRangeRef.current,
@@ -364,7 +331,6 @@ function KeTTMap() {
                 }
                 if (id === 'featured') {
                   featuredRef.current = `${checked}`;
-                  //setFeatured(`${checked}`);
                   filterVal = {
                     search: searchRef.current,
                     date_range: dateRangeRef.current,
@@ -401,6 +367,15 @@ function KeTTMap() {
             console.log('VIEW EXTENT', view.extent);
             //console.log('VIEW SCALE', view.scale);
             //console.log('VIEW ZOOM', view.zoom);
+            dispatch(
+              getPlaceName({
+                xmin: view.extent.xmin,
+                ymin: view.extent.ymin,
+                xmax: view.extent.xmax,
+                ymax: view.extent.ymax,
+                spatialReference: { wkid: 3857 },
+              })
+            );
             setZoom(view.zoom);
             const searchDOM = document.getElementById('search');
             const dateRangeDOM = document.getElementById('date-range');
@@ -1158,6 +1133,14 @@ function KeTTMap() {
           addToView(tileLayer);
         }
 
+        function hideTileLayer(layers) {
+          layers.items.forEach((layer, index) => {
+            if (layer.id === 'title_layer') {
+              layer.visible = false;
+            }
+          });
+        }
+
         // Adds a given layer to the map in the view
         function addToView(layer) {
           //console.log('ADD', layer.id);
@@ -1454,6 +1437,7 @@ function KeTTMap() {
     window.timePeriod = true;
     setShowTimeChooser(false);
   };
+
   return (
     <div className="map-wrapper">
       <div className="webmap map" ref={mapRef} />

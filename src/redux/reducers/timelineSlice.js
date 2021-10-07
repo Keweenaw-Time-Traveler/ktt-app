@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-// First, create the thunk
+// Thunks
 export const getTimeline = createAsyncThunk(
   'timeline/getTimeline',
   async ({}, { dispatch, getState }) => {
@@ -13,7 +13,7 @@ export const getTimeline = createAsyncThunk(
   }
 );
 
-// Then, handle actions in your reducers:
+// Reducers
 export const timelineSlice = createSlice({
   name: 'timeline',
   initialState: {
@@ -28,8 +28,12 @@ export const timelineSlice = createSlice({
     leftPip: '0',
     rightPip: '100%',
     timelineStatus: 'idle',
+    timelineRange: '',
   },
   reducers: {
+    updateTimelineRange: (state, action) => {
+      state.timelineRange = action.payload;
+    },
     updateActiveSegment: (state, action) => {
       state.activeSegment = action.payload;
     },
@@ -82,6 +86,7 @@ export const timelineSlice = createSlice({
       // Add processed segment data
       // Update status
       state.timelineData = action.payload;
+      state.timelineRange = `${min}-${max}`;
       state.segmentData = segments;
       state.timelineStatus = 'success';
     });
@@ -89,12 +94,14 @@ export const timelineSlice = createSlice({
 });
 
 export const {
+  updateTimelineRange,
   updateActiveSegment,
   updateActiveUrl,
   updateLeftPip,
   updateRightPip,
 } = timelineSlice.actions;
 export const selectTimeline = (state) => state.timeline.timelineData;
+export const selectTimelineRange = (state) => state.timeline.timelineRange;
 export const selectSegments = (state) => state.timeline.segmentData;
 export const selectActiveSegment = (state) => state.timeline.activeSegment;
 export const selectActiveUrl = (state) => state.timeline.activeUrl;
