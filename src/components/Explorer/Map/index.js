@@ -49,6 +49,7 @@ function KeTTMap() {
         'esri/Graphic',
         'esri/geometry/SpatialReference',
         'esri/core/watchUtils',
+        'esri/geometry/Point',
       ],
       {
         css: true,
@@ -64,6 +65,7 @@ function KeTTMap() {
         Graphic,
         SpatialReference,
         watchUtils,
+        Point,
       ]) => {
         //console.log('STATE LIST VALUE', listValue);
 
@@ -194,10 +196,12 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              asyncMarkers(view, filterVal, extent).then((res) => {
-                console.log('MARKER RESPONCE', res);
-                generateMarkers(view, res);
-              });
+              if (view.zoom > 18) {
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              }
             });
             //Timeline Reset Click Event
             $('.navbar-middle').on('click', '.timeline-reset', function () {
@@ -239,8 +243,7 @@ function KeTTMap() {
               });
             });
             //Landing Page Search Button Click Event
-            $('#intro-options-search-icon').on('click', function (e) {
-              e.preventDefault();
+            $('body').on('click', '#intro-options-search-icon', function () {
               const searchValue = $('#search-landing').val();
               searchRef.current = `${searchValue}`;
               const filterVal = {
@@ -364,34 +367,45 @@ function KeTTMap() {
               });
             });
             //List Item Click Event
-            $('.page-content').on('click', '.list-results-item', (e) => {
-              //const data = $(this).attr('class');
-              const itemId = $(e.target).data('id');
-              const itemTitle = $(e.target).attr('title');
-              const point = {
-                type: 'point',
-                x: '-9841478.19616046',
-                y: '5974102.13086827',
-                spatialReference: new SpatialReference({ wkid: 3857 }),
+            $('.page-content').on('click', '.list-results-item', function () {
+              const itemId = $(this).data('id');
+              const itemTitle = $(this).attr('title');
+              const markerX = $(this).data('x');
+              const markerY = $(this).data('y');
+              const point = new Point({
+                x: markerX,
+                y: markerY,
+                spatialReference: { wkid: 3857 },
+              });
+              const opts = {
+                duration: 3000,
               };
-
-              view
-                .goTo(
-                  {
-                    target: point,
-                    zoom: 19,
-                  },
-                  {
-                    duration: 5000,
-                  }
-                )
-                .then(() => {
-                  view.popup.open({
-                    title: `Item ID: ${itemId}`,
-                    location: view.center,
-                  });
-                  view.popup.content = `Title: ${itemTitle}`;
+              view.goTo({ target: point, zoom: 19 }, opts).then(() => {
+                view.popup.open({
+                  title: `Item ID: ${itemId}`,
+                  location: view.center,
                 });
+                view.popup.content = `Title: ${itemTitle}<br/>X: ${markerX} Y: ${markerY}`;
+                const filterVal = {
+                  search: searchRef.current,
+                  date_range: dateRangeRef.current,
+                  photos: photosRef.current,
+                  featured: featuredRef.current,
+                  type: typeRef.current,
+                };
+                const { xmin, xmax, ymin, ymax } = view.extent;
+                const extent = {
+                  xmin: xmin,
+                  xmax: xmax,
+                  ymin: ymin,
+                  ymax: ymax,
+                };
+                //LOAD MARKERS
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              });
             });
           })
           .catch(function (e) {
@@ -422,16 +436,9 @@ function KeTTMap() {
               })
             );
             setZoom(view.zoom);
-            const searchDOM = document.getElementById('search');
-            const dateRangeDOM = document.getElementById('date-range');
-            const typeRadio = document.querySelector(
-              'input[name="filterType"]:checked'
-            );
             const markerExtent = window.markerExtent;
             const timePeriod = window.timePeriod;
             const extentClone = view.extent.clone();
-            //setNoTimePeriod
-
             if (view.zoom > 18 && !timePeriod) {
               setShowTimeChooser(true);
               setLoadingMarkers(false);
@@ -456,11 +463,11 @@ function KeTTMap() {
                   ymax: ymax,
                 };
                 const filters = {
-                  search: searchDOM.value,
-                  date_range: dateRangeDOM.textContent,
-                  photos: 'false',
-                  featured: 'false',
-                  type: typeRadio.value,
+                  search: searchRef.current,
+                  date_range: dateRangeRef.current,
+                  photos: photosRef.current,
+                  featured: featuredRef.current,
+                  type: typeRef.current,
                 };
                 asyncMarkers(view, filters, extent).then((res) => {
                   console.log('MARKER MAP RESPONCE', res);
@@ -937,12 +944,11 @@ function KeTTMap() {
           const inactiveGraphics = [];
           allActive.forEach((marker) => {
             if (marker.x) {
-              const point = {
-                type: 'point',
+              const point = new Point({
                 x: marker.x,
                 y: marker.y,
-                spatialReference: new SpatialReference({ wkid: 3857 }),
-              };
+                spatialReference: { wkid: 3857 },
+              });
               const graphic = new Graphic({
                 geometry: point,
                 attributes: marker,
@@ -959,12 +965,11 @@ function KeTTMap() {
           });
           allInActive.forEach((marker) => {
             if (marker.x) {
-              const point = {
-                type: 'point',
+              const point = new Point({
                 x: marker.x,
                 y: marker.y,
-                spatialReference: new SpatialReference({ wkid: 3857 }),
-              };
+                spatialReference: { wkid: 3857 },
+              });
               const graphic = new Graphic({
                 geometry: point,
                 attributes: marker,
@@ -1011,8 +1016,8 @@ function KeTTMap() {
                 },
               },
               {
-                value: 'person',
-                label: 'Person',
+                value: 'people',
+                label: 'People',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: peopleMarkerImage,
@@ -1021,8 +1026,8 @@ function KeTTMap() {
                 },
               },
               {
-                value: 'place',
-                label: 'Place',
+                value: 'places',
+                label: 'Places',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: placeMarkerImage,
@@ -1031,8 +1036,8 @@ function KeTTMap() {
                 },
               },
               {
-                value: 'story',
-                label: 'Story',
+                value: 'stories',
+                label: 'Stories',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: storyMarkerImage,
@@ -1099,8 +1104,8 @@ function KeTTMap() {
                 },
               },
               {
-                value: 'person',
-                label: 'Person',
+                value: 'people',
+                label: 'People',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: peopleMarkerImage,
@@ -1109,8 +1114,8 @@ function KeTTMap() {
                 },
               },
               {
-                value: 'place',
-                label: 'Place',
+                value: 'places',
+                label: 'Places',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: placeMarkerImage,
@@ -1119,8 +1124,8 @@ function KeTTMap() {
                 },
               },
               {
-                value: 'story',
-                label: 'Story',
+                value: 'stories',
+                label: 'Stories',
                 symbol: {
                   type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
                   url: storyMarkerImage,

@@ -26,6 +26,8 @@ export default function Section(props) {
             key={index}
             title={people.title}
             data-id={people.id}
+            data-x={people.x}
+            data-y={people.y}
             onClick={onClick}
           >
             {people.title}
