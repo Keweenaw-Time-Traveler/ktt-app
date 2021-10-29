@@ -1,5 +1,6 @@
 @import '../../../colors.scss';
 .navbar-timeline {
+  flex-grow: 1;
   display: flex;
   padding: 0 25px;
   color: #fff;
@@ -52,4 +53,13 @@
   height: 20px;
   border-radius: 50%;
   background: $color-kett-gold;
+}
+.timeline-reset {
+  color: $color-kett-white;
+  margin-right: 25px;
+  text-transform: uppercase;
+  cursor: pointer;
+  &:hover {
+    color: $color-kett-gold;
+  }
 }

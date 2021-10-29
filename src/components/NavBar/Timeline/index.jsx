@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { getList } from '../../../redux/reducers/listSlice';
+import { selectRemoveList, getList } from '../../../redux/reducers/listSlice';
 import {
   updateDateRange,
   updateStartDate,
@@ -16,9 +16,12 @@ import {
   selectLeft,
   selectRight,
   selectTimelineStatus,
+  selectReset,
+  updateTimelineRange,
   updateActiveSegment,
   updateLeftPip,
   updateRightPip,
+  updateReset,
 } from '../../../redux/reducers/timelineSlice';
 //Styles
 import './styles.scss';
@@ -27,6 +30,7 @@ import Tooltip from 'react-tooltip-lite';
 
 export default function Timeline() {
   const dispatch = useDispatch();
+  const listRemove = useSelector(selectRemoveList);
   const timeline = useSelector(selectTimeline);
   const segments = useSelector(selectSegments);
   const segmentLength = segments.length;
@@ -34,6 +38,7 @@ export default function Timeline() {
   const left = useSelector(selectLeft);
   const right = useSelector(selectRight);
   const timelineStatus = useSelector(selectTimelineStatus);
+  const resetStatus = useSelector(selectReset);
 
   useEffect(() => {
     if (timelineStatus === 'idle') {
@@ -54,47 +59,69 @@ export default function Timeline() {
     dispatch(updateDateRange(`${min}-${max}`));
     dispatch(updateStartDate(`${min}`));
     dispatch(updateEndDate(`${max}`));
-    dispatch(getList({}));
+    dispatch(updateReset(true));
+    if (!listRemove) {
+      dispatch(getList({}));
+    }
   };
-
+  const handleResetClick = (e) => {
+    dispatch(updateActiveSegment(null));
+    dispatch(updateLeftPip('0%'));
+    dispatch(updateRightPip('100%'));
+    dispatch(updateDateRange(`${timeline.min}-${timeline.max}`));
+    dispatch(updateTimelineRange(`${timeline.min}-${timeline.max}`));
+    dispatch(updateStartDate(`${timeline.min}`));
+    dispatch(updateEndDate(`${timeline.max}`));
+    dispatch(updateReset(false));
+    if (!listRemove) {
+      dispatch(getList({}));
+    }
+  };
   return (
-    <div id="date-range" className="navbar-timeline">
-      <div className="label-min">{timeline.min}</div>
-      <div className="segments">
-        <div
-          className="pip pip-start"
-          style={{ left: `calc(${left} - 10px)` }}
-        ></div>
-        {segments.map((segment, index) => (
-          <Tooltip
-            key={index}
-            className={`segment-wrapper ${
-              segmentLength == index + 1 ? 'last-wrapper' : 'wrapper'
-            }`}
-            styles={{ width: `${segment.size}%` }}
-            background="#e6a100"
-            content={segment.title}
-          >
-            <div
-              className={`segment segment-${index + 1} ${
-                activeSegment == index + 1 ? 'active' : 'inactive'
+    <>
+      <div id="date-range" className="navbar-timeline">
+        <div className="label-min">{timeline.min}</div>
+        <div className="segments">
+          <div
+            className="pip pip-start"
+            style={{ left: `calc(${left} - 10px)` }}
+          ></div>
+          {segments.map((segment, index) => (
+            <Tooltip
+              key={index}
+              className={`segment-wrapper ${
+                segmentLength == index + 1 ? 'last-wrapper' : 'wrapper'
               }`}
-              data-id={index + 1}
-              data-left={segment.left}
-              data-right={segment.right}
-              data-min={segment.dateMin}
-              data-max={segment.dateMax}
-              data-url={segment.url}
-              onClick={handleSegmentClick}
-            ></div>
-          </Tooltip>
-        ))}
-        <div
-          className="pip pip-end"
-          style={{ left: `calc(${right} - 10px)` }}
-        ></div>
+              styles={{ width: `${segment.size}%` }}
+              background="#e6a100"
+              content={segment.title}
+            >
+              <div
+                className={`segment segment-${index + 1} ${
+                  activeSegment == index + 1 ? 'active' : 'inactive'
+                }`}
+                data-id={index + 1}
+                data-left={segment.left}
+                data-right={segment.right}
+                data-min={segment.dateMin}
+                data-max={segment.dateMax}
+                data-url={segment.url}
+                onClick={handleSegmentClick}
+              ></div>
+            </Tooltip>
+          ))}
+          <div
+            className="pip pip-end"
+            style={{ left: `calc(${right} - 10px)` }}
+          ></div>
+        </div>
+        <div className="label-max">{timeline.max}</div>
       </div>
-      <div className="label-max">{timeline.max}</div>
-    </div>
+      {resetStatus && (
+        <div className="timeline-reset" onClick={handleResetClick}>
+          Reset
+        </div>
+      )}
+    </>
   );
 }

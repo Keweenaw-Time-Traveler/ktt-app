@@ -29,6 +29,7 @@ export const timelineSlice = createSlice({
     rightPip: '100%',
     timelineStatus: 'idle',
     timelineRange: '',
+    reset: false,
   },
   reducers: {
     updateTimelineRange: (state, action) => {
@@ -45,6 +46,9 @@ export const timelineSlice = createSlice({
     },
     updateRightPip: (state, action) => {
       state.rightPip = action.payload;
+    },
+    updateReset: (state, action) => {
+      state.reset = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -99,6 +103,7 @@ export const {
   updateActiveUrl,
   updateLeftPip,
   updateRightPip,
+  updateReset,
 } = timelineSlice.actions;
 export const selectTimeline = (state) => state.timeline.timelineData;
 export const selectTimelineRange = (state) => state.timeline.timelineRange;
@@ -108,5 +113,6 @@ export const selectActiveUrl = (state) => state.timeline.activeUrl;
 export const selectLeft = (state) => state.timeline.leftPip;
 export const selectRight = (state) => state.timeline.rightPip;
 export const selectTimelineStatus = (state) => state.timeline.timelineStatus;
+export const selectReset = (state) => state.timeline.reset;
 
 export default timelineSlice.reducer;

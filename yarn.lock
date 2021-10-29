@@ -8773,6 +8773,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"jquery@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "jquery@npm:3.6.0"
+  checksum: a0a819022a1bdff5efa79bbd9d4d7352de5bd32dabe42108e6ec0797238dba36c09c108e0eea2724f5d03acc1b30ee87d76bec80e15b9510106532292ebe6ba4
+  languageName: node
+  linkType: hard
+
 "js-base64@npm:^2.1.8":
   version: 2.6.4
   resolution: "js-base64@npm:2.6.4"
@@ -9100,6 +9107,7 @@ fsevents@^1.2.7:
     breakpoint-sass: ^2.7.1
     esri-loader: ^3.1.0
     identity-obj-proxy: ^3.0.0
+    jquery: ^3.6.0
     node-sass: 4.14.1
     prop-types: ^15.7.2
     react: ^16.13.1

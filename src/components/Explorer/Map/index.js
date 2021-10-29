@@ -1,10 +1,14 @@
 //React
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import $ from 'jquery';
 //Redux
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getPlaceName } from '../../../redux/reducers/filtersSlice';
-import { updateTimelineRange } from '../../../redux/reducers/timelineSlice';
+import {
+  selectTimeline,
+  updateTimelineRange,
+} from '../../../redux/reducers/timelineSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
@@ -118,120 +122,144 @@ function KeTTMap() {
             };
             updateGrid(view, startingFilters);
 
-            //Choose Time Popup Event
-            //Delayed to make sure elements have loaded before listener is added
-            setTimeout(() => {
-              const timeChooser = document.getElementById(
-                'time-chooser-select'
-              );
-              timeChooser.addEventListener('change', (event) => {
-                event.preventDefault();
-                const id = event.target.value;
-                const min = event.target.options[id].getAttribute('data-min');
-                const max = event.target.options[id].getAttribute('data-max');
-                const url = event.target.options[id].getAttribute('data-url');
-                dateRangeRef.current = `${min}-${max}`;
-                startDateRef.current = `${min}`;
-                endDateRef.current = `${max}`;
-                tileUrlRef.current = url;
-                const filterVal = {
-                  search: searchRef.current,
-                  date_range: `${min}-${max}`,
-                  photos: photosRef.current,
-                  featured: featuredRef.current,
-                  type: typeRef.current,
-                };
-                const extentClone = view.extent.clone();
-                const extentExpanded = extentClone.expand(10);
-                const { xmin, xmax, ymin, ymax } = extentExpanded;
-                const extent = {
-                  xmin: xmin,
-                  xmax: xmax,
-                  ymin: ymin,
-                  ymax: ymax,
-                };
-                console.log('TIME CHOOSER CHANGE', filterVal);
-                dispatch(updateTimelineRange(`${min}-${max}`));
-                //UPDATE GRID
-                updateGrid(view, filterVal);
-                //LOAD MARKERS
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
-                //ADD TILE LAYER
-                createTileLayer(view.zoom, url);
+            //Choose a Time Popup Change Event
+            $('#time-chooser-select').on('change', function (e) {
+              e.preventDefault();
+              const $selected = $(this).find(':selected');
+              const min = $selected.data('min');
+              const max = $selected.data('max');
+              const url = $selected.data('url');
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              tileUrlRef.current = url;
+              const filterVal = {
+                search: searchRef.current,
+                date_range: `${min}-${max}`,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('TIME CHOOSER CHANGE', filterVal);
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                generateMarkers(view, res);
               });
-            }, 4000);
-            //Timeline Segment Event
-            const typeSegment = document.querySelectorAll('.segment');
-            typeSegment.forEach((el) => {
-              el.addEventListener('click', (event) => {
-                const min = event.target.getAttribute('data-min');
-                const max = event.target.getAttribute('data-max');
-                const url = event.target.getAttribute('data-url');
-                dateRangeRef.current = `${min}-${max}`;
-                startDateRef.current = `${min}`;
-                endDateRef.current = `${max}`;
-                tileUrlRef.current = url;
-                const filterVal = {
-                  search: searchRef.current,
-                  date_range: `${min}-${max}`,
-                  photos: photosRef.current,
-                  featured: featuredRef.current,
-                  type: typeRef.current,
-                };
-                const extentClone = view.extent.clone();
-                const extentExpanded = extentClone.expand(10);
-                const { xmin, xmax, ymin, ymax } = extentExpanded;
-                const extent = {
-                  xmin: xmin,
-                  xmax: xmax,
-                  ymin: ymin,
-                  ymax: ymax,
-                };
-                console.log('TIME SEGMENT CHOOSEN', filterVal);
-                dispatch(updateTimelineRange(`${min}-${max}`));
-                handleTimePeriod();
-                //ADD TILE LAYER
-                createTileLayer(view.zoom, url);
-                //UPDATE GRID
-                updateGrid(view, filterVal);
-                //LOAD MARKERS
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
+              //ADD TILE LAYER
+              createTileLayer(view.zoom, url);
+            });
+            //Timeline Segment Click Event
+            $('.segment').on('click', function (e) {
+              const min = $(this).data('min');
+              const max = $(this).data('max');
+              const url = $(this).data('url');
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              tileUrlRef.current = url;
+              const filterVal = {
+                search: searchRef.current,
+                date_range: `${min}-${max}`,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('TIME SEGMENT CHOOSEN', filterVal);
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              handleTimePeriod();
+              //ADD TILE LAYER
+              createTileLayer(view.zoom, url);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                generateMarkers(view, res);
               });
             });
-            //Landing Search Button Event
-            //Delayed to make sure elements have loaded before listener is added
-            setTimeout(() => {
-              const landingSearch = document.getElementById('search-landing');
-              const landingSearchIcon = document.getElementById(
-                'intro-options-search-icon'
-              );
-              landingSearchIcon.addEventListener('click', (event) => {
-                searchRef.current = `${landingSearch.value}`;
-                const filterVal = {
-                  search: `${landingSearch.value}`,
-                  date_range: dateRangeRef.current,
-                  photos: photosRef.current,
-                  featured: featuredRef.current,
-                  type: typeRef.current,
-                };
-                console.log('LANDING BUTTON CLICKED', filterVal);
-                updateGrid(view, filterVal);
-              });
-            }, 4000);
-            //Search Field Event
-            const searchField = document.getElementById('search');
-            const searchFieldIcon = document.getElementById('search-icon');
-            searchFieldIcon.addEventListener('click', (event) => {
-              event.preventDefault();
-              searchRef.current = `${searchField.value}`;
+            //Timeline Reset Click Event
+            $('.navbar-middle').on('click', '.timeline-reset', function () {
+              //console.log('TIMELINE', timeline);
+              const min = '1875';
+              const max = '2021';
+              const url = '';
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              tileUrlRef.current = url;
               const filterVal = {
-                search: `${searchField.value}`,
+                search: searchRef.current,
+                date_range: `${min}-${max}`,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('TIMELINE RESET', filterVal);
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              handleTimePeriod();
+              //ADD TILE LAYER
+              createTileLayer(view.zoom, url);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                generateMarkers(view, res);
+              });
+            });
+            //Landing Page Search Button Click Event
+            $('#intro-options-search-icon').on('click', function (e) {
+              e.preventDefault();
+              const searchValue = $('#search-landing').val();
+              searchRef.current = `${searchValue}`;
+              const filterVal = {
+                search: `${searchValue}`,
+                date_range: dateRangeRef.current,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              console.log('LANDING BUTTON CLICKED', filterVal);
+              updateGrid(view, filterVal);
+            });
+            //Main Search Field Click Event
+            $('#search-icon').on('click', function (e) {
+              e.preventDefault();
+              const searchValue = $('#search').val();
+              searchRef.current = `${searchValue}`;
+              const filterVal = {
+                search: `${searchValue}`,
                 date_range: dateRangeRef.current,
                 photos: photosRef.current,
                 featured: featuredRef.current,
@@ -246,115 +274,132 @@ function KeTTMap() {
                 ymin: ymin,
                 ymax: ymax,
               };
-              const isInside = extentExpanded.contains(extentClone);
               console.log('SEARCH CHANGE', filterVal);
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (event.target.value != '') {
+              if (searchValue != '') {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
                 });
               }
               //MAKE SURE TILES ARE HIDDEN
-              hideTileLayer(view.map.layers);
+              hideLayer('title_layer', view.map.layers);
               //RESET EXTENTS
+              view.goTo(
+                {
+                  zoom: 10,
+                },
+                {
+                  duration: 5000,
+                }
+              );
+            });
+            //Filters:Radio Buttons Click Event
+            $('.radio-button-input').on('click', function () {
+              const type = $(this).val();
+              typeRef.current = `${type}`;
+              const filterVal = {
+                search: searchRef.current,
+                date_range: dateRangeRef.current,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: `${type}`,
+              };
+              const { xmin, xmax, ymin, ymax } = view.extent;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                generateMarkers(view, res);
+              });
+            });
+            //Filters:Checkbox Click Event
+            $('.toggle-switch-checkbox').on('click', function () {
+              const type = $(this).data('type');
+              const checked = $(this).is(':checked');
+              let filterVal = {};
+              const { xmin, xmax, ymin, ymax } = view.extent;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              if (type === 'photos') {
+                photosRef.current = `${checked}`;
+                filterVal = {
+                  search: searchRef.current,
+                  date_range: dateRangeRef.current,
+                  photos: `${checked}`,
+                  featured: featuredRef.current,
+                  type: typeRef.current,
+                };
+              }
+              if (type === 'featured') {
+                featuredRef.current = `${checked}`;
+                filterVal = {
+                  search: searchRef.current,
+                  date_range: dateRangeRef.current,
+                  photos: photosRef.current,
+                  featured: `${checked}`,
+                  type: typeRef.current,
+                };
+              }
+              console.log('TOGGLE', filterVal);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                generateMarkers(view, res);
+              });
+            });
+            //List Item Click Event
+            $('.page-content').on('click', '.list-results-item', (e) => {
+              //const data = $(this).attr('class');
+              const itemId = $(e.target).data('id');
+              const itemTitle = $(e.target).attr('title');
+              const point = {
+                type: 'point',
+                x: '-9841478.19616046',
+                y: '5974102.13086827',
+                spatialReference: new SpatialReference({ wkid: 3857 }),
+              };
+
               view
                 .goTo(
                   {
-                    zoom: 10,
+                    target: point,
+                    zoom: 19,
                   },
                   {
                     duration: 5000,
                   }
                 )
-                .catch(function (error) {
-                  if (error.name != 'AbortError') {
-                    console.error(error);
-                  }
+                .then(() => {
+                  view.popup.open({
+                    title: `Item ID: ${itemId}`,
+                    location: view.center,
+                  });
+                  view.popup.content = `Title: ${itemTitle}`;
                 });
             });
-            //Radio Change Event
-            const typeRadio = document.querySelectorAll('.radio-button');
-            typeRadio.forEach((el) =>
-              el.addEventListener('change', (event) => {
-                event.preventDefault();
-                typeRef.current = `${event.target.value}`;
-                const filterVal = {
-                  search: searchRef.current,
-                  date_range: dateRangeRef.current,
-                  photos: photosRef.current,
-                  featured: featuredRef.current,
-                  type: `${event.target.value}`,
-                };
-                const { xmin, xmax, ymin, ymax } = view.extent;
-                const extent = {
-                  xmin: xmin,
-                  xmax: xmax,
-                  ymin: ymin,
-                  ymax: ymax,
-                };
-                //UPDATE GRID
-                updateGrid(view, filterVal);
-                //LOAD MARKERS
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
-              })
-            );
-            //Toogle Change Event
-            const typeToggle = document.querySelectorAll('.filter-toogle');
-            typeToggle.forEach((el) =>
-              el.addEventListener('change', (event) => {
-                event.preventDefault();
-                const id = event.target.id;
-                const checked = event.target.checked;
-                let filterVal = {};
-                const { xmin, xmax, ymin, ymax } = view.extent;
-                const extent = {
-                  xmin: xmin,
-                  xmax: xmax,
-                  ymin: ymin,
-                  ymax: ymax,
-                };
-                if (id === 'photos') {
-                  photosRef.current = `${checked}`;
-                  filterVal = {
-                    search: searchRef.current,
-                    date_range: dateRangeRef.current,
-                    photos: `${checked}`,
-                    featured: featuredRef.current,
-                    type: typeRef.current,
-                  };
-                }
-                if (id === 'featured') {
-                  featuredRef.current = `${checked}`;
-                  filterVal = {
-                    search: searchRef.current,
-                    date_range: dateRangeRef.current,
-                    photos: photosRef.current,
-                    featured: `${checked}`,
-                    type: typeRef.current,
-                  };
-                }
-                console.log('TOGGLE', filterVal);
-                //UPDATE GRID
-                updateGrid(view, filterVal);
-                //LOAD MARKERS
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
-              })
-            );
           })
           .catch(function (e) {
             console.error('Creating FeatureLayer failed', e);
           });
 
         view.on('click', function (event) {
+          console.log(event.mapPoint);
           view.hitTest(event).then(function (response) {
             // do something with the result graphic
             var graphic = response.results[0].graphic;
@@ -1133,9 +1178,9 @@ function KeTTMap() {
           addToView(tileLayer);
         }
 
-        function hideTileLayer(layers) {
+        function hideLayer(id, layers) {
           layers.items.forEach((layer, index) => {
-            if (layer.id === 'title_layer') {
+            if (layer.id === id) {
               layer.visible = false;
             }
           });

@@ -32,6 +32,7 @@ const ToggleSwitch = ({
         name={name}
         className="toggle-switch-checkbox"
         id={id}
+        data-type={id}
         checked={checked}
         onChange={(e) => onChange(e.target.checked, id)}
         disabled={disabled}

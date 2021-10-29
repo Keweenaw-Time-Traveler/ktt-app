@@ -27,7 +27,7 @@ const List = (props) => {
 
   const handleListClick = (e) => {
     const itemId = e.target.getAttribute('data-id');
-    console.log(itemId);
+    //console.log(itemId);
     // dispatch(updateListItem(itemId));
     // const view = window.kettView;
     // const graphics = window.activeGraphics;
