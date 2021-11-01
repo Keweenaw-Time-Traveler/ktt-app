@@ -28,17 +28,21 @@
   margin-left: 4px;
 }
 .esri-popup__footer {
-  background: #74716b !important;
+  padding: 0;
+  background: $color-kett-grey-secondary !important;
 }
 .esri-popup__pointer-direction {
-  background: #74716b !important;
+  background: $color-kett-grey-secondary !important;
   transform: none !important;
   top: -15 !important;
   height: 30px !important;
   width: 3px !important;
 }
 .esri-popup__header {
-  background: #74716b;
+  background: $color-kett-grey-secondary;
+}
+.esri-popup__header-container--button:hover {
+  background: none;
 }
 .esri-popup__header-buttons {
   background: #000;
@@ -56,6 +60,9 @@
   background: none !important;
 }
 .esri-popup__navigation {
+  position: absolute;
+  bottom: 8px;
+  right: 0;
   background: none !important;
 }
 .esri-popup__button {
@@ -70,7 +77,8 @@
   background: $color-kett-green-secondary !important;
 }
 .esri-popup__content {
-  margin: 0 0 20px !important;
+  position: relative;
+  margin: 0 0 12px 0 !important;
 }
 .esri-feature {
   background: none !important;
@@ -116,7 +124,6 @@
     color: $color-kett-white;
   }
 }
-
 .grid-popup-data {
   .data {
     display: none;
@@ -125,7 +132,50 @@
       display: block;
     }
   }
+  ul {
+    margin: 15px 0;
+  }
   li {
     text-align: left;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 26px;
+    line-height: 2.6rem;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    &::marker {
+      color: $color-kett-green-primary;
+    }
+    &:hover,
+    &.active {
+      color: $color-kett-gold;
+    }
+    .recnumber {
+      display: none;
+    }
   }
+  .data-actions {
+    float: left;
+    width: 100%;
+    min-height: 47px;
+    padding: 10px 20px;
+    background: $color-kett-grey-secondary;
+  }
+  .add-story {
+    float: left;
+    padding: 2px 9px;
+    margin: 0;
+    background: $color-kett-white;
+    color: $color-kett-black;
+    border-radius: 15px;
+    font-size: 14px;
+    font-size: 1.4rem;
+    line-height: 23px;
+    line-height: 2.3rem;
+    letter-spacing: 0.35px;
+  }
+}
+.esri-popup__inline-actions-container,
+.esri-popup__feature-menu {
+  display: none;
 }

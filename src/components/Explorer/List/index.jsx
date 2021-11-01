@@ -49,6 +49,7 @@ const List = (props) => {
         {list.active.people && (
           <Section
             title="People"
+            type="people"
             status={listStatus}
             icon={faCircleNotch}
             list={list.active.people}
@@ -58,6 +59,7 @@ const List = (props) => {
         {list.active.places && (
           <Section
             title="Places"
+            type="places"
             status={listStatus}
             icon={faCircleNotch}
             list={list.active.places}
@@ -67,6 +69,7 @@ const List = (props) => {
         {list.active.stories && (
           <Section
             title="Stories"
+            type="stories"
             status={listStatus}
             icon={faCircleNotch}
             list={list.active.stories}
