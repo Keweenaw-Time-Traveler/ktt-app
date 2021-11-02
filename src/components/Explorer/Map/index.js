@@ -498,11 +498,11 @@ function KeTTMap() {
           });
 
         view.on('click', function (event) {
-          console.log(event.mapPoint);
+          //console.log(event.mapPoint);
           view.hitTest(event).then(function (response) {
             // do something with the result graphic
             var graphic = response.results[0].graphic;
-            console.log('GRAPHIC ATTR', graphic.attributes);
+            //console.log('GRAPHIC ATTR', graphic.attributes);
           });
         });
 
