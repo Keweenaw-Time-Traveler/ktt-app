@@ -566,8 +566,8 @@ function KeTTMap() {
               //console.log('LAYERS', layers.length);
               const level_1 = '6';
               const level_2 = '1';
-              const level_3 = '01';
-              const level_4 = '008';
+              const level_3 = '0.1';
+              const level_4 = '0.05';
               layers.items.forEach((layer, index) => {
                 if (view.zoom <= 10) {
                   if (layer.id === `grid_layer_${level_1}`) {
@@ -714,13 +714,13 @@ function KeTTMap() {
           asyncGrid(filters, '0.1').then((res) => {
             console.log('GRID LEVEL 3 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(view, res.active, filters.type, '01', '0.4');
+            generateGrid(view, res.active, filters.type, '0.1', '0.4');
           });
           //GRID LEVEL 4
           asyncGrid(filters, '0.05').then((res) => {
             console.log('GRID LEVEL 4 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(view, res.active, filters.type, '008', '0.2');
+            generateGrid(view, res.active, filters.type, '0.05', '0.2');
           });
         }
 
@@ -964,9 +964,9 @@ function KeTTMap() {
             show = true;
           } else if (size === '1' && view.zoom > 10 && view.zoom <= 13) {
             show = true;
-          } else if (size === '01' && view.zoom > 13 && view.zoom <= 16) {
+          } else if (size === '0.1' && view.zoom > 13 && view.zoom <= 16) {
             show = true;
-          } else if (size === '008' && view.zoom > 16 && view.zoom <= 18) {
+          } else if (size === '0.08' && view.zoom > 16 && view.zoom <= 18) {
             show = true;
           } else if (view.zoom > 18) {
             show = false;
@@ -1317,7 +1317,7 @@ function KeTTMap() {
         date_range: dateRangeRef.current,
         photos: photosRef.current,
         featured: featuredRef.current,
-        type: 'all',
+        type: 'everything',
       },
     };
     console.log('GRID CLICK INFO', filters);
@@ -1420,7 +1420,7 @@ function KeTTMap() {
         date_range: filterVal.date_range,
         photos: filterVal.photos,
         featured: filterVal.featured,
-        type: 'all',
+        type: 'everything',
       },
     };
     console.log('LIST CLICK MARKER INFO', filters);
@@ -1435,19 +1435,21 @@ function KeTTMap() {
         const placesData = active.places.results;
         const storiesData = active.stories.results;
         const peopleTitles = peopleData.map((person) => {
+          const id = person.id;
+          const recnumber = person.recnumber;
           const highlight = person.highlighted;
           const style = highlight == 'true' ? ' class="active"' : '';
-          return `<li${style}>${person.title}</li>`;
+          return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span></li>`;
         });
         const placesTitles = placesData.map((place) => {
           const highlight = place.highlighted;
           const style = highlight == 'true' ? ' class="active"' : '';
-          return `<li${style}>${place.title}</li>`;
+          return `<li${style}>${place.title}<span class="recnumber">${recnumber}</span></li>`;
         });
         const storiesTitles = storiesData.map((story) => {
           const highlight = story.highlighted;
           const style = highlight == 'true' ? ' class="active"' : '';
-          return `<li${style}>${story.title}</li>`;
+          return `<li${style}>${story.title}<span class="recnumber">${recnumber}</span></li>`;
         });
         let stringPeople = peopleCount
           ? ''
@@ -1526,7 +1528,7 @@ function KeTTMap() {
         date_range: dateRangeRef.current,
         photos: photosRef.current,
         featured: featuredRef.current,
-        type: 'all',
+        type: 'everything',
       },
     };
     console.log('MARKER CLICK MARKER INFO', filters);
