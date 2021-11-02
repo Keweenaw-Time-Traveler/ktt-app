@@ -19,6 +19,10 @@ import {
   updateReset,
 } from '../../../redux/reducers/timelineSlice';
 import { getList } from '../../../redux/reducers/listSlice';
+import {
+  getDetails,
+  toggleDetails,
+} from '../../../redux/reducers/detailsSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
@@ -474,8 +478,11 @@ function KeTTMap() {
               'click',
               '.grid-popup-data .data li',
               function () {
-                let recnumber = $(this).find('.recnumber').text();
+                const id = $(this).find('.id').text();
+                const recnumber = $(this).find('.recnumber').text();
                 console.log(recnumber);
+                dispatch(toggleDetails('show'));
+                dispatch(getDetails({ id, recnumber }));
                 // const type = $(this).data('type');
                 // const itemId = $(this).data('id');
                 // const markerX = $(this).data('x');

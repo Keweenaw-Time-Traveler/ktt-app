@@ -4,12 +4,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // First, create the thunk
 export const getDetails = createAsyncThunk(
   'details/getDetails',
-  async ({}, { dispatch, getState }) => {
-    //const stateBefore = getState();
+  async (details, { dispatch, getState }) => {
+    const { id, recnumber } = details;
+    console.log(id, recnumber);
     return axios
       .post('http://geospatialresearch.mtu.edu/full_details.php', {
-        personid: '610EDD82-DAD2-431A-B27D-359CC4CA1DFF',
-        recnumber: '14446419CENSUS1930',
+        personid: id,
+        recnumber: recnumber,
       })
       .then((res) => {
         return res.data;
@@ -24,6 +25,7 @@ export const detailsSlice = createSlice({
     showDetails: false,
     removeDetails: true,
     detailsStatus: 'idle',
+    name: '',
   },
   reducers: {
     toggleDetails: (state, action) => {
@@ -40,17 +42,21 @@ export const detailsSlice = createSlice({
       state.detailsStatus = 'idle';
     });
     builder.addCase(getDetails.fulfilled, (state, action) => {
-      // Add list to the state array
+      // Add details to the state array
       // Update status
-      //state.entities = action.payload;
+      console.log('DETAILS', action.payload);
+      state.name = action.payload.person_details[0].value;
+      state.details = action.payload;
       state.detailsStatus = 'success';
     });
   },
 });
 
 export const { toggleDetails } = detailsSlice.actions;
-export const selectShowList = (state) => state.details.showDetails;
-export const selectRemoveList = (state) => state.details.removeDetails;
+export const selectShowDetails = (state) => state.details.showDetails;
+export const selectRemoveDetails = (state) => state.details.removeDetails;
 export const selectDetailsStatus = (state) => state.details.detailsStatus;
+export const selectDetails = (state) => state.details.details;
+export const selectDetailsName = (state) => state.details.name;
 
 export default detailsSlice.reducer;
