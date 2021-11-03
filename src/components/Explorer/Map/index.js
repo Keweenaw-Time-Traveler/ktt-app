@@ -295,7 +295,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (searchValue != '') {
+              if (searchValue !== '') {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
@@ -394,70 +394,10 @@ function KeTTMap() {
                 y: markerY,
                 spatialReference: { wkid: 3857 },
               });
-              const opts = {
-                duration: 3000,
-              };
-              $('#date-range .segment').each(function () {
-                const id = $(this).data('id');
-                const url = $(this).data('url');
-                const left = $(this).data('left');
-                const right = $(this).data('right');
-                const min = $(this).data('min');
-                const max = $(this).data('max');
-                if (!window.timePeriod) {
-                  if (mapyear >= min && mapyear <= max) {
-                    dateRangeRef.current = `${min}-${max}`;
-                    startDateRef.current = `${min}`;
-                    endDateRef.current = `${max}`;
-                    tileUrlRef.current = url;
-                    dispatch(updateTimelineRange(`${min}-${max}`));
-                    dispatch(updateActiveSegment(id));
-                    dispatch(updateActiveUrl(url));
-                    dispatch(updateLeftPip(left));
-                    dispatch(updateRightPip(right));
-                    dispatch(updateDateRange(`${min}-${max}`));
-                    dispatch(updateStartDate(`${min}`));
-                    dispatch(updateEndDate(`${max}`));
-                    createTileLayer(view.zoom, url);
-                    handleTimePeriod();
-                    dispatch(updateReset(true));
-                    dispatch(getList({}));
-                    console.log('SEGMENT URL', `${min}-${max}`, url);
-                  }
-                }
-              });
-              view.goTo({ target: point, zoom: 19 }, opts).then(() => {
-                view.popup.open({
-                  title: `Item ID: ${itemId}`,
-                  location: view.center,
-                });
-                const filterVal = {
-                  search: searchRef.current,
-                  date_range: dateRangeRef.current,
-                  photos: photosRef.current,
-                  featured: featuredRef.current,
-                  type: typeRef.current,
-                };
-                const { xmin, xmax, ymin, ymax } = view.extent;
-                const extent = {
-                  xmin: xmin,
-                  xmax: xmax,
-                  ymin: ymin,
-                  ymax: ymax,
-                };
-                asyncMarkerInfo(recnumber, markerid, type, filterVal).then(
-                  function (res) {
-                    view.popup.content = res;
-                  }
-                );
-                //LOAD MARKERS
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
-              });
+              updateTimeline(mapyear);
+              gotoMarker(point, itemId, recnumber, markerid, type);
             });
-            //Map Popup:Tabs Click Event
+            //Popup Tabs Click Event
             $('.page-content').on(
               'click',
               '.grid-popup-tabs .tab',
@@ -473,10 +413,31 @@ function KeTTMap() {
                   .removeClass('active');
               }
             );
-            //Map Popup:List Click Event
+            //Grid Popup List Click Event
             $('.page-content').on(
               'click',
-              '.grid-popup-data .data li',
+              '.map-popup.grid .data li',
+              function () {
+                const itemId = $(this).find('.id').text();
+                const recnumber = $(this).find('.recnumber').text();
+                const markerid = $(this).find('.markerid').text();
+                const mapyear = $(this).find('.mapyear').text();
+                const x = $(this).find('.pointx').text();
+                const y = $(this).find('.pointy').text();
+                const point = new Point({
+                  x: x,
+                  y: y,
+                  spatialReference: { wkid: 3857 },
+                });
+                console.log('GRID LIST', itemId, recnumber, markerid);
+                updateTimeline(mapyear);
+                gotoMarker(point, itemId, recnumber, markerid, 'people');
+              }
+            );
+            //Marker Popup List Click Event
+            $('.page-content').on(
+              'click',
+              '.map-popup-data.marker .data li',
               function () {
                 const id = $(this).find('.id').text();
                 const recnumber = $(this).find('.recnumber').text();
@@ -499,6 +460,11 @@ function KeTTMap() {
                 // };
               }
             );
+            //Scroll To
+            $('.page-content .map-popup-data').on('ready', function () {
+              const top = $(this).find('li.active').scrollTop();
+              console.log('TOP', top);
+            });
           })
           .catch(function (e) {
             console.error('Creating FeatureLayer failed', e);
@@ -508,7 +474,7 @@ function KeTTMap() {
           //console.log(event.mapPoint);
           view.hitTest(event).then(function (response) {
             // do something with the result graphic
-            var graphic = response.results[0].graphic;
+            //var graphic = response.results[0].graphic;
             //console.log('GRAPHIC ATTR', graphic.attributes);
           });
         });
@@ -777,6 +743,11 @@ function KeTTMap() {
             case 'stories':
               gridColor = [204, 97, 49, 255];
               break;
+            case 'everything':
+              gridColor = [0, 0, 0, 255];
+              break;
+            default:
+              console.log(`Sorry, ${type} is not an option`);
           }
           const gridSymbol = {
             type: 'cim',
@@ -1029,7 +1000,7 @@ function KeTTMap() {
             popupTemplate: {
               title: '{id} {type}',
               outFields: ['*'],
-              content: asyncPopUp,
+              content: asyncGridPopUp,
             },
           });
           addToView(grid);
@@ -1299,7 +1270,7 @@ function KeTTMap() {
           const ifLayers = view.map.layers.items.length;
           if (ifLayers) {
             const existingLayers = view.map.layers.items;
-            const existingLayersIDs = existingLayers.map((layer) => layer.id);
+            //const existingLayersIDs = existingLayers.map((layer) => layer.id);
             //console.log('existingLayersIDs', existingLayersIDs);
             existingLayers.forEach(function (item, i) {
               if (layer.id === item.id) {
@@ -1310,11 +1281,82 @@ function KeTTMap() {
 
           view.map.add(layer);
         }
+
+        //Updates the timeline if has not been previously set
+        function updateTimeline(mapyear) {
+          $('#date-range .segment').each(function () {
+            const id = $(this).data('id');
+            const url = $(this).data('url');
+            const left = $(this).data('left');
+            const right = $(this).data('right');
+            const min = $(this).data('min');
+            const max = $(this).data('max');
+            if (!window.timePeriod) {
+              if (mapyear >= min && mapyear <= max) {
+                dateRangeRef.current = `${min}-${max}`;
+                startDateRef.current = `${min}`;
+                endDateRef.current = `${max}`;
+                tileUrlRef.current = url;
+                dispatch(updateTimelineRange(`${min}-${max}`));
+                dispatch(updateActiveSegment(id));
+                dispatch(updateActiveUrl(url));
+                dispatch(updateLeftPip(left));
+                dispatch(updateRightPip(right));
+                dispatch(updateDateRange(`${min}-${max}`));
+                dispatch(updateStartDate(`${min}`));
+                dispatch(updateEndDate(`${max}`));
+                createTileLayer(view.zoom, url);
+                handleTimePeriod();
+                dispatch(updateReset(true));
+                dispatch(getList({}));
+                console.log('TIMELINE UPDATE', `${min}-${max}`, url);
+              }
+            }
+          });
+        }
+
+        //Pan and Zoom map to a given marker
+        function gotoMarker(point, itemId, recnumber, markerid, type) {
+          //console.log('gotoMarker', markerid);
+          const opts = {
+            duration: 3000,
+          };
+          view.goTo({ target: point, zoom: 19 }, opts).then(() => {
+            view.popup.open({
+              title: `Item ID: ${itemId}`,
+              location: view.center,
+            });
+            const filterVal = {
+              search: searchRef.current,
+              date_range: dateRangeRef.current,
+              photos: photosRef.current,
+              featured: featuredRef.current,
+              type: typeRef.current,
+            };
+            const { xmin, xmax, ymin, ymax } = view.extent;
+            const extent = {
+              xmin: xmin,
+              xmax: xmax,
+              ymin: ymin,
+              ymax: ymax,
+            };
+            asyncMarkerInfo(recnumber, markerid, type, filterVal).then(
+              function (res) {
+                view.popup.content = res;
+              }
+            );
+            //LOAD MARKERS
+            asyncMarkers(view, filterVal, extent).then((res) => {
+              console.log('MARKER RESPONCE', res);
+              generateMarkers(view, res);
+            });
+          });
+        }
       }
     );
   }, []);
 
-  const asyncPopUp = (target) => {
+  const asyncGridPopUp = (target) => {
     //console.log('TARGET', target);
     let filters = {
       search: searchRef.current,
@@ -1355,17 +1397,38 @@ function KeTTMap() {
           //console.log(item);
           stringPeople =
             stringPeople +
-            `<li>${item.title}<span class="recnumber">${item.recnumber}</span></li>`;
+            `<li>${item.title}
+            <span class="id">${item.id}</span>
+            <span class="recnumber">${item.recnumber}</span>
+            <span class="markerid">${item.markerid}</span>
+            <span class="pointx">${item.x}</span>
+            <span class="pointy">${item.y}</span>
+            <span class="mapyear">${item.map_year}</span>
+            </li>`;
         });
         placesTitles.forEach((item) => {
           stringPlaces =
             stringPlaces +
-            `<li>${item.title}<span class="recnumber">${item.recnumber}</span></li>`;
+            `<li>${item.title}
+            <span class="id">${item.id}</span>
+            <span class="recnumber">${item.recnumber}</span>
+            <span class="markerid">${item.markerid}</span>
+            <span class="pointx">${item.x}</span>
+            <span class="pointy">${item.y}</span>
+            <span class="mapyear">${item.map_year}</span>
+            </li>`;
         });
         storiesTitles.forEach((item) => {
           stringStories =
             stringStories +
-            `<li>${item.title}<span class="recnumber">${item.recnumber}</span></li>`;
+            `<li>${item.title}
+            <span class="id">${item.id}</span>
+            <span class="recnumber">${item.recnumber}</span>
+            <span class="markerid">${item.markerid}</span>
+            <span class="pointx">${item.x}</span>
+            <span class="pointy">${item.y}</span>
+            <span class="mapyear">${item.map_year}</span>
+            </li>`;
         });
         let peopleStatus = '',
           placesStatus = '',
@@ -1384,32 +1447,27 @@ function KeTTMap() {
           storiesStatus = ' active';
         }
         return `
-        <div class="grid-popup">
-          <div class="grid-popup-tabs">
+        <div class="map-popup grid">
+          <div class="map-popup-tabs">
             <div class="tab tab-people${peopleStatus}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
             <div class="tab tab-places${placesStatus}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
             <div class="tab tab-stories${storiesStatus}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
           </div>
-          <div class="grid-popup-data">
+          <div class="map-popup-data">
             <div class="data data-people${peopleStatus}">
               <ul>
               ${stringPeople}
               </ul>
-              <div class="data-actions"></div>
             </div>
             <div class="data data-places${placesStatus}">
               <ul>
               ${stringPlaces}
               </ul>
-              <div class="data-actions"></div>
             </div>
             <div class="data data-stories${storiesStatus}">
               <ul>
               ${stringStories}
               </ul>
-              <div class="data-actions">
-                <div class="add-story">Add a story at this location</div>
-              </div>
             </div>
           </div>
         </div>
@@ -1418,7 +1476,7 @@ function KeTTMap() {
   };
 
   const asyncMarkerInfo = (recnumber, markerid, type, filterVal) => {
-    //console.log(recnumber, markerid, filterVal);
+    //console.log('asyncMarkerInfo', recnumber, markerid, filterVal);
     let filters = {
       search: filterVal.search,
       id: markerid,
@@ -1445,17 +1503,17 @@ function KeTTMap() {
           const id = person.id;
           const recnumber = person.recnumber;
           const highlight = person.highlighted;
-          const style = highlight == 'true' ? ' class="active"' : '';
+          const style = highlight === 'true' ? ' class="active"' : '';
           return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span></li>`;
         });
         const placesTitles = placesData.map((place) => {
           const highlight = place.highlighted;
-          const style = highlight == 'true' ? ' class="active"' : '';
+          const style = highlight === 'true' ? ' class="active"' : '';
           return `<li${style}>${place.title}<span class="recnumber">${recnumber}</span></li>`;
         });
         const storiesTitles = storiesData.map((story) => {
           const highlight = story.highlighted;
-          const style = highlight == 'true' ? ' class="active"' : '';
+          const style = highlight === 'true' ? ' class="active"' : '';
           return `<li${style}>${story.title}<span class="recnumber">${recnumber}</span></li>`;
         });
         let stringPeople = peopleCount
@@ -1479,47 +1537,45 @@ function KeTTMap() {
         let peopleStatus = '',
           placesStatus = '',
           storiesStatus = '';
-        if (type == 'people') {
+        if (type === 'people') {
           peopleStatus = ' active';
           placesStatus = '';
           storiesStatus = '';
-        } else if (type == 'places') {
+        } else if (type === 'places') {
           peopleStatus = '';
           placesStatus = ' active';
           storiesStatus = '';
-        } else if (type == 'stories') {
+        } else if (type === 'stories') {
           peopleStatus = '';
           placesStatus = '';
           storiesStatus = ' active';
         }
         return `
-        <div class="grid-popup">
-          <div class="grid-popup-tabs">
+        <div class="map-popup marker">
+          <div class="map-popup-tabs">
             <div class="tab tab-people${peopleStatus}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
             <div class="tab tab-places${placesStatus}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
             <div class="tab tab-stories${storiesStatus}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
           </div>
-          <div class="grid-popup-data">
+          <div class="map-popup-data">
             <div class="data data-people${peopleStatus}">
               <ul>
               ${stringPeople}
               </ul>
-              <div class="data-actions"></div>
             </div>
             <div class="data data-places${placesStatus}">
               <ul>
               ${stringPlaces}
               </ul>
-              <div class="data-actions"></div>
             </div>
             <div class="data data-stories${storiesStatus}">
               <ul>
               ${stringStories}
               </ul>
-              <div class="data-actions">
-                <div class="add-story">Add a story at this location</div>
-              </div>
             </div>
+          </div>
+          <div class="data-actions">
+            <div class="add-story">Full details</div>
           </div>
         </div>
         `;
@@ -1544,7 +1600,7 @@ function KeTTMap() {
       .then((res) => {
         //console.log('POPUP DATA', res.data);
         const source =
-          layerID == 'marker_layer_active'
+          layerID === 'marker_layer_active'
             ? res.data.active
             : res.data.inactive;
         const peopleCount = source.people.length;
@@ -1591,33 +1647,31 @@ function KeTTMap() {
           storiesStatus = ' active';
         }
         return `
-        <div class="grid-popup">
-          <div class="grid-popup-tabs">
+        <div class="map-popup marker">
+          <div class="map-popup-tabs">
             <div class="tab tab-people${peopleStatus}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
             <div class="tab tab-places${placesStatus}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
             <div class="tab tab-stories${storiesStatus}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
           </div>
-          <div class="grid-popup-data">
+          <div class="map-popup-data">
             <div class="data data-people${peopleStatus}">
               <ul>
               ${stringPeople}
               </ul>
-              <div class="data-actions"></div>
             </div>
             <div class="data data-places${placesStatus}">
               <ul>
               ${stringPlaces}
               </ul>
-              <div class="data-actions"></div>
             </div>
             <div class="data data-stories${storiesStatus}">
               <ul>
               ${stringStories}
               </ul>
-              <div class="data-actions">
-                <div class="add-story">Add a story at this location</div>
-              </div>
             </div>
+          </div>
+          <div class="data-actions">
+            <div class="add-story">Full details</div>
           </div>
         </div>
         `;

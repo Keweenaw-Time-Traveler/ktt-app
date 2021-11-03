@@ -81,6 +81,7 @@
 .esri-popup__content {
   position: relative;
   margin: 0 !important;
+  overflow: hidden;
 }
 .esri-feature {
   background: none !important;
@@ -89,7 +90,15 @@
 .esri-feature-content {
   padding: 0;
 }
-.grid-popup-tabs {
+.map-popup {
+  position: relative;
+  padding: 35px 0 0;
+  margin: 0;
+}
+.map-popup-tabs {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   width: 100%;
 
@@ -126,16 +135,40 @@
     color: $color-kett-white;
   }
 }
-.grid-popup-data {
+.map-popup-data {
+  height: 100%;
+  max-height: calc(278px - 30px);
+  margin: 15px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
+  /* width */
+  &::-webkit-scrollbar {
+    position: relative;
+    width: 25px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: $color-kett-white;
+    border-right: solid 15px $color-kett-green-secondary;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $color-kett-gold;
+    border-right: solid 15px $color-kett-green-secondary;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: $color-kett-gold;
+  }
   .data {
     display: none;
-
     &.active {
       display: block;
     }
   }
   ul {
-    margin: 15px 0;
+    margin: 0;
   }
   li {
     text-align: left;
@@ -153,17 +186,21 @@
       color: $color-kett-gold;
     }
     .id,
-    .recnumber {
+    .recnumber,
+    .markerid,
+    .pointx,
+    .pointy,
+    .mapyear {
       display: none;
     }
   }
-  .data-actions {
-    float: left;
-    width: 100%;
-    min-height: 47px;
-    padding: 10px 20px;
-    background: $color-kett-grey-secondary;
-  }
+}
+.data-actions {
+  float: left;
+  width: 100%;
+  min-height: 47px;
+  padding: 10px 20px;
+  background: $color-kett-grey-secondary;
   .add-story {
     float: left;
     padding: 2px 9px;

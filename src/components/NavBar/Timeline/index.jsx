@@ -65,6 +65,7 @@ export default function Timeline() {
     }
   };
   const handleResetClick = (e) => {
+    window.timePeriod = null;
     dispatch(updateActiveSegment(null));
     dispatch(updateLeftPip('0%'));
     dispatch(updateRightPip('100%'));
