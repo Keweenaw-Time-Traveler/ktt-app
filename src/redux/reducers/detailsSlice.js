@@ -6,7 +6,6 @@ export const getDetails = createAsyncThunk(
   'details/getDetails',
   async (details, { dispatch, getState }) => {
     const { id, recnumber } = details;
-    console.log(id, recnumber);
     return axios
       .post('http://geospatialresearch.mtu.edu/full_details.php', {
         personid: id,
@@ -26,6 +25,7 @@ export const detailsSlice = createSlice({
     removeDetails: true,
     detailsStatus: 'idle',
     name: '',
+    sources: [],
   },
   reducers: {
     toggleDetails: (state, action) => {
@@ -46,6 +46,9 @@ export const detailsSlice = createSlice({
       // Update status
       console.log('DETAILS', action.payload);
       state.name = action.payload.person_details[0].value;
+      state.sources = action.payload.sources.map((source) => {
+        return { value: source.recnumber, label: source.recname };
+      });
       state.details = action.payload;
       state.detailsStatus = 'success';
     });
@@ -58,5 +61,6 @@ export const selectRemoveDetails = (state) => state.details.removeDetails;
 export const selectDetailsStatus = (state) => state.details.detailsStatus;
 export const selectDetails = (state) => state.details.details;
 export const selectDetailsName = (state) => state.details.name;
+export const selectDetailsSources = (state) => state.details.sources;
 
 export default detailsSlice.reducer;

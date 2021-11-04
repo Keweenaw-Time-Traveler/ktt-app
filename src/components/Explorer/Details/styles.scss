@@ -1,15 +1,17 @@
 @import '../../../colors.scss';
 
 .details-wrapper {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  width: 350px;
+  width: 400px;
   height: 100%;
   padding: 20px;
   background: $color-kett-white;
   color: $color-kett-black;
   text-align: left;
-
+  box-shadow: 10px 1px 20px rgba(0, 0, 0, 0.3);
   @media screen and (max-width: 1280px) {
     width: 280px;
   }

@@ -4,9 +4,11 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //Styles
 import './styles.scss';
+//Components
+import Item from './Item';
 
 export default function Section(props) {
-  const { title, type, status, icon, list, onClick } = props;
+  const { title, type, status, icon, list } = props;
   return (
     <>
       <div className="list-results-heading people">
@@ -21,21 +23,7 @@ export default function Section(props) {
       </div>
       {status === 'success' &&
         list.results.map((item, index) => (
-          <div
-            className="list-results-item tooltip"
-            key={index}
-            title={item.title}
-            data-type={type}
-            data-id={item.id}
-            data-x={item.x}
-            data-y={item.y}
-            data-recnumber={item.recnumber}
-            data-markerid={item.markerid}
-            data-mapyear={item.map_year}
-            onClick={onClick}
-          >
-            {item.title}
-          </div>
+          <Item key={index} data={item} type={type} />
         ))}
     </>
   );

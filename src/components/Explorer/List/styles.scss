@@ -5,7 +5,7 @@
   flex-direction: column;
   width: 350px;
   height: 100%;
-  padding: 20px;
+  padding: 20px 0 20px 20px;
   background: $color-kett-green-secondary;
   color: $color-kett-white;
   text-align: left;
@@ -15,7 +15,6 @@
   }
 }
 .list-results {
-  //padding-left: 20px;
   direction: rtl;
   overflow-y: auto;
   overflow-x: hidden;
@@ -42,11 +41,31 @@
   }
 
   .list-results-item {
+    position: relative;
     width: 100%;
+    padding: 0 30px 0 10px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     direction: ltr;
+    cursor: pointer;
+    &:hover {
+      background: $color-kett-gold;
+      color: $color-kett-black;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 100%;
+        background: $color-kett-green-secondary;
+      }
+    }
+    &.active {
+      background: $color-kett-white;
+      color: $color-kett-black;
+    }
   }
 
   .tooltiptext {
@@ -67,23 +86,16 @@
   }
 
   .list-results-heading {
+    margin: 0 30px 0 10px;
     text-transform: uppercase;
     text-align: left;
     color: $color-kett-white;
     border-bottom: 1px solid $color-kett-white;
-
-    &.people {
-      //background: $color-kett-people;
-    }
-
     &.places {
       margin-top: 20px;
-      //background: $color-kett-places;
     }
-
     &.stories {
       margin-top: 20px;
-      //background: $color-kett-stories;
     }
   }
 }

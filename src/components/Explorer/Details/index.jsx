@@ -1,11 +1,12 @@
 //React
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectDetails,
   selectDetailsName,
+  selectDetailsSources,
 } from '../../../redux/reducers/detailsSlice';
 //Styles
 import './styles.scss';
@@ -13,15 +14,22 @@ import './styles.scss';
 const Details = (props) => {
   const details = useSelector(selectDetails);
   const name = useSelector(selectDetailsName);
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-  ];
+  const sources = useSelector(selectDetailsSources);
+  const [selectedClient, setSelectedClient] = useState('one'); //default value
+
+  function handleSelectChange(event) {
+    setSelectedClient(event.target.value);
+  }
+
   return (
     <div className={`details-wrapper ${props.show ? 'show' : 'hide'}`}>
       <h1>{name}</h1>
-      <Select options={options} />
+      <Select options={sources} />
+      <select value={selectedClient} onChange={handleSelectChange}>
+        <option value="one">One</option>
+        <option value="two">Two</option>
+        <option value="three">Three</option>
+      </select>
     </div>
   );
 };

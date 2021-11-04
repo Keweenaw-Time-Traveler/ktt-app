@@ -29,7 +29,7 @@ export const listSlice = createSlice({
   initialState: {
     showList: false,
     removeList: true,
-    listItemId: null,
+    listItemId: { id: '', recnumber: '' },
     entities: {
       active: {
         length: 0,
@@ -81,5 +81,6 @@ export const selectShowList = (state) => state.list.showList;
 export const selectRemoveList = (state) => state.list.removeList;
 export const selectAllList = (state) => state.list.entities;
 export const selectListStatus = (state) => state.list.listStatus;
+export const selectActiveItem = (state) => state.list.listItemId;
 
 export default listSlice.reducer;

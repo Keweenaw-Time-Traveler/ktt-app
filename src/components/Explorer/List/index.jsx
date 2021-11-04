@@ -1,5 +1,5 @@
 //React
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -25,24 +25,6 @@ const List = (props) => {
     }
   }, [listStatus, dispatch]);
 
-  const handleListClick = (e) => {
-    const itemId = e.target.getAttribute('data-id');
-    //console.log(itemId);
-    // dispatch(updateListItem(itemId));
-    // const view = window.kettView;
-    // const graphics = window.activeGraphics;
-    // console.log('ACTIVE GRAPHICS', graphics);
-    // view.popup.open({
-    //   features: graphics[0], // array of graphics or a single graphic in an array
-    // });
-    // const layers = view.map.layers;
-    // layers.items.forEach((layer, index) => {
-    //   if (layer.id === 'marker_layer_active') {
-    //     console.log('RETURN MARKER LAYER', layer);
-    //   }
-    // });
-  };
-
   return (
     <div className={`list-wrapper ${props.show ? 'show' : 'hide'}`}>
       <div className="list-results">
@@ -53,7 +35,6 @@ const List = (props) => {
             status={listStatus}
             icon={faCircleNotch}
             list={list.active.people}
-            onClick={handleListClick}
           />
         )}
         {list.active.places && (
@@ -63,7 +44,6 @@ const List = (props) => {
             status={listStatus}
             icon={faCircleNotch}
             list={list.active.places}
-            onClick={handleListClick}
           />
         )}
         {list.active.stories && (
@@ -73,7 +53,6 @@ const List = (props) => {
             status={listStatus}
             icon={faCircleNotch}
             list={list.active.stories}
-            onClick={handleListClick}
           />
         )}
       </div>

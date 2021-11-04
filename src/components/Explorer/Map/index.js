@@ -18,7 +18,7 @@ import {
   updateRightPip,
   updateReset,
 } from '../../../redux/reducers/timelineSlice';
-import { getList } from '../../../redux/reducers/listSlice';
+import { getList, updateListItem } from '../../../redux/reducers/listSlice';
 import {
   getDetails,
   toggleDetails,
@@ -303,6 +303,10 @@ function KeTTMap() {
               }
               //MAKE SURE TILES ARE HIDDEN
               hideLayer('title_layer', view.map.layers);
+              //CLOSE POPUP
+              view.popup.close();
+              //CLOSE DETAILS
+              dispatch(toggleDetails('hide'));
               //RESET EXTENTS
               view.goTo(
                 {
@@ -429,7 +433,7 @@ function KeTTMap() {
                   y: y,
                   spatialReference: { wkid: 3857 },
                 });
-                console.log('GRID LIST', itemId, recnumber, markerid);
+                //console.log('GRID LIST', itemId, recnumber, markerid);
                 updateTimeline(mapyear);
                 gotoMarker(point, itemId, recnumber, markerid, 'people');
               }
@@ -441,9 +445,7 @@ function KeTTMap() {
               function () {
                 const id = $(this).find('.id').text();
                 const recnumber = $(this).find('.recnumber').text();
-                console.log(recnumber);
-                dispatch(toggleDetails('show'));
-                dispatch(getDetails({ id, recnumber }));
+                console.log(id, recnumber);
                 // const type = $(this).data('type');
                 // const itemId = $(this).data('id');
                 // const markerX = $(this).data('x');
@@ -460,10 +462,17 @@ function KeTTMap() {
                 // };
               }
             );
-            //Scroll To
-            $('.page-content .map-popup-data').on('ready', function () {
-              const top = $(this).find('li.active').scrollTop();
-              console.log('TOP', top);
+            //Full Details Click Event
+            $('.page-content').on('click', '.full-details', function () {
+              const $active = $(this).closest('.map-popup');
+              const id = $active.find('li.active span.id').text();
+              const recnumber = $active.find('li.active span.recnumber').text();
+              console.log('GET FULL DETAILS', id, recnumber);
+              if (id && recnumber) {
+                dispatch(updateListItem({ id, recnumber }));
+                dispatch(getDetails({ id, recnumber }));
+                dispatch(toggleDetails('show'));
+              }
             });
           })
           .catch(function (e) {
@@ -1575,7 +1584,7 @@ function KeTTMap() {
             </div>
           </div>
           <div class="data-actions">
-            <div class="add-story">Full details</div>
+            <div class="full-details">Full details</div>
           </div>
         </div>
         `;
@@ -1671,7 +1680,7 @@ function KeTTMap() {
             </div>
           </div>
           <div class="data-actions">
-            <div class="add-story">Full details</div>
+            <div class="full-details">Full details</div>
           </div>
         </div>
         `;
