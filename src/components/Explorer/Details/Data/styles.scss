@@ -1,0 +1,31 @@
+.detail-block {
+  background: #f1f1f1;
+}
+.detail-block-title {
+  background: #e5e5e5;
+  h2 {
+    margin: 0;
+    padding: 5px 13px;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 18;
+    line-height: 1.8rem;
+    letter-spacing: 0.4px;
+    font-weight: 700;
+  }
+}
+.detail-block-data {
+  padding: 8px 13px 20px;
+  .detail-item {
+    font-weight: 300;
+    letter-spacing: 0.4px;
+    .label {
+      margin: 0 5px 0 0;
+      font-weight: 700;
+      &::after {
+        content: ':';
+      }
+    }
+  }
+}

@@ -1,10 +1,15 @@
 //React
 import React, { useEffect, useState } from 'react';
 //Redux
-import { useSelector } from 'react-redux';
-import { selectActiveItem } from '../../../../../redux/reducers/listSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  updateListItem,
+  selectActiveItem,
+} from '../../../../../redux/reducers/listSlice';
+import { toggleDetails } from '../../../../../redux/reducers/detailsSlice';
 
 export default function Item(props) {
+  const dispatch = useDispatch();
   const { data, type } = props;
   const activeItem = useSelector(selectActiveItem);
   const [classes, setClasses] = useState('list-results-item tooltip');
@@ -15,6 +20,11 @@ export default function Item(props) {
       setClasses(`list-results-item tooltip${active}`);
     }
   }, [data, activeItem]);
+
+  const handleListItemClick = () => {
+    dispatch(updateListItem({ id: '', recnumber: '' }));
+    dispatch(toggleDetails('hide'));
+  };
 
   return (
     <div
@@ -27,6 +37,7 @@ export default function Item(props) {
       data-recnumber={data.recnumber}
       data-markerid={data.markerid}
       data-mapyear={data.map_year}
+      onClick={handleListItemClick}
     >
       {data.title}
     </div>

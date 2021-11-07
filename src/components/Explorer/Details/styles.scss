@@ -2,7 +2,7 @@
 
 .details-wrapper {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   width: 400px;
@@ -14,5 +14,117 @@
   box-shadow: 10px 1px 20px rgba(0, 0, 0, 0.3);
   @media screen and (max-width: 1280px) {
     width: 280px;
+  }
+}
+.details-title {
+  position: relative;
+  min-height: 56px;
+  padding: 0 40px 0 0;
+  h1 {
+    margin: 0 0 20px;
+    font-size: 30px;
+    font-size: 3rem;
+    line-height: 36;
+    line-height: 3.6rem;
+    letter-spacing: 0.75px;
+    font-weight: normal;
+  }
+}
+.details-close {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 10px;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid $color-kett-grey-secondary;
+  cursor: pointer;
+  .fa-icon {
+    font-size: 16px;
+    color: $color-kett-grey-secondary;
+    &:hover {
+      color: $color-kett-black;
+    }
+  }
+}
+.details-sources {
+  display: grid;
+  grid-template-areas: 'select';
+  align-items: center;
+  position: relative;
+  width: 100%;
+  padding: 6px 10px;
+  margin: 0 0 20px 0;
+  border: 1px solid #707070;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 16px;
+  font-size: 1.6rem;
+  line-height: 18;
+  line-height: 1.8rem;
+  letter-spacing: 0.4px;
+  font-weight: 500;
+  // Custom arrow
+  &:not(.select--multiple)::after {
+    content: '';
+    justify-self: end;
+    width: 0.8em;
+    height: 0.45em;
+    margin-top: -17px;
+    background-color: #000;
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+  }
+  select {
+    // A reset of styles, including removing the default dropdown arrow
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    // Stack above custom arrow
+    z-index: 1;
+    // Remove dropdown arrow in IE10 & IE11
+    // @link https://www.filamentgroup.com/lab/select-css.html
+    &::-ms-expand {
+      display: none;
+    }
+    // Remove focus outline, will add on alternate element
+    outline: none;
+    // New custom styles
+    grid-area: select;
+    &::after {
+      grid-area: select;
+    }
+  }
+}
+.detail-blocks {
+  flex-shrink: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* width */
+  &::-webkit-scrollbar {
+    position: relative;
+    width: 10px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #c8c7c7;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #484747;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #484747;
   }
 }

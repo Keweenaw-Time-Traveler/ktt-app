@@ -6,7 +6,12 @@ import {
   updateSearch,
   selectFiltersAll,
 } from '../../../redux/reducers/filtersSlice';
-import { getList, toggleList } from '../../../redux/reducers/listSlice';
+import {
+  getList,
+  updateListItem,
+  toggleList,
+} from '../../../redux/reducers/listSlice';
+import { toggleDetails } from '../../../redux/reducers/detailsSlice';
 //Styles
 import './styles.scss';
 //Font Awesome
@@ -28,6 +33,8 @@ export default function Search() {
     if (searchValue != '') {
       dispatch(getList({}));
       dispatch(toggleList('show'));
+      dispatch(updateListItem({ id: '', recnumber: '' }));
+      dispatch(toggleDetails('hide'));
     } else {
       dispatch(toggleList('hide'));
     }

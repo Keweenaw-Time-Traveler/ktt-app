@@ -6,6 +6,9 @@
   flex-grow: 1;
   width: auto;
   height: 100%;
+  &.close {
+    flex-grow: 0;
+  }
 }
 .map {
   width: 100%;

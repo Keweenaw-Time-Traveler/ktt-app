@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import $ from 'jquery';
 //Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getPlaceName,
   updateDateRange,
@@ -22,6 +22,8 @@ import { getList, updateListItem } from '../../../redux/reducers/listSlice';
 import {
   getDetails,
   toggleDetails,
+  getPhotos,
+  selectShowDetails,
 } from '../../../redux/reducers/detailsSlice';
 //Components
 import Loader from './Loader';
@@ -170,10 +172,12 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              asyncMarkers(view, filterVal, extent).then((res) => {
-                console.log('MARKER RESPONCE', res);
-                generateMarkers(view, res);
-              });
+              if (view.zoom > 18) {
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              }
               //ADD TILE LAYER
               createTileLayer(view.zoom, url);
             });
@@ -251,10 +255,12 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              asyncMarkers(view, filterVal, extent).then((res) => {
-                console.log('MARKER RESPONCE', res);
-                generateMarkers(view, res);
-              });
+              if (view.zoom > 18) {
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              }
             });
             //Landing Page Search Button Click Event
             $('body').on('click', '#intro-options-search-icon', function () {
@@ -295,11 +301,13 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (searchValue !== '') {
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
+              if (view.zoom > 18) {
+                if (searchValue !== '') {
+                  asyncMarkers(view, filterVal, extent).then((res) => {
+                    console.log('MARKER RESPONCE', res);
+                    generateMarkers(view, res);
+                  });
+                }
               }
               //MAKE SURE TILES ARE HIDDEN
               hideLayer('title_layer', view.map.layers);
@@ -338,10 +346,12 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              asyncMarkers(view, filterVal, extent).then((res) => {
-                console.log('MARKER RESPONCE', res);
-                generateMarkers(view, res);
-              });
+              if (view.zoom > 18) {
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              }
             });
             //Filters:Checkbox Click Event
             $('.toggle-switch-checkbox').on('click', function () {
@@ -379,10 +389,12 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              asyncMarkers(view, filterVal, extent).then((res) => {
-                console.log('MARKER RESPONCE', res);
-                generateMarkers(view, res);
-              });
+              if (view.zoom > 18) {
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              }
             });
             //List Item Click Event
             $('.page-content').on('click', '.list-results-item', function () {
@@ -471,8 +483,13 @@ function KeTTMap() {
               if (id && recnumber) {
                 dispatch(updateListItem({ id, recnumber }));
                 dispatch(getDetails({ id, recnumber }));
+                dispatch(getPhotos(3));
                 dispatch(toggleDetails('show'));
               }
+            });
+            //Full Details Source Change
+            $('.page-content').on('click', '.map-popup-data li', function () {
+              $(this).addClass('active').siblings().removeClass('active');
             });
           })
           .catch(function (e) {
@@ -1079,7 +1096,6 @@ function KeTTMap() {
 
         //  Creates a client-side FeatureLayer from an array of graphics
         function createActiveMarkerLayer(view, graphics) {
-          window.activeGraphics = graphics;
           //console.log('createActiveMarkerLayer', graphics);
           //https://developers.arcgis.com/javascript/latest/visualization/data-driven-styles/unique-types/
           const markerRenderer = {
@@ -1287,7 +1303,6 @@ function KeTTMap() {
               }
             });
           }
-
           view.map.add(layer);
         }
 
@@ -1742,9 +1757,10 @@ function KeTTMap() {
     window.timePeriod = true;
     setShowTimeChooser(false);
   };
-
+  const open = useSelector(selectShowDetails);
+  const wrapperClasses = open ? 'map-wrapper close' : 'map-wrapper';
   return (
-    <div className="map-wrapper">
+    <div className={wrapperClasses}>
       <div className="webmap map" ref={mapRef} />
       <div className="loader">
         <div className="loader-zoom">Zoom: {zoom}</div>

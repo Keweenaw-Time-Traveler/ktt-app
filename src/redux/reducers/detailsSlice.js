@@ -17,6 +17,17 @@ export const getDetails = createAsyncThunk(
   }
 );
 
+export const getPhotos = createAsyncThunk(
+  'details/getPhotos',
+  async (id, { dispatch, getState }) => {
+    return axios
+      .get(`https://jsonplaceholder.typicode.com/photos`)
+      .then((res) => {
+        return res.data;
+      });
+  }
+);
+
 // Then, handle actions in your reducers:
 export const detailsSlice = createSlice({
   name: 'details',
@@ -25,7 +36,10 @@ export const detailsSlice = createSlice({
     removeDetails: true,
     detailsStatus: 'idle',
     name: '',
-    sources: [],
+    sources: null,
+    data: null,
+    detailsPhotosStatus: 'idle',
+    detailsPhrotos: null,
   },
   reducers: {
     toggleDetails: (state, action) => {
@@ -45,12 +59,32 @@ export const detailsSlice = createSlice({
       // Add details to the state array
       // Update status
       console.log('DETAILS', action.payload);
-      state.name = action.payload.person_details[0].value;
+      state.name = action.payload.title;
+      state.id = action.payload.id;
+      state.type = action.payload.type;
       state.sources = action.payload.sources.map((source) => {
-        return { value: source.recnumber, label: source.recname };
+        return {
+          value: source.recnumber,
+          label: source.recname,
+          id: source.recname,
+          x: source.x,
+          y: source.y,
+          recnumber: source.recnumber,
+          markerid: source.markerid,
+          mapyear: source.map_year,
+        };
       });
       state.details = action.payload;
       state.detailsStatus = 'success';
+      state.data = action.payload.data;
+    });
+    builder.addCase(getPhotos.pending, (state, action) => {
+      state.detailsPhotosStatus = 'idle';
+    });
+    builder.addCase(getPhotos.fulfilled, (state, action) => {
+      // Add details to the state array
+      // Update status
+      console.log('DETAILS PHOTOS', action.payload);
     });
   },
 });
@@ -61,6 +95,9 @@ export const selectRemoveDetails = (state) => state.details.removeDetails;
 export const selectDetailsStatus = (state) => state.details.detailsStatus;
 export const selectDetails = (state) => state.details.details;
 export const selectDetailsName = (state) => state.details.name;
+export const selectDetailsId = (state) => state.details.id;
+export const selectDetailsType = (state) => state.details.type;
 export const selectDetailsSources = (state) => state.details.sources;
+export const selectDetailsData = (state) => state.details.data;
 
 export default detailsSlice.reducer;
