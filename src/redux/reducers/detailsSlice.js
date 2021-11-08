@@ -39,7 +39,7 @@ export const detailsSlice = createSlice({
     sources: null,
     data: null,
     detailsPhotosStatus: 'idle',
-    detailsPhrotos: null,
+    photos: null,
   },
   reducers: {
     toggleDetails: (state, action) => {
@@ -85,6 +85,7 @@ export const detailsSlice = createSlice({
       // Add details to the state array
       // Update status
       console.log('DETAILS PHOTOS', action.payload);
+      state.photos = action.payload;
     });
   },
 });
@@ -99,5 +100,6 @@ export const selectDetailsId = (state) => state.details.id;
 export const selectDetailsType = (state) => state.details.type;
 export const selectDetailsSources = (state) => state.details.sources;
 export const selectDetailsData = (state) => state.details.data;
+export const selectDetailsPhotos = (state) => state.details.photos;
 
 export default detailsSlice.reducer;

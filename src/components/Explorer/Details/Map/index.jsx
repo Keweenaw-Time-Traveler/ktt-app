@@ -30,6 +30,8 @@ export default function Map(props) {
         'esri/geometry/SpatialReference',
         'esri/core/watchUtils',
         'esri/geometry/Point',
+        'esri/widgets/Slider',
+        'esri/widgets/BasemapToggle',
       ],
       {
         css: true,
@@ -46,6 +48,8 @@ export default function Map(props) {
         SpatialReference,
         watchUtils,
         Point,
+        Slider,
+        BasemapToggle,
       ]) => {
         const modern_antique = new Basemap({
           baseLayers: [
@@ -76,6 +80,42 @@ export default function Map(props) {
             ymax: 6050160.9541768255,
           },
         });
+
+        view.ui.move('zoom', 'top-right');
+
+        function updateOpacity() {
+          const opacity = opacitySlider.values[0] / 100;
+          view.layerViews.items[0].layer.opacity = opacity;
+        }
+
+        const opacitySlider = new Slider({
+          container: 'sliderDiv',
+          min: 0,
+          max: 100,
+          values: [100],
+          steps: 1,
+          snapOnClickEnabled: false,
+          layout: 'vertical',
+          visibleElements: {
+            labels: true,
+            rangeLabels: true,
+          },
+        });
+
+        opacitySlider.on(['thumb-change', 'thumb-drag'], updateOpacity);
+
+        view.ui.add(opacitySlider, {
+          position: 'top-right',
+          index: 2,
+        });
+
+        view.ui.add(
+          new BasemapToggle({
+            view,
+            nextBasemap: 'satellite',
+          }),
+          'bottom-right'
+        );
 
         view.when().then(() => {
           console.log('DETAILS MAP LOADED');

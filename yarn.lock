@@ -9114,6 +9114,7 @@ fsevents@^1.2.7:
     react-dom: ^16.13.1
     react-infinite-scroll-component: ^6.1.0
     react-is: ^16.13.1
+    react-masonry-css: ^1.0.16
     react-redux: ^7.2.4
     react-router-dom: ^5.2.0
     react-scripts: 3.4.3
@@ -12266,6 +12267,15 @@ fsevents@^1.2.7:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 11bcf1267a314a522615f626f3ce3727a3a24cdbf61c4d452add3550a7875326669631326cfb1ba3e92b6f72244c32ffecf93ad21c0cad8455d3e169d0e3f060
+  languageName: node
+  linkType: hard
+
+"react-masonry-css@npm:^1.0.16":
+  version: 1.0.16
+  resolution: "react-masonry-css@npm:1.0.16"
+  peerDependencies:
+    react: ">=16.0.0"
+  checksum: aa1e32eadc1d3f3e5f7ecc3c7925e376a133475083cb23e49f1558d228b6c6391b07a252f09d6d69e8b261835fcfa93a1f1e1cca72039b28fd54f46bef09c604
   languageName: node
   linkType: hard
 
