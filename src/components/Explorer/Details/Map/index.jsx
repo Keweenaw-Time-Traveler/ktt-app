@@ -81,13 +81,7 @@ export default function Map(props) {
           },
         });
 
-        view.ui.move('zoom', 'top-right');
-
-        function updateOpacity() {
-          const opacity = opacitySlider.values[0] / 100;
-          view.layerViews.items[0].layer.opacity = opacity;
-        }
-
+        //Map UI
         const opacitySlider = new Slider({
           container: 'sliderDiv',
           min: 0,
@@ -97,18 +91,16 @@ export default function Map(props) {
           snapOnClickEnabled: false,
           layout: 'vertical',
           visibleElements: {
-            labels: true,
+            labels: false,
             rangeLabels: true,
           },
         });
-
         opacitySlider.on(['thumb-change', 'thumb-drag'], updateOpacity);
-
         view.ui.add(opacitySlider, {
           position: 'top-right',
           index: 2,
         });
-
+        view.ui.move('zoom', 'top-right');
         view.ui.add(
           new BasemapToggle({
             view,
@@ -169,6 +161,11 @@ export default function Map(props) {
           });
         });
 
+        //Map Opacity
+        function updateOpacity() {
+          const opacity = opacitySlider.values[0] / 100;
+          view.layerViews.items[0].layer.opacity = opacity;
+        }
         //Add Marker
         function addMarker(point) {
           const ifGraphics = view.graphics.length;

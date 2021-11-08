@@ -66,6 +66,8 @@ function KeTTMap() {
         'esri/geometry/SpatialReference',
         'esri/core/watchUtils',
         'esri/geometry/Point',
+        'esri/widgets/Slider',
+        'esri/widgets/BasemapToggle',
       ],
       {
         css: true,
@@ -82,6 +84,8 @@ function KeTTMap() {
         SpatialReference,
         watchUtils,
         Point,
+        Slider,
+        BasemapToggle,
       ]) => {
         //console.log('STATE LIST VALUE', listValue);
 
@@ -121,6 +125,28 @@ function KeTTMap() {
             ymax: startingExtent.ymax,
           },
         });
+
+        //Map UI
+        view.ui.move('zoom', 'top-right');
+        const opacitySlider = new Slider({
+          container: 'sliderDiv',
+          min: 0,
+          max: 100,
+          values: [100],
+          steps: 1,
+          snapOnClickEnabled: false,
+          layout: 'vertical',
+          visibleElements: {
+            labels: false,
+            rangeLabels: true,
+          },
+        });
+        opacitySlider.on(['thumb-change', 'thumb-drag'], updateOpacity);
+        const basemapToggle = new BasemapToggle({
+          view,
+          nextBasemap: 'satellite',
+        });
+        view.ui.add(basemapToggle, 'bottom-right');
 
         view
           .when()
@@ -310,7 +336,7 @@ function KeTTMap() {
                 }
               }
               //MAKE SURE TILES ARE HIDDEN
-              hideLayer('title_layer', view.map.layers);
+              hideLayer('tile_layer', view.map.layers);
               //CLOSE POPUP
               view.popup.close();
               //CLOSE DETAILS
@@ -507,6 +533,7 @@ function KeTTMap() {
 
         watchUtils.whenTrue(view, 'stationary', function () {
           if (view.ready && view.extent) {
+            console.log('VIEW UI', view.ui);
             console.log('VIEW EXTENT', view.extent);
             //console.log('VIEW SCALE', view.scale);
             //console.log('VIEW ZOOM', view.zoom);
@@ -519,6 +546,7 @@ function KeTTMap() {
                 spatialReference: { wkid: 3857 },
               })
             );
+            //view.ui.remove(basemapToggle);
             setZoom(view.zoom);
             const markerExtent = window.markerExtent;
             const timePeriod = window.timePeriod;
@@ -558,6 +586,14 @@ function KeTTMap() {
                   generateMarkers(view, res);
                 });
               }
+            }
+            if (view.zoom > 18) {
+              view.ui.add(opacitySlider, {
+                position: 'top-right',
+                index: 2,
+              });
+            } else if (view.zoom <= 18) {
+              view.ui.remove(opacitySlider);
             }
             //SHOW HIDE LAYERS
             const layers = view.map.layers;
@@ -660,7 +696,7 @@ function KeTTMap() {
                   if (
                     layer.id === 'marker_layer_active' ||
                     layer.id === 'marker_layer_inactive' ||
-                    layer.id === 'title_layer'
+                    layer.id === 'tile_layer'
                   ) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -685,7 +721,7 @@ function KeTTMap() {
                   if (
                     layer.id === 'marker_layer_active' ||
                     layer.id === 'marker_layer_inactive' ||
-                    layer.id === 'title_layer'
+                    layer.id === 'tile_layer'
                   ) {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
@@ -695,6 +731,11 @@ function KeTTMap() {
             }
           }
         });
+
+        function updateOpacity() {
+          const opacity = opacitySlider.values[0] / 100;
+          view.layerViews.items[0].layer.opacity = opacity;
+        }
 
         function updateGrid(view, filters) {
           //GRID LEVEL 1
@@ -1273,7 +1314,7 @@ function KeTTMap() {
         function createTileLayer(zoom, url) {
           const show = zoom > 18 ? true : false;
           const tileLayer = new TileLayer({
-            id: 'title_layer',
+            id: 'tile_layer',
             url,
             visible: show,
           });
@@ -1622,7 +1663,7 @@ function KeTTMap() {
     return axios
       .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
       .then((res) => {
-        //console.log('POPUP DATA', res.data);
+        //console.log('MARKER CLICK POPUP DATA', res.data);
         const source =
           layerID === 'marker_layer_active'
             ? res.data.active
@@ -1633,9 +1674,25 @@ function KeTTMap() {
         const peopleData = source.people.results;
         const placesData = source.places.results;
         const storiesData = source.stories.results;
-        const peopleTitles = peopleData.map((person) => person.title);
-        const placesTitles = placesData.map((place) => place.title);
-        const storiesTitles = storiesData.map((story) => story.title);
+        const peopleTitles = peopleData.map((person) => {
+          const id = person.id;
+          const recnumber = person.recnumber;
+          const highlight = person.highlighted;
+          const style = highlight === 'true' ? ' class="active"' : '';
+          return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span></li>`;
+        });
+        const placesTitles = placesData.map((place) => {
+          const recnumber = place.recnumber;
+          const highlight = place.highlighted;
+          const style = highlight === 'true' ? ' class="active"' : '';
+          return `<li${style}>${place.title}<span class="recnumber">${recnumber}</span></li>`;
+        });
+        const storiesTitles = storiesData.map((story) => {
+          const recnumber = story.recnumber;
+          const highlight = story.highlighted;
+          const style = highlight === 'true' ? ' class="active"' : '';
+          return `<li${style}>${story.title}<span class="recnumber">${recnumber}</span></li>`;
+        });
         let stringPeople = peopleCount
           ? ''
           : '<li>No person records at this location</li>';
@@ -1646,13 +1703,13 @@ function KeTTMap() {
           ? ''
           : '<li>No stories at this location</li>';
         peopleTitles.forEach((title) => {
-          stringPeople = stringPeople + `<li>${title}</li>`;
+          stringPeople = stringPeople + title;
         });
         placesTitles.forEach((title) => {
-          stringPlaces = stringPlaces + `<li>${title}</li>`;
+          stringPlaces = stringPlaces + title;
         });
         storiesTitles.forEach((title) => {
-          stringStories = stringStories + `<li>${title}</li>`;
+          stringStories = stringStories + title;
         });
         let peopleStatus = '',
           placesStatus = '',

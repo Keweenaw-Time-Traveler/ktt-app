@@ -7,7 +7,7 @@
   flex-direction: column;
   width: 400px;
   height: 100%;
-  padding: 20px;
+  padding: 20px 20px 160px;
   background: $color-kett-white;
   color: $color-kett-black;
   text-align: left;
@@ -151,5 +151,101 @@
   img {
     width: 100%;
     height: auto;
+  }
+}
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .share-related-story {
+    padding: 5px 12px;
+    background: $color-kett-gold;
+    color: $color-kett-black;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 18;
+    line-height: 1.8rem;
+    letter-spacing: 0.4px;
+    transition: all 0.3s ease-in;
+    &:hover {
+      background: #7e7e7e;
+      color: $color-kett-white;
+    }
+  }
+  .action-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #7e7e7e;
+    color: $color-kett-white;
+    transition: all 0.3s ease-in;
+    &:hover {
+      background: $color-kett-black;
+    }
+  }
+}
+.detail-related {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  .detail-related-heading {
+    width: 100%;
+    padding: 9px 20px;
+    background: $color-kett-black;
+    color: $color-kett-white;
+    font-size: 30px;
+    font-size: 3rem;
+    line-height: 36;
+    line-height: 3.6rem;
+    letter-spacing: 0.75px;
+    font-weight: 300;
+    span {
+      position: relative;
+      top: -2px;
+      font-size: 20px;
+      font-size: 2rem;
+      line-height: 24;
+      line-height: 2.4rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+  }
+  .detail-related-tabs {
+    display: flex;
+    .tab {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 33.3333%;
+      height: 88px;
+      font-size: 23px;
+      font-size: 2.3rem;
+      line-height: 32;
+      line-height: 3.2rem;
+      letter-spacing: 0.57px;
+      color: $color-kett-white;
+      &.people {
+        background: $color-kett-people;
+      }
+      &.places {
+        background: $color-kett-places;
+      }
+      &.stories {
+        background: $color-kett-stories;
+      }
+      .fa-icon {
+        font-size: 28px;
+      }
+    }
   }
 }

@@ -26,6 +26,15 @@ import img3 from './images/img3.jpg';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/pro-light-svg-icons';
+import {
+  faUser,
+  faBuilding,
+  faBookOpen,
+  faHeart,
+  faShareAlt,
+  faPrint,
+  faDownload,
+} from '@fortawesome/pro-solid-svg-icons';
 //Components
 import Source from './Source';
 import Data from './Data';
@@ -63,7 +72,6 @@ const Details = (props) => {
   let fillerImages = [
     { id: 1, url: img1 },
     { id: 2, url: img2 },
-    { id: 3, url: img3 },
   ];
 
   fillerImages = fillerImages.map(function (item) {
@@ -119,6 +127,40 @@ const Details = (props) => {
           >
             {fillerImages}
           </Masonry>
+        </div>
+        <div className="detail-actions">
+          <button className="share-related-story">Share Related Story</button>
+          <button className="action-icon like">
+            <FontAwesomeIcon icon={faHeart} className="fa-icon" />
+          </button>
+          <button className="action-icon share">
+            <FontAwesomeIcon icon={faShareAlt} className="fa-icon" />
+          </button>
+          <button className="action-icon print">
+            <FontAwesomeIcon icon={faPrint} className="fa-icon" />
+          </button>
+          <button className="action-icon download">
+            <FontAwesomeIcon icon={faDownload} className="fa-icon" />
+          </button>
+        </div>
+        <div className="detail-related">
+          <div className="detail-related-heading">
+            Related Content <span>(129)</span>
+          </div>
+          <div className="detail-related-tabs">
+            <div className="tab people">
+              <FontAwesomeIcon icon={faUser} className="fa-icon" />
+              People
+            </div>
+            <div className="tab places">
+              <FontAwesomeIcon icon={faBuilding} className="fa-icon" />
+              Places
+            </div>
+            <div className="tab stories">
+              <FontAwesomeIcon icon={faBookOpen} className="fa-icon" />
+              Stories
+            </div>
+          </div>
         </div>
       </div>
       <Map show={props.show} active={activeItem} sources={sources} />

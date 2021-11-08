@@ -17,7 +17,7 @@
 .loader {
   position: absolute;
   top: 20px;
-  right: 20px;
+  left: 20px;
   padding: 15px;
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
@@ -217,7 +217,7 @@
     line-height: 2.3rem;
     letter-spacing: 0.35px;
     cursor: pointer;
-    transition: all 0.5s ease-in;
+    transition: all 0.3s ease-in;
     &:hover {
       background: $color-kett-gold;
     }
