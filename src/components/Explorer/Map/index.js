@@ -440,21 +440,17 @@ function KeTTMap() {
               gotoMarker(point, itemId, recnumber, markerid, type);
             });
             //Popup Tabs Click Event
-            $('.page-content').on(
-              'click',
-              '.grid-popup-tabs .tab',
-              function () {
-                let tabType = $(this).find('.tab-type').text();
-                console.log(tabType);
-                $(this).addClass('active').siblings().removeClass('active');
-                $(this)
-                  .closest('.grid-popup')
-                  .find(`.data-${tabType}`)
-                  .addClass('active')
-                  .siblings()
-                  .removeClass('active');
-              }
-            );
+            $('.page-content').on('click', '.map-popup-tabs .tab', function () {
+              let tabType = $(this).find('.tab-type').text();
+              console.log(tabType);
+              $(this).addClass('active').siblings().removeClass('active');
+              $(this)
+                .closest('.map-popup')
+                .find(`.data-${tabType}`)
+                .addClass('active')
+                .siblings()
+                .removeClass('active');
+            });
             //Grid Popup List Click Event
             $('.page-content').on(
               'click',
