@@ -1,9 +1,9 @@
 //React
 import React, { useEffect, useState } from 'react';
+import $ from 'jquery';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getDetails,
   toggleDetails,
   selectDetailsStatus,
   selectDetailsName,
@@ -13,10 +13,7 @@ import {
   selectDetailsData,
   selectDetailsPhotos,
 } from '../../../redux/reducers/detailsSlice';
-import {
-  updateListItem,
-  selectActiveItem,
-} from '../../../redux/reducers/listSlice';
+import { updateListItem } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
 //Images
@@ -48,14 +45,16 @@ const Details = (props) => {
   const id = useSelector(selectDetailsId);
   const type = useSelector(selectDetailsType);
   const sources = useSelector(selectDetailsSources);
-  const activeItem = useSelector(selectActiveItem);
   const data = useSelector(selectDetailsData);
   const photos = useSelector(selectDetailsPhotos);
-  const [selectedClient, setSelectedClient] = useState(activeItem.recnumber);
-  const [usePhotos, setPhotos] = useState([]);
+  const [selectedClient, setSelectedClient] = useState(0);
+  //const [usePhotos, setPhotos] = useState([]);
 
   useEffect(() => {
-    setSelectedClient(activeItem.recnumber);
+    if (status === 'success') {
+      const index = sources.findIndex((obj) => obj.selected === 'true');
+      setSelectedClient(index);
+    }
     //setPhotos;
     // if (photos) {
     //   const photoArray = photos.slice(2).map(function (photo) {
@@ -67,7 +66,7 @@ const Details = (props) => {
     //   });
     //   setPhotos(photoArray);
     // }
-  }, [activeItem, photos]);
+  }, [status, photos]);
 
   let fillerImages = [
     { id: 1, url: img1 },
@@ -83,15 +82,16 @@ const Details = (props) => {
   });
 
   function handleSelectChange(event) {
-    const id = event.target.dataset.id;
-    const recnumber = event.target.value;
-    console.log(id, recnumber);
-    setSelectedClient(recnumber);
-    dispatch(getDetails({ id, recnumber }));
+    const value = event.target.value;
+    const recnumber = $(event.target).find(':selected').data('recnumber');
+    const loctype = $(event.target).find(':selected').data('loctype');
+    console.log('UPDATE LIST', recnumber, loctype);
+    setSelectedClient(value);
+    dispatch(updateListItem({ recnumber, loctype }));
   }
 
   function handleCloseClick(event) {
-    dispatch(updateListItem({ id: '', recnumber: '' }));
+    dispatch(updateListItem({ recnumber: '', loctype: '' }));
     dispatch(toggleDetails('hide'));
   }
 
@@ -163,7 +163,7 @@ const Details = (props) => {
           </div>
         </div>
       </div>
-      <Map show={props.show} active={activeItem} sources={sources} />
+      <Map show={props.show} />
     </>
   );
 };

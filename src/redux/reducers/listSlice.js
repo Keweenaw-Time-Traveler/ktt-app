@@ -29,7 +29,7 @@ export const listSlice = createSlice({
   initialState: {
     showList: false,
     removeList: true,
-    listItemId: { id: '', recnumber: '' },
+    listItemId: { recnumber: '', loctype: '' },
     entities: {
       active: {
         length: 0,
@@ -59,6 +59,7 @@ export const listSlice = createSlice({
     },
     updateListItem: (state, action) => {
       const { payload } = action;
+      console.log('PAYLOAD', payload);
       state.listItemId = payload;
     },
   },

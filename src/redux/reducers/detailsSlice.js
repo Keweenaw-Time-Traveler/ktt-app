@@ -62,9 +62,9 @@ export const detailsSlice = createSlice({
       state.name = action.payload.title;
       state.id = action.payload.id;
       state.type = action.payload.type;
-      state.sources = action.payload.sources.map((source) => {
+      state.sources = action.payload.sources.map((source, index) => {
         return {
-          value: source.recnumber,
+          value: index,
           label: source.recname,
           id: source.recname,
           x: source.x,
@@ -72,6 +72,7 @@ export const detailsSlice = createSlice({
           recnumber: source.recnumber,
           markerid: source.markerid,
           mapyear: source.map_year,
+          selected: source.selected,
         };
       });
       state.details = action.payload;
@@ -84,7 +85,7 @@ export const detailsSlice = createSlice({
     builder.addCase(getPhotos.fulfilled, (state, action) => {
       // Add details to the state array
       // Update status
-      console.log('DETAILS PHOTOS', action.payload);
+      //console.log('DETAILS PHOTOS', action.payload);
       state.photos = action.payload;
     });
   },

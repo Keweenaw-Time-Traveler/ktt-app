@@ -16,13 +16,16 @@ export default function Item(props) {
 
   useEffect(() => {
     if (activeItem) {
-      const active = data.recnumber == activeItem.recnumber ? ' active' : '';
+      const match =
+        data.recnumber == activeItem.recnumber &&
+        data.loctype == activeItem.loctype;
+      const active = match ? ' active' : '';
       setClasses(`list-results-item tooltip${active}`);
     }
   }, [data, activeItem]);
 
   const handleListItemClick = () => {
-    dispatch(updateListItem({ id: '', recnumber: '' }));
+    dispatch(updateListItem({ id: '', recnumber: '', recname: '' }));
     dispatch(toggleDetails('hide'));
   };
 
@@ -37,6 +40,7 @@ export default function Item(props) {
       data-recnumber={data.recnumber}
       data-markerid={data.markerid}
       data-mapyear={data.map_year}
+      data-loctype={data.loctype}
       onClick={handleListItemClick}
     >
       {data.title}

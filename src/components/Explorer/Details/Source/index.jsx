@@ -13,6 +13,7 @@ export default function Source(props) {
       data-recnumber={data.recnumber}
       data-markerid={data.markerid}
       data-mapyear={data.mapyear}
+      data-selected={data.selected}
     >
       {data.label}
     </option>

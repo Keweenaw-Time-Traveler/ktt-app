@@ -430,6 +430,7 @@ function KeTTMap() {
               const markerY = $(this).data('y');
               const recnumber = $(this).data('recnumber');
               const markerid = $(this).data('markerid');
+              const loctype = $(this).data('loctype');
               const mapyear = $(this).data('mapyear');
               const point = new Point({
                 x: markerX,
@@ -437,7 +438,7 @@ function KeTTMap() {
                 spatialReference: { wkid: 3857 },
               });
               updateTimeline(mapyear);
-              gotoMarker(point, itemId, recnumber, markerid, type);
+              gotoMarker(point, itemId, recnumber, markerid, loctype, type);
             });
             //Popup Tabs Click Event
             $('.page-content').on('click', '.map-popup-tabs .tab', function () {
@@ -459,6 +460,7 @@ function KeTTMap() {
                 const itemId = $(this).find('.id').text();
                 const recnumber = $(this).find('.recnumber').text();
                 const markerid = $(this).find('.markerid').text();
+                const loctype = $(this).find('.loctype').text();
                 const mapyear = $(this).find('.mapyear').text();
                 const x = $(this).find('.pointx').text();
                 const y = $(this).find('.pointy').text();
@@ -469,7 +471,14 @@ function KeTTMap() {
                 });
                 //console.log('GRID LIST', itemId, recnumber, markerid);
                 updateTimeline(mapyear);
-                gotoMarker(point, itemId, recnumber, markerid, 'people');
+                gotoMarker(
+                  point,
+                  itemId,
+                  recnumber,
+                  markerid,
+                  loctype,
+                  'people'
+                );
               }
             );
             //Marker Popup List Click Event
@@ -501,10 +510,11 @@ function KeTTMap() {
               const $active = $(this).closest('.map-popup');
               const id = $active.find('li.active span.id').text();
               const recnumber = $active.find('li.active span.recnumber').text();
+              const loctype = $active.find('li.active span.loctype').text();
               console.log('GET FULL DETAILS', id, recnumber);
               if (id && recnumber) {
-                dispatch(updateListItem({ id, recnumber }));
-                dispatch(getDetails({ id, recnumber }));
+                dispatch(updateListItem({ recnumber, loctype }));
+                dispatch(getDetails({ id, recnumber, loctype }));
                 dispatch(getPhotos(3));
                 dispatch(toggleDetails('show'));
               }
@@ -1377,7 +1387,7 @@ function KeTTMap() {
         }
 
         //Pan and Zoom map to a given marker
-        function gotoMarker(point, itemId, recnumber, markerid, type) {
+        function gotoMarker(point, itemId, recnumber, markerid, loctype, type) {
           //console.log('gotoMarker', markerid);
           const opts = {
             duration: 3000,
@@ -1401,7 +1411,7 @@ function KeTTMap() {
               ymin: ymin,
               ymax: ymax,
             };
-            asyncMarkerInfo(recnumber, markerid, type, filterVal).then(
+            asyncMarkerInfo(recnumber, markerid, loctype, type, filterVal).then(
               function (res) {
                 view.popup.content = res;
               }
@@ -1536,12 +1546,13 @@ function KeTTMap() {
       });
   };
 
-  const asyncMarkerInfo = (recnumber, markerid, type, filterVal) => {
+  const asyncMarkerInfo = (recnumber, markerid, loctype, type, filterVal) => {
     //console.log('asyncMarkerInfo', recnumber, markerid, filterVal);
     let filters = {
       search: filterVal.search,
       id: markerid,
       recnumber: recnumber,
+      loctype: loctype,
       filters: {
         date_range: filterVal.date_range,
         photos: filterVal.photos,
@@ -1563,9 +1574,10 @@ function KeTTMap() {
         const peopleTitles = peopleData.map((person) => {
           const id = person.id;
           const recnumber = person.recnumber;
+          const loctype = person.loctype;
           const highlight = person.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
-          return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span></li>`;
+          return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const placesTitles = placesData.map((place) => {
           const highlight = place.highlighted;
@@ -1673,9 +1685,10 @@ function KeTTMap() {
         const peopleTitles = peopleData.map((person) => {
           const id = person.id;
           const recnumber = person.recnumber;
+          const loctype = person.loctype;
           const highlight = person.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
-          return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span></li>`;
+          return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const placesTitles = placesData.map((place) => {
           const recnumber = place.recnumber;
