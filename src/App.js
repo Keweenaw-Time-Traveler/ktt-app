@@ -1,12 +1,9 @@
 //React
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 //Redux
 import { useSelector } from 'react-redux';
-import {
-  selectShowLanding,
-  selectRemoveLanding,
-} from './redux/reducers/landingSlice';
+import { selectShowLanding } from './redux/reducers/landingSlice';
 import { selectShowMap } from './redux/reducers/mapSlice';
 //Components
 import Landing from './components/Landing';

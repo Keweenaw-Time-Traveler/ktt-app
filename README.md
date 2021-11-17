@@ -23,27 +23,9 @@ https://yarnpkg.com/getting-started/install
 - Run the following: `yarn set version berry`
 - Commit new & updated files
 
-### Storybook for React tutorial
-
-https://www.learnstorybook.com/intro-to-storybook/react/en/get-started/
-
-Quickstart
-
-```node
-// Run the test runner (Jest) in a terminal:
-yarn test --watchAll
-
-// If using css module make sure you yarn add identity-obj-proxy
-yarn test
-
-// Start the component explorer on port 9009:
-yarn storybook
-
-// Run the frontend app proper on port 3000:
-yarn start
-```
-
 ### Project Steps
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 - Step 1: setup react in a new folder called login`npx create-react-app login`
 - Step 1.1: consider redux `npx create-react-app my-app --template redux` [Docs](https://react-redux.js.org/introduction/getting-started)
@@ -56,13 +38,6 @@ yarn start
 - Step 7: setup CSS - [CSS Modules](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet) - [CSS Post Process](https://create-react-app.dev/docs/post-processing-css/)
 - Step 8: setup FontAwesome - [Yarn Config](https://github.com/FortAwesome/Font-Awesome/issues/16156) - [Font Awesome Install](https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers) - [Font Awesome React](https://fontawesome.com/how-to-use/on-the-web/using-with/react)
 - Step 9: arcgis install - started sandbox using esri-loader but ArchGIS JS API 4.19 moved to using ES Modules (note style sheet now in index.html) - [ArcGIS Install](https://developers.arcgis.com/javascript/latest/es-modules/)
-
-### Setup Documentation
-
-- Step 1: install story book `npx -p @storybook/cli sb init`
-- Step 2: install styleguidist `npm install --save-dev react-styleguidist`
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
