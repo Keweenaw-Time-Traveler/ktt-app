@@ -12,6 +12,7 @@ export default function Source(props) {
       data-y={data.y}
       data-recnumber={data.recnumber}
       data-markerid={data.markerid}
+      data-loctype={data.loctype}
       data-mapyear={data.mapyear}
       data-selected={data.selected}
     >

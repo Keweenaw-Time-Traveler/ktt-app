@@ -18,7 +18,7 @@ export default function Item(props) {
     if (activeItem) {
       const match =
         data.recnumber == activeItem.recnumber &&
-        data.loctype == activeItem.loctype;
+        data.loctype.toLowerCase() == activeItem.loctype.toLowerCase();
       const active = match ? ' active' : '';
       setClasses(`list-results-item tooltip${active}`);
     }

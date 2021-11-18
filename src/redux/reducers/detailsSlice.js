@@ -5,11 +5,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 export const getDetails = createAsyncThunk(
   'details/getDetails',
   async (details, { dispatch, getState }) => {
-    const { id, recnumber } = details;
+    const { id, recnumber, loctype } = details;
     return axios
       .post('http://geospatialresearch.mtu.edu/full_details.php', {
         personid: id,
         recnumber: recnumber,
+        loctype: loctype,
       })
       .then((res) => {
         return res.data;
@@ -71,6 +72,7 @@ export const detailsSlice = createSlice({
           y: source.y,
           recnumber: source.recnumber,
           markerid: source.markerid,
+          loctype: source.loctype,
           mapyear: source.map_year,
           selected: source.selected,
         };
