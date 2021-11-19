@@ -9,7 +9,8 @@ export const getTimeline = createAsyncThunk(
       .post('http://geospatialresearch.mtu.edu/date_picker.php')
       .then((res) => {
         return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   }
 );
 

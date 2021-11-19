@@ -93,7 +93,8 @@ export function loadMarkersAsync(filters) {
       .then((res) => {
         //dispatch(updateMarkers(res.data));
         //return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   };
 }
 

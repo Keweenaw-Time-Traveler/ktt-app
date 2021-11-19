@@ -14,7 +14,8 @@ export const getDetails = createAsyncThunk(
       })
       .then((res) => {
         return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   }
 );
 
@@ -25,7 +26,8 @@ export const getPhotos = createAsyncThunk(
       .get(`https://jsonplaceholder.typicode.com/photos`)
       .then((res) => {
         return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   }
 );
 

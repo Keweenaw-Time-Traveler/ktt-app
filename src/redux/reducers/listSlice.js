@@ -19,7 +19,8 @@ export const getList = createAsyncThunk(
       })
       .then((res) => {
         return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   }
 );
 

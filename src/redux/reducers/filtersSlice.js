@@ -18,7 +18,8 @@ export const getPlaceName = createAsyncThunk(
       )
       .then((res) => {
         return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   }
 );
 

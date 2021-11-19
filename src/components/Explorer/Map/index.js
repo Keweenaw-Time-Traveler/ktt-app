@@ -1543,7 +1543,8 @@ function KeTTMap() {
           </div>
         </div>
         `;
-      });
+      })
+      .catch((error) => console.log(error));
   };
 
   const asyncMarkerInfo = (recnumber, markerid, loctype, type, filterVal) => {
@@ -1652,7 +1653,8 @@ function KeTTMap() {
           </div>
         </div>
         `;
-      });
+      })
+      .catch((error) => console.log(error));
   };
   const asyncMarkerPopUp = (target) => {
     const layerID = target.graphic.layer.id;
@@ -1765,7 +1767,8 @@ function KeTTMap() {
           </div>
         </div>
         `;
-      });
+      })
+      .catch((error) => console.log(error));
   };
 
   const asyncGrid = (filters, size) => {
@@ -1788,7 +1791,8 @@ function KeTTMap() {
       .then((res) => {
         clearInterval(timer);
         return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   };
   const asyncMarkers = (view, filters, extent) => {
     console.log('asyncMarkers', filters, extent);
@@ -1817,7 +1821,8 @@ function KeTTMap() {
       .then((res) => {
         setLoadingMarkers(false);
         return res.data;
-      });
+      })
+      .catch((error) => console.log(error));
   };
   const handleTimePeriod = () => {
     window.timePeriod = true;
