@@ -7,6 +7,8 @@ import {
   selectActiveItem,
 } from '../../../../../redux/reducers/listSlice';
 import { toggleDetails } from '../../../../../redux/reducers/detailsSlice';
+//Tooptip
+import Tooltip from 'react-tooltip-lite';
 
 export default function Item(props) {
   const dispatch = useDispatch();
@@ -30,20 +32,21 @@ export default function Item(props) {
   };
 
   return (
-    <div
-      className={classes}
-      title={data.title}
-      data-type={type}
-      data-id={data.id}
-      data-x={data.x}
-      data-y={data.y}
-      data-recnumber={data.recnumber}
-      data-markerid={data.markerid}
-      data-mapyear={data.map_year}
-      data-loctype={data.loctype}
-      onClick={handleListItemClick}
-    >
-      {data.title}
-    </div>
+    <Tooltip content={data.tooltip} direction="right">
+      <div
+        className={classes}
+        data-type={type}
+        data-id={data.id}
+        data-x={data.x}
+        data-y={data.y}
+        data-recnumber={data.recnumber}
+        data-markerid={data.markerid}
+        data-mapyear={data.map_year}
+        data-loctype={data.loctype}
+        onClick={handleListItemClick}
+      >
+        {data.title}
+      </div>
+    </Tooltip>
   );
 }
