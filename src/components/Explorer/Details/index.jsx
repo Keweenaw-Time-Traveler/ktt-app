@@ -11,15 +11,11 @@ import {
   selectDetailsType,
   selectDetailsSources,
   selectDetailsData,
-  selectDetailsPhotos,
+  selectDetailsAttachments,
 } from '../../../redux/reducers/detailsSlice';
 import { updateListItem } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
-//Images
-import img1 from './images/img1.jpg';
-import img2 from './images/img2.jpg';
-import img3 from './images/img3.jpg';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/pro-light-svg-icons';
@@ -46,40 +42,26 @@ const Details = (props) => {
   const type = useSelector(selectDetailsType);
   const sources = useSelector(selectDetailsSources);
   const data = useSelector(selectDetailsData);
-  const photos = useSelector(selectDetailsPhotos);
+  const attachments = useSelector(selectDetailsAttachments);
   const [selectedClient, setSelectedClient] = useState(0);
-  //const [usePhotos, setPhotos] = useState([]);
+  let images = [];
 
   useEffect(() => {
     if (status === 'success') {
       const index = sources.findIndex((obj) => obj.selected === 'true');
       setSelectedClient(index);
     }
-    //setPhotos;
-    // if (photos) {
-    //   const photoArray = photos.slice(2).map(function (photo) {
-    //     return (
-    //       <div key={photo.id}>
-    //         <img src={photo.thumbnailUrl} />
-    //       </div>
-    //     );
-    //   });
-    //   setPhotos(photoArray);
-    // }
-  }, [status, photos]);
+  }, [status]);
 
-  let fillerImages = [
-    { id: 1, url: img1 },
-    { id: 2, url: img2 },
-  ];
-
-  fillerImages = fillerImages.map(function (item) {
-    return (
-      <div key={item.id}>
-        <img src={item.url} />
-      </div>
-    );
-  });
+  if (attachments) {
+    images = attachments.map(function (item, index) {
+      return (
+        <div key={index}>
+          <img src={item.url} />
+        </div>
+      );
+    });
+  }
 
   function handleSelectChange(event) {
     const value = event.target.value;
@@ -125,7 +107,7 @@ const Details = (props) => {
             className="my-masonry-grid"
             columnClassName="my-masonry-grid_column"
           >
-            {fillerImages}
+            {images}
           </Masonry>
         </div>
         <div className="detail-actions">

@@ -22,7 +22,6 @@ import { getList, updateListItem } from '../../../redux/reducers/listSlice';
 import {
   getDetails,
   toggleDetails,
-  getPhotos,
   selectShowDetails,
 } from '../../../redux/reducers/detailsSlice';
 //Components
@@ -515,7 +514,6 @@ function KeTTMap() {
               if (id && recnumber) {
                 dispatch(updateListItem({ recnumber, loctype }));
                 dispatch(getDetails({ id, recnumber, loctype }));
-                dispatch(getPhotos(3));
                 dispatch(toggleDetails('show'));
               }
             });
@@ -1581,14 +1579,20 @@ function KeTTMap() {
           return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const placesTitles = placesData.map((place) => {
+          const id = place.id;
+          const recnumber = place.recnumber;
+          const loctype = place.loctype;
           const highlight = place.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
-          return `<li${style}>${place.title}<span class="recnumber">${recnumber}</span></li>`;
+          return `<li${style}>${place.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const storiesTitles = storiesData.map((story) => {
+          const id = story.id;
+          const recnumber = story.recnumber;
+          const loctype = story.loctype;
           const highlight = story.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
-          return `<li${style}>${story.title}<span class="recnumber">${recnumber}</span></li>`;
+          return `<li${style}>${story.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         let stringPeople = peopleCount
           ? ''
@@ -1693,16 +1697,20 @@ function KeTTMap() {
           return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const placesTitles = placesData.map((place) => {
+          const id = place.id;
           const recnumber = place.recnumber;
+          const loctype = place.loctype;
           const highlight = place.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
-          return `<li${style}>${place.title}<span class="recnumber">${recnumber}</span></li>`;
+          return `<li${style}>${place.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const storiesTitles = storiesData.map((story) => {
+          const id = story.id;
           const recnumber = story.recnumber;
+          const loctype = story.loctype;
           const highlight = story.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
-          return `<li${style}>${story.title}<span class="recnumber">${recnumber}</span></li>`;
+          return `<li${style}>${story.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         let stringPeople = peopleCount
           ? ''

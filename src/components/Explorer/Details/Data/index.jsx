@@ -12,12 +12,13 @@ export default function Data(props) {
         <h2>{item.title}</h2>
       </div>
       <div className="detail-block-data">
-        {item.fields.map((item, index) => (
-          <div className="detail-item" key={index}>
-            <span className="label">{item.title}</span>
-            {item.value}
-          </div>
-        ))}
+        {item.fields &&
+          item.fields.map((item, index) => (
+            <div className="detail-item" key={index}>
+              <span className="label">{item.title}</span>
+              {item.value}
+            </div>
+          ))}
       </div>
     </div>
   );
