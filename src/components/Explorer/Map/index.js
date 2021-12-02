@@ -52,6 +52,9 @@ function KeTTMap() {
   const featuredRef = useRef('false');
   const tileUrlRef = useRef('');
 
+  //Sets the zoom level where the map transitions from Grid to Markers
+  const gridThreshold = 17;
+
   useEffect(() => {
     loadModules(
       [
@@ -197,7 +200,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (view.zoom > 18) {
+              if (view.zoom > gridThreshold) {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
@@ -239,7 +242,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (view.zoom > 18) {
+              if (view.zoom > gridThreshold) {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
@@ -280,7 +283,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (view.zoom > 18) {
+              if (view.zoom > gridThreshold) {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
@@ -334,7 +337,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (view.zoom > 18) {
+              if (view.zoom > gridThreshold) {
                 if (searchValue !== '') {
                   asyncMarkers(view, filterVal, extent).then((res) => {
                     console.log('MARKER RESPONCE', res);
@@ -388,7 +391,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (view.zoom > 18) {
+              if (view.zoom > gridThreshold) {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
@@ -431,7 +434,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (view.zoom > 18) {
+              if (view.zoom > gridThreshold) {
                 asyncMarkers(view, filterVal, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
@@ -572,10 +575,10 @@ function KeTTMap() {
             const markerExtent = window.markerExtent;
             const timePeriod = window.timePeriod;
             const extentClone = view.extent.clone();
-            if (view.zoom > 18 && !timePeriod) {
+            if (view.zoom > gridThreshold && !timePeriod) {
               setShowTimeChooser(true);
               setLoadingMarkers(false);
-            } else if (view.zoom > 18) {
+            } else if (view.zoom > gridThreshold) {
               if (!markerExtent) {
                 console.log('WINDOW', markerExtent);
                 window.markerExtent = extentClone.expand(10);
@@ -608,12 +611,12 @@ function KeTTMap() {
                 });
               }
             }
-            if (view.zoom > 18) {
+            if (view.zoom > gridThreshold) {
               view.ui.add(opacitySlider, {
                 position: 'top-right',
                 index: 2,
               });
-            } else if (view.zoom <= 18) {
+            } else if (view.zoom <= gridThreshold) {
               view.ui.remove(opacitySlider);
             }
             //SHOW HIDE LAYERS
@@ -697,7 +700,7 @@ function KeTTMap() {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                } else if (view.zoom > 16 && view.zoom <= 18) {
+                } else if (view.zoom > 16 && view.zoom <= gridThreshold) {
                   if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -722,7 +725,7 @@ function KeTTMap() {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
                   }
-                } else if (view.zoom > 18) {
+                } else if (view.zoom > gridThreshold) {
                   if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -1032,9 +1035,13 @@ function KeTTMap() {
             show = true;
           } else if (size === '0.1' && view.zoom > 13 && view.zoom <= 16) {
             show = true;
-          } else if (size === '0.08' && view.zoom > 16 && view.zoom <= 18) {
+          } else if (
+            size === '0.08' &&
+            view.zoom > 16 &&
+            view.zoom <= gridThreshold
+          ) {
             show = true;
-          } else if (view.zoom > 18) {
+          } else if (view.zoom > gridThreshold) {
             show = false;
           }
           console.log('SHOW', show);
@@ -1206,7 +1213,7 @@ function KeTTMap() {
               },
             ],
           };
-          const show = view.zoom > 18 ? true : false;
+          const show = view.zoom > gridThreshold ? true : false;
           const layer = new FeatureLayer({
             id: 'marker_layer_active',
             opacity: 1,
@@ -1294,7 +1301,7 @@ function KeTTMap() {
               },
             ],
           };
-          const show = view.zoom > 18 ? true : false;
+          const show = view.zoom > gridThreshold ? true : false;
           const layer = new FeatureLayer({
             id: 'marker_layer_inactive',
             opacity: 0.3,
@@ -1333,7 +1340,7 @@ function KeTTMap() {
         }
 
         function createTileLayer(zoom, url) {
-          const show = zoom > 18 ? true : false;
+          const show = zoom > gridThreshold ? true : false;
           const tileLayer = new TileLayer({
             id: 'tile_layer',
             url,
@@ -1404,10 +1411,11 @@ function KeTTMap() {
         //Pan and Zoom map to a given marker
         function gotoMarker(point, itemId, recnumber, markerid, loctype, type) {
           //console.log('gotoMarker', markerid);
+          const newZoom = gridThreshold + 1;
           const opts = {
             duration: 3000,
           };
-          view.goTo({ target: point, zoom: 19 }, opts).then(() => {
+          view.goTo({ target: point, zoom: newZoom }, opts).then(() => {
             view.popup.open({
               title: `Item ID: ${itemId}`,
               location: view.center,
@@ -1821,7 +1829,7 @@ function KeTTMap() {
   };
   const asyncMarkers = (view, filters, extent) => {
     console.log('asyncMarkers', filters, extent);
-    if (view.zoom > 18) {
+    if (view.zoom > gridThreshold) {
       setLoadingMarkers(true);
     }
     const { search, date_range, photos, featured, type } = filters;
