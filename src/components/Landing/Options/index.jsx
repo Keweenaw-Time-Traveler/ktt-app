@@ -40,10 +40,21 @@ export default function Search(props) {
     }, 1000);
   }, []);
 
-  const handleSearchClick = (e) => {
+  const search = () => {
     dispatch(updateLandingView({ show: false, remove: true }));
     dispatch(toggleList('show'));
     dispatch(updateMapView(true));
+  };
+
+  const handleSearchClick = (e) => {
+    e.preventDefault();
+    search();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      search();
+    }
   };
 
   const handleExploreClick = (e) => {
@@ -72,6 +83,7 @@ export default function Search(props) {
                 name="search"
                 placeholder="Start your search here!"
                 value={filters.search}
+                onKeyDown={handleKeyDown}
                 onChange={(e) => dispatch(updateSearch(e.target.value))}
               />
               <div

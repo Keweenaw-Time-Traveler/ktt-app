@@ -26,10 +26,10 @@ export default function Search() {
   const dispatch = useDispatch();
   const filters = useSelector(selectFiltersAll);
 
-  const handleSearchClick = (e) => {
+  const search = () => {
     const searchDOM = document.getElementById('search');
     const searchValue = searchDOM.value;
-    console.log(searchValue);
+    //console.log('SEARCH VALUE', searchValue);
     if (searchValue != '') {
       dispatch(getList({}));
       dispatch(toggleList('show'));
@@ -39,6 +39,18 @@ export default function Search() {
       dispatch(toggleList('hide'));
     }
   };
+
+  const handleSearchClick = (e) => {
+    e.preventDefault();
+    search();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      search();
+    }
+  };
+
   return (
     <div className="search">
       <div className="search-nav">
@@ -52,6 +64,7 @@ export default function Search() {
           name="search"
           placeholder="Search First Name"
           value={filters.search}
+          onKeyDown={handleKeyDown}
           onChange={(e) => dispatch(updateSearch(e.target.value))}
         />
         <div

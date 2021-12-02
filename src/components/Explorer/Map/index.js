@@ -287,8 +287,8 @@ function KeTTMap() {
                 });
               }
             });
-            //Landing Page Search Button Click Event
-            $('body').on('click', '#intro-options-search-icon', function () {
+            //Landing Page Search Field Events
+            function landingSearch() {
               const searchValue = $('#search-landing').val();
               searchRef.current = `${searchValue}`;
               const filterVal = {
@@ -298,12 +298,20 @@ function KeTTMap() {
                 featured: featuredRef.current,
                 type: typeRef.current,
               };
-              console.log('LANDING BUTTON CLICKED', filterVal);
+              console.log('LANDING SEARCH', filterVal);
               updateGrid(view, filterVal);
+            }
+            $('body').on('click', '#intro-options-search-icon', function (e) {
+              e.preventDefault();
+              landingSearch();
+            });
+            $('body').on('keydown', '#search-landing', function (e) {
+              if (e.key === 'Enter') {
+                landingSearch();
+              }
             });
             //Main Search Field Click Event
-            $('#search-icon').on('click', function (e) {
-              e.preventDefault();
+            function mainSearch() {
               const searchValue = $('#search').val();
               searchRef.current = `${searchValue}`;
               const filterVal = {
@@ -349,6 +357,15 @@ function KeTTMap() {
                   duration: 5000,
                 }
               );
+            }
+            $('#search-icon').on('click', function (e) {
+              e.preventDefault();
+              mainSearch();
+            });
+            $('#search').on('keydown', function (e) {
+              if (e.key === 'Enter') {
+                mainSearch();
+              }
             });
             //Filters:Radio Buttons Click Event
             $('.radio-button-input').on('click', function () {
