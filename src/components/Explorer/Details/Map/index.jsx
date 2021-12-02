@@ -7,6 +7,8 @@ import { loadModules } from 'esri-loader';
 import './styles.scss';
 //Images
 import peopleMarkerImage from './images/marker_person_details.png';
+import placesMarkerImage from './images/marker_place_details.png';
+import storiesMarkerImage from './images/marker_story_details.png';
 //import placeMarkerImage from './images/marker_place.png';
 //import storyMarkerImage from './images/marker_story.png';
 //Components
@@ -126,7 +128,7 @@ export default function Map(props) {
               const mapyear = $source.data('mapyear');
               const url = getUrl(mapyear);
               createTileLayer(url);
-              addMarker(newPoint);
+              addMarker($source.data('type'), newPoint);
               setLoadingMap(false);
               clearInterval(intervalGetCenter);
             }
@@ -156,7 +158,7 @@ export default function Map(props) {
             );
             const url = getUrl(mapyear);
             createTileLayer(url);
-            addMarker(point);
+            addMarker(type, point);
             gotoMarker(point);
           });
         });
@@ -167,18 +169,22 @@ export default function Map(props) {
           view.layerViews.items[0].layer.opacity = opacity;
         }
         //Add Marker
-        function addMarker(point) {
+        function addMarker(type, point) {
           const ifGraphics = view.graphics.length;
-          const markerSymbol = {
-            type: 'picture-marker', // autocasts as new SimpleMarkerSymbol()
-            url: peopleMarkerImage,
-            width: '30px',
-            height: '30px',
-          };
-          const pointGraphic = new Graphic({
-            geometry: point,
-            symbol: markerSymbol,
-          });
+          let markerUrl = null;
+          switch (type.toLowerCase()) {
+            case 'people':
+              markerUrl = peopleMarkerImage;
+              break;
+            case 'place':
+              markerUrl = placesMarkerImage;
+              break;
+            case 'story':
+              markerUrl = storiesMarkerImage;
+              break;
+            default:
+              console.log(`TYPE ERROR: ${type} is not a valid option`);
+          }
           //Check for existing markers and then remove
           if (ifGraphics) {
             const existingGraphics = view.graphics.items;
@@ -186,7 +192,23 @@ export default function Map(props) {
               view.graphics.remove(item);
             });
           }
-          view.graphics.add(pointGraphic);
+          if (markerUrl) {
+            const markerSymbol = {
+              type: 'picture-marker', // autocasts as new SimpleMarkerSymbol()
+              url: markerUrl,
+              width: '30px',
+              height: '30px',
+            };
+            const pointGraphic = new Graphic({
+              geometry: point,
+              symbol: markerSymbol,
+            });
+            view.graphics.add(pointGraphic);
+          } else {
+            console.log(
+              `MARKER ERROR: type not valid, unable to generate symbol`
+            );
+          }
         }
 
         //Pan and Zoom map to a given marker
