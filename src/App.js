@@ -10,7 +10,7 @@ import Landing from './components/Landing';
 import Navbar from './components/NavBar';
 import FilterBar from './components/FilterBar';
 //Pages
-import Explorer from './pages/Explorer';
+import Main from './pages/Main';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 //Styles
@@ -29,7 +29,7 @@ function App() {
         <FilterBar show={showMap} />
         <div className={`page-content ${showMap ? 'show' : 'hide'}`}>
           <Switch>
-            <Route exact path="/" component={Explorer} />
+            <Route exact path="/" component={Main} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
           </Switch>
