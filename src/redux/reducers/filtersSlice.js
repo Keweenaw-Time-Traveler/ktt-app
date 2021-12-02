@@ -66,7 +66,7 @@ export const filtersSlice = createSlice({
       const names = action.payload.features;
       // Add reponce data to the state array
       // Update status
-      if (names.length == 1) {
+      if (names.length === 1) {
         state.placeName = names[0].attributes.region_nam;
       } else {
         state.placeName = 'Keweenaw';

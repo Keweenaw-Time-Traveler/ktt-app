@@ -28,7 +28,8 @@ function Landing(props) {
         setVisibleClass('invisible');
       }, 500);
     }
-  });
+  }, [props]);
+
   useEffect(() => {
     //This will fade in Intro using CSS
     setShowIntro(true);

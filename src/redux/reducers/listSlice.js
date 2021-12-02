@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // First, create the thunk
 export const getList = createAsyncThunk(
   'list/getList',
-  async ({}, { dispatch, getState }) => {
+  async (arg, { dispatch, getState }) => {
     const stateBefore = getState();
     return axios
       .post('http://geospatialresearch.mtu.edu/list.php', {

@@ -44,6 +44,8 @@ export default function Filters() {
       case 'featured':
         setFeatured(checked);
         break;
+      default:
+        console.log('ERROR: ID is not valid');
     }
   };
 

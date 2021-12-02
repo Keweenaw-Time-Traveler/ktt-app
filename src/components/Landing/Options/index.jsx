@@ -6,8 +6,6 @@ import {
   updateLandingView,
   selectShowToolTips,
   turnOnToolTips,
-  updateLandingSearch,
-  selectLandingSearch,
 } from '../../../redux/reducers/landingSlice';
 import {
   selectFiltersAll,
@@ -128,7 +126,7 @@ export default function Search(props) {
           distance={30}
           isOpen={showToolTips}
         >
-          <img src={miniMap} />
+          <img src={miniMap} alt="Map key" />
         </Tooltip>
       </div>
 

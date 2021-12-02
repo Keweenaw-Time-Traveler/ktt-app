@@ -1448,7 +1448,7 @@ function KeTTMap() {
         }
       }
     );
-  }, []);
+  }, [dispatch]);
 
   const asyncGridPopUp = (target) => {
     //console.log('TARGET', target);

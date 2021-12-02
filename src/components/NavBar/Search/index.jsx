@@ -1,5 +1,5 @@
 //React
-import React, { useState } from 'react';
+import React from 'react';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -30,7 +30,7 @@ export default function Search() {
     const searchDOM = document.getElementById('search');
     const searchValue = searchDOM.value;
     //console.log('SEARCH VALUE', searchValue);
-    if (searchValue != '') {
+    if (searchValue !== '') {
       dispatch(getList({}));
       dispatch(toggleList('show'));
       dispatch(updateListItem({ id: '', recnumber: '' }));

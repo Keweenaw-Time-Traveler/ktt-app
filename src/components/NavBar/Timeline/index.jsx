@@ -48,7 +48,6 @@ export default function Timeline() {
 
   const handleSegmentClick = (e) => {
     const id = e.target.getAttribute('data-id');
-    const url = e.target.getAttribute('data-url');
     const left = e.target.getAttribute('data-left');
     const right = e.target.getAttribute('data-right');
     const min = e.target.getAttribute('data-min');
@@ -91,7 +90,7 @@ export default function Timeline() {
             <Tooltip
               key={index}
               className={`segment-wrapper ${
-                segmentLength == index + 1 ? 'last-wrapper' : 'wrapper'
+                segmentLength === index + 1 ? 'last-wrapper' : 'wrapper'
               }`}
               styles={{ width: `${segment.size}%` }}
               background="#e6a100"
@@ -99,7 +98,7 @@ export default function Timeline() {
             >
               <div
                 className={`segment segment-${index + 1} ${
-                  activeSegment == index + 1 ? 'active' : 'inactive'
+                  activeSegment === index + 1 ? 'active' : 'inactive'
                 }`}
                 data-id={index + 1}
                 data-left={segment.left}

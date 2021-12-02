@@ -265,7 +265,7 @@ export default function Map(props) {
         }
       }
     );
-  }, []);
+  }, [show]);
 
   return (
     <div className={`details-map-container ${show ? 'show' : 'hide'}`}>

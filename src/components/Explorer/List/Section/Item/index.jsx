@@ -19,8 +19,8 @@ export default function Item(props) {
   useEffect(() => {
     if (activeItem) {
       const match =
-        data.recnumber == activeItem.recnumber &&
-        data.loctype.toLowerCase() == activeItem.loctype.toLowerCase();
+        data.recnumber === activeItem.recnumber &&
+        data.loctype.toLowerCase() === activeItem.loctype.toLowerCase();
       const active = match ? ' active' : '';
       setClasses(`list-results-item tooltip${active}`);
     }

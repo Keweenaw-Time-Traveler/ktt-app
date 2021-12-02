@@ -51,13 +51,13 @@ const Details = (props) => {
       const index = sources.findIndex((obj) => obj.selected === 'true');
       setSelectedClient(index);
     }
-  }, [status]);
+  }, [status, sources]);
 
   if (attachments) {
     images = attachments.map(function (item, index) {
       return (
         <div key={index}>
-          <img src={item.url} />
+          <img src={item.url} alt={item.name} />
         </div>
       );
     });

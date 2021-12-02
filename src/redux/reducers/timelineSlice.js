@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // Thunks
 export const getTimeline = createAsyncThunk(
   'timeline/getTimeline',
-  async ({}, { dispatch, getState }) => {
+  async (arg, { dispatch, getState }) => {
     return axios
       .post('http://geospatialresearch.mtu.edu/date_picker.php')
       .then((res) => {
@@ -73,7 +73,9 @@ export const timelineSlice = createSlice({
         const segmentPercent = (segmentTotal / total) * 100;
         const left = `${prevPercent}%`;
         const right =
-          segmentNum == index + 1 ? '100%' : `${prevPercent + segmentPercent}%`;
+          segmentNum === index + 1
+            ? '100%'
+            : `${prevPercent + segmentPercent}%`;
         prevPercent = prevPercent + segmentPercent;
         segments.push({
           id: index + 1,
