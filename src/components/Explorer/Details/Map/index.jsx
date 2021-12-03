@@ -176,7 +176,7 @@ export default function Map(props) {
             case 'people':
               markerUrl = peopleMarkerImage;
               break;
-            case 'place':
+            case 'building':
               markerUrl = placesMarkerImage;
               break;
             case 'story':
