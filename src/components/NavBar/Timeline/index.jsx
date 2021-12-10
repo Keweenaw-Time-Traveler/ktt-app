@@ -98,7 +98,7 @@ export default function Timeline() {
             >
               <div
                 className={`segment segment-${index + 1} ${
-                  activeSegment === `${index + 1}` ? 'active' : 'inactive'
+                  activeSegment == index + 1 ? 'active' : 'inactive'
                 }`}
                 data-id={index + 1}
                 data-left={segment.left}

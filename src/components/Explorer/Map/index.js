@@ -1394,7 +1394,7 @@ function KeTTMap() {
                 endDateRef.current = `${max}`;
                 tileUrlRef.current = url;
                 dispatch(updateTimelineRange(`${min}-${max}`));
-                dispatch(updateActiveSegment(id));
+                dispatch(updateActiveSegment(`${id}`));
                 dispatch(updateActiveUrl(url));
                 dispatch(updateLeftPip(left));
                 dispatch(updateRightPip(right));

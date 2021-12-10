@@ -104,6 +104,7 @@ const Details = (props) => {
         </div>
         <div className="detail-photos">
           <Masonry
+            breakpointCols={{ default: 4, 800: 4 }}
             className="my-masonry-grid"
             columnClassName="my-masonry-grid_column"
           >
