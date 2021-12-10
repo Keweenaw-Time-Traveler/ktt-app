@@ -16,6 +16,7 @@ import {
 import { updateListItem } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
+import 'react-image-lightbox/style.css';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/pro-light-svg-icons';
@@ -33,6 +34,7 @@ import Source from './Source';
 import Data from './Data';
 import Map from './Map';
 import Masonry from 'react-masonry-css';
+import Lightbox from 'react-image-lightbox';
 
 const Details = (props) => {
   const dispatch = useDispatch();
@@ -44,6 +46,9 @@ const Details = (props) => {
   const data = useSelector(selectDetailsData);
   const attachments = useSelector(selectDetailsAttachments);
   const [selectedClient, setSelectedClient] = useState(0);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  let thumbs = [];
   let images = [];
 
   useEffect(() => {
@@ -54,13 +59,14 @@ const Details = (props) => {
   }, [status, sources]);
 
   if (attachments) {
-    images = attachments.map(function (item, index) {
+    thumbs = attachments.map(function (item, index) {
       return (
-        <div key={index}>
+        <div key={index} onClick={() => handleThumbClick(index)}>
           <img src={item.url} alt={item.name} />
         </div>
       );
     });
+    images = attachments.map((item) => item.url);
   }
 
   function handleSelectChange(event) {
@@ -75,6 +81,12 @@ const Details = (props) => {
   function handleCloseClick(event) {
     dispatch(updateListItem({ recnumber: '', loctype: '' }));
     dispatch(toggleDetails('hide'));
+  }
+
+  function handleThumbClick(index) {
+    console.log('THUMB CLICK', index);
+    setPhotoIndex(index);
+    setIsOpen(true);
   }
 
   return (
@@ -108,7 +120,7 @@ const Details = (props) => {
             className="my-masonry-grid"
             columnClassName="my-masonry-grid_column"
           >
-            {images}
+            {thumbs}
           </Masonry>
         </div>
         <div className="detail-actions">
@@ -147,6 +159,20 @@ const Details = (props) => {
         </div>
       </div>
       <Map show={props.show} />
+      {isOpen && (
+        <Lightbox
+          mainSrc={images[photoIndex]}
+          nextSrc={images[(photoIndex + 1) % images.length]}
+          prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+          onCloseRequest={() => setIsOpen(false)}
+          onMovePrevRequest={() => {
+            setPhotoIndex((photoIndex + images.length - 1) % images.length);
+          }}
+          onMoveNextRequest={() => {
+            setPhotoIndex((photoIndex + 1) % images.length);
+          }}
+        />
+      )}
     </>
   );
 };
