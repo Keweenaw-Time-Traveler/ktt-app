@@ -6226,6 +6226,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"exenv@npm:^1.2.0":
+  version: 1.2.2
+  resolution: "exenv@npm:1.2.2"
+  checksum: 09fd080c0478739f0154916b73dea07f30f97972e1b3be3368d2b96d282d889b509f05e163d830e323c9ab1e94b0a293a9947b410651325df467c404f37f32f1
+  languageName: node
+  linkType: hard
+
 "exit@npm:^0.1.2":
   version: 0.1.2
   resolution: "exit@npm:0.1.2"
@@ -9112,6 +9119,7 @@ fsevents@^1.2.7:
     prop-types: ^15.7.2
     react: ^16.13.1
     react-dom: ^16.13.1
+    react-image-lightbox: ^5.1.4
     react-infinite-scroll-component: ^6.1.0
     react-is: ^16.13.1
     react-masonry-css: ^1.0.16
@@ -12252,6 +12260,19 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-image-lightbox@npm:^5.1.4":
+  version: 5.1.4
+  resolution: "react-image-lightbox@npm:5.1.4"
+  dependencies:
+    prop-types: ^15.7.2
+    react-modal: ^3.11.1
+  peerDependencies:
+    react: 16.x || 17.x
+    react-dom: 16.x || 17.x
+  checksum: 3f669a0f76b9421da4eef864675d38a1dba5fae6bd462cfb9c13a26e01ef555ea2fa2c5933c629b9bd46c4d104a178c3c1c0b7fb0409ef78cfde42be2a160f51
+  languageName: node
+  linkType: hard
+
 "react-infinite-scroll-component@npm:^6.1.0":
   version: 6.1.0
   resolution: "react-infinite-scroll-component@npm:6.1.0"
@@ -12270,12 +12291,34 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-lifecycles-compat@npm:^3.0.0":
+  version: 3.0.4
+  resolution: "react-lifecycles-compat@npm:3.0.4"
+  checksum: 82176a55ef7526414d770d5e07dc1d28b4c7f20281f22c6f53f3a98df9dbbb5d70c94bebee57b4ea8ccc2eee430b907ca7b564a42fbdd0ed21e7c43bfee35404
+  languageName: node
+  linkType: hard
+
 "react-masonry-css@npm:^1.0.16":
   version: 1.0.16
   resolution: "react-masonry-css@npm:1.0.16"
   peerDependencies:
     react: ">=16.0.0"
   checksum: aa1e32eadc1d3f3e5f7ecc3c7925e376a133475083cb23e49f1558d228b6c6391b07a252f09d6d69e8b261835fcfa93a1f1e1cca72039b28fd54f46bef09c604
+  languageName: node
+  linkType: hard
+
+"react-modal@npm:^3.11.1":
+  version: 3.14.4
+  resolution: "react-modal@npm:3.14.4"
+  dependencies:
+    exenv: ^1.2.0
+    prop-types: ^15.7.2
+    react-lifecycles-compat: ^3.0.0
+    warning: ^4.0.3
+  peerDependencies:
+    react: ^0.14.0 || ^15.0.0 || ^16 || ^17
+    react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17
+  checksum: 8069c0d89bd433f6b9041fa3076eceb01abca40520f40c4a7194d0dbf23dc04f2f4a4aec52e1fb6bdccde9888090f82242ce54ddfc9b12a8c345ead97771b725
   languageName: node
   linkType: hard
 
@@ -15023,6 +15066,15 @@ resolve@1.15.0:
   dependencies:
     makeerror: 1.0.x
   checksum: c014f264c473fc4464ba8f59eb9f7ffa1c0cf2c83b65353de28a6012d8dd29e974bf2b0fbd5c71231f56762a3ea0d970b635f7d6f6d670ff83f426741ce6a4da
+  languageName: node
+  linkType: hard
+
+"warning@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "warning@npm:4.0.3"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: 20ef5d29ff9c20af3060e504914a00d5a90ce346e75e6691efbedb540481cdc82070c966d75195f812de64bb0bd7f1b02315fcb52469db151c0f15e29002781c
   languageName: node
   linkType: hard
 
