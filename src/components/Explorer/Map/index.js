@@ -530,7 +530,10 @@ function KeTTMap() {
               const id = $active.find('li.active span.id').text();
               const recnumber = $active.find('li.active span.recnumber').text();
               const loctype = $active.find('li.active span.loctype').text();
-              console.log('GET FULL DETAILS', id, recnumber, loctype);
+              console.log(
+                'FULL DETAILS BUTTON CLICK',
+                `{id: ${id}, recnumber: ${recnumber}, loctype: ${loctype}`
+              );
               if (id && recnumber) {
                 dispatch(updateListItem({ recnumber, loctype }));
                 dispatch(getDetails({ id, recnumber, loctype }));
