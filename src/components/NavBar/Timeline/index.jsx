@@ -89,9 +89,9 @@ export default function Timeline() {
           {segments.map((segment, index) => (
             <Tooltip
               key={index}
-              className={`segment-wrapper ${
-                segmentLength === index + 1 ? 'last-wrapper' : 'wrapper'
-              }`}
+              className={`segment-wrapper wrapper${
+                !index ? ' first-wrapper' : ''
+              }${segmentLength === index + 1 ? ' last-wrapper' : ''}`}
               styles={{ width: `${segment.size}%` }}
               background="#e6a100"
               content={segment.title}

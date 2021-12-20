@@ -18,7 +18,11 @@ import {
   updateRightPip,
   updateReset,
 } from '../../../redux/reducers/timelineSlice';
-import { getList, updateListItem } from '../../../redux/reducers/listSlice';
+import {
+  getList,
+  updateListItem,
+  selectRemoveList,
+} from '../../../redux/reducers/listSlice';
 import {
   getDetails,
   toggleDetails,
@@ -39,6 +43,7 @@ import storyMarkerImage from './images/marker_story.png';
 //Functional Component
 function KeTTMap() {
   const dispatch = useDispatch();
+  const listRemove = useSelector(selectRemoveList);
   const [zoom, setZoom] = useState(10);
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
@@ -51,9 +56,13 @@ function KeTTMap() {
   const photosRef = useRef('false');
   const featuredRef = useRef('false');
   const tileUrlRef = useRef('');
+  const activeMarkerRecnumberRef = useRef('');
+  const activeMarkerIdRef = useRef('');
+  const activeMarkerLoctypeRef = useRef('');
+  const activeMarkerTypeRef = useRef('');
 
   //Sets the zoom level where the map transitions from Grid to Markers
-  const gridThreshold = 17;
+  const gridThreshold = 18;
 
   useEffect(() => {
     loadModules(
@@ -503,25 +512,109 @@ function KeTTMap() {
             //Marker Popup List Click Event
             $('.page-content').on(
               'click',
-              '.map-popup-data.marker .data li',
+              '.map-popup-data .data li',
               function () {
-                const id = $(this).find('.id').text();
-                const recnumber = $(this).find('.recnumber').text();
-                console.log(id, recnumber);
-                // const type = $(this).data('type');
-                // const itemId = $(this).data('id');
-                // const markerX = $(this).data('x');
-                // const markerY = $(this).data('y');
-                // const recnumber = $(this).data('recnumber');
-                // const markerid = $(this).data('markerid');
-                // const point = new Point({
-                //   x: markerX,
-                //   y: markerY,
-                //   spatialReference: { wkid: 3857 },
-                // });
-                // const opts = {
-                //   duration: 3000,
-                // };
+                const id = $(this).find('span.id').text();
+                const recnumber = $(this).find('span.recnumber').text();
+                const loctype = $(this).find('span.loctype').text();
+                console.log(id, recnumber, loctype);
+                if (id && recnumber) {
+                  dispatch(updateListItem({ recnumber, loctype }));
+                  dispatch(getDetails({ id, recnumber, loctype }));
+                  dispatch(toggleDetails('show'));
+                } else {
+                  console.log('Sorry, id or recumber is missing');
+                }
+              }
+            );
+            //Marker Popop Timemachine
+            function moveThroughTime(segmentId) {
+              const $target = $(`.segment-${segmentId}`);
+              const min = $target.data('min');
+              const max = $target.data('max');
+              const left = $target.data('left');
+              const right = $target.data('right');
+              const url = $target.data('url');
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              tileUrlRef.current = url;
+              const filterVal = {
+                search: searchRef.current,
+                date_range: `${min}-${max}`,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('TIME SEGMENT CHOOSEN', filterVal);
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              handleTimePeriod();
+              //ADD TILE LAYER
+              createTileLayer(view.zoom, url);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              if (view.zoom > gridThreshold) {
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              }
+              //UPDATE TIMELINE
+              dispatch(updateActiveSegment(`${segmentId}`));
+              dispatch(updateLeftPip(left));
+              dispatch(updateRightPip(right));
+              dispatch(updateDateRange(`${min}-${max}`));
+              dispatch(updateStartDate(`${min}`));
+              dispatch(updateEndDate(`${max}`));
+              dispatch(updateReset(true));
+              if (!listRemove) {
+                dispatch(getList({}));
+              }
+              //UPDATE MARKER POPUP
+              asyncMarkerPopUp().then(function (res) {
+                view.popup.content = res;
+              });
+            }
+            $('.page-content').on('click', '.timemachine .back', function () {
+              const currentId = parseInt($('.segment.active').data('id'));
+              const firstId = parseInt(
+                $('.segment-wrapper.first-wrapper .segment').data('id')
+              );
+              let newSegmentId = currentId > firstId ? currentId - 1 : null;
+              if (newSegmentId) {
+                moveThroughTime(newSegmentId);
+              }
+            });
+            $('.page-content').on(
+              'click',
+              '.timemachine .forward',
+              function () {
+                const currentId = parseInt($('.segment.active').data('id'));
+                const lastId = parseInt(
+                  $('.segment-wrapper.last-wrapper .segment').data('id')
+                );
+                let newSegmentId = currentId < lastId ? currentId + 1 : null;
+                if (newSegmentId) {
+                  moveThroughTime(newSegmentId);
+                }
+              }
+            );
+            //Marker Popop Tooltips
+            $('.page-content').on(
+              'click',
+              '.data-actions .timemachine .tooltip span',
+              function () {
+                $(this).parent().parent().hide();
               }
             );
             //Full Details Click Event
@@ -553,8 +646,8 @@ function KeTTMap() {
           //console.log(event.mapPoint);
           view.hitTest(event).then(function (response) {
             // do something with the result graphic
-            //var graphic = response.results[0].graphic;
-            //console.log('GRAPHIC ATTR', graphic.attributes);
+            var graphic = response.results[0].graphic;
+            console.log('GRAPHIC ATTR', graphic.attributes);
           });
         });
 
@@ -1119,9 +1212,11 @@ function KeTTMap() {
                 y: marker.y,
                 spatialReference: { wkid: 3857 },
               });
+              const markerId = marker.id;
+              const attr = { ...marker, markerId };
               const graphic = new Graphic({
                 geometry: point,
-                attributes: marker,
+                attributes: attr,
               });
               activeGraphics.push(graphic);
             } else {
@@ -1133,32 +1228,32 @@ function KeTTMap() {
               );
             }
           });
-          allInActive.forEach((marker) => {
-            if (marker.x) {
-              const point = new Point({
-                x: marker.x,
-                y: marker.y,
-                spatialReference: { wkid: 3857 },
-              });
-              const graphic = new Graphic({
-                geometry: point,
-                attributes: marker,
-              });
-              inactiveGraphics.push(graphic);
-            } else {
-              console.log(
-                'EMPTY MARKER VALUE - ID: ',
-                marker.id,
-                'X: ',
-                marker.x
-              );
-            }
-          });
-          if (inactiveGraphics.length > 0) {
-            createInactiveMarkerLayer(view, inactiveGraphics);
-          } else {
-            console.log('No Inactive markers in this area');
-          }
+          // allInActive.forEach((marker) => {
+          //   if (marker.x) {
+          //     const point = new Point({
+          //       x: marker.x,
+          //       y: marker.y,
+          //       spatialReference: { wkid: 3857 },
+          //     });
+          //     const graphic = new Graphic({
+          //       geometry: point,
+          //       attributes: marker,
+          //     });
+          //     inactiveGraphics.push(graphic);
+          //   } else {
+          //     console.log(
+          //       'EMPTY MARKER VALUE - ID: ',
+          //       marker.id,
+          //       'X: ',
+          //       marker.x
+          //     );
+          //   }
+          // });
+          // if (inactiveGraphics.length > 0) {
+          //   createInactiveMarkerLayer(view, inactiveGraphics);
+          // } else {
+          //   console.log('No Inactive markers in this area');
+          // }
           if (activeGraphics.length > 0) {
             createActiveMarkerLayer(view, activeGraphics);
           } else {
@@ -1247,7 +1342,8 @@ function KeTTMap() {
             geometryType: 'point',
             renderer: markerRenderer,
             popupTemplate: {
-              title: 'ACTIVE {ID}',
+              title: asyncMarkerTitle,
+              outFields: ['*'],
               content: asyncMarkerPopUp,
             },
           });
@@ -1414,6 +1510,10 @@ function KeTTMap() {
         //Pan and Zoom map to a given marker
         function gotoMarker(point, itemId, recnumber, markerid, loctype, type) {
           //console.log('gotoMarker', markerid);
+          activeMarkerRecnumberRef.current = recnumber;
+          activeMarkerIdRef.current = markerid;
+          activeMarkerLoctypeRef.current = loctype;
+          activeMarkerTypeRef.current = type;
           const newZoom = gridThreshold + 1;
           const opts = {
             duration: 3000,
@@ -1689,10 +1789,13 @@ function KeTTMap() {
       .catch((error) => console.log(error));
   };
   const asyncMarkerPopUp = (target) => {
-    const layerID = target.graphic.layer.id;
+    //const layerID = target ? target.graphic.layer.id : null;
+    const targetID = target ? target.graphic.attributes.id : null;
+    const markerID = targetID ? targetID : activeMarkerIdRef.current;
+    if (targetID) activeMarkerIdRef.current = markerID;
     let filters = {
       search: searchRef.current,
-      id: target.graphic.attributes.id,
+      id: markerID,
       recnumber: '',
       filters: {
         date_range: dateRangeRef.current,
@@ -1705,14 +1808,18 @@ function KeTTMap() {
     return axios
       .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
       .then((res) => {
-        //console.log('MARKER CLICK POPUP DATA', res.data);
-        const source =
-          layerID === 'marker_layer_active'
-            ? res.data.active
-            : res.data.inactive;
+        console.log('MARKER CLICK POPUP DATA', res.data);
+        // const source =
+        //   layerID === 'marker_layer_active'
+        //     ? res.data.active
+        //     : res.data.inactive;
+        const source = res.data.active;
         const peopleCount = source.people.length;
+        console.log('PEOPLE COUNT', peopleCount);
         const placesCount = source.places.length;
+        console.log('PLACES COUNT', peopleCount);
         const storiesCount = source.stories.length;
+        console.log('STORIES COUNT', peopleCount);
         const peopleData = source.people.results;
         const placesData = source.places.results;
         const storiesData = source.stories.results;
@@ -1760,7 +1867,8 @@ function KeTTMap() {
         });
         let peopleStatus = '',
           placesStatus = '',
-          storiesStatus = '';
+          storiesStatus = '',
+          noResultsStatus = '';
         if (peopleCount) {
           peopleStatus = ' active';
           placesStatus = '';
@@ -1773,6 +1881,8 @@ function KeTTMap() {
           peopleStatus = '';
           placesStatus = '';
           storiesStatus = ' active';
+        } else {
+          noResultsStatus = ' active';
         }
         return `
         <div class="map-popup marker">
@@ -1797,16 +1907,33 @@ function KeTTMap() {
               ${stringStories}
               </ul>
             </div>
+            <div class="data data-no-results${noResultsStatus}">
+              <ul>
+                <li>Sorry, there are no records here during this time period. Try moving forward or back in time.</li>
+              </ul>
+            </div>
           </div>
           <div class="data-actions">
-            <div class="full-details">Full details</div>
+            <div class="timemachine">
+              <div class="back"><i class="far fa-chevron-left"></i> Back</div>
+              <div class="current-time">${dateRangeRef.current}</div>
+              <div class="forward">Forward <i class="far fa-chevron-right"></i></div>
+              <div class="tooltip data">For more details choose a record at this location.<div><span>Got it!</span></div></div>
+              <div class="tooltip time">Use the arrows to move forward or backward through time at a given location.<div><span>Got it!</span></div></div>
+            </div>
           </div>
         </div>
         `;
       })
       .catch((error) => console.log(error));
   };
-
+  const asyncMarkerTitle = (target) => {
+    console.log('ATTR', target.graphic.attributes);
+    const id = target.graphic.attributes.id;
+    const idSplit = id.split('|');
+    console.log(idSplit);
+    return `${idSplit[0]} ${idSplit[1]}, ${idSplit[2]}`;
+  };
   const asyncGrid = (filters, size) => {
     let ms = 0;
     let timer = setInterval(() => ms++, 1);

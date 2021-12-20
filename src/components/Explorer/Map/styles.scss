@@ -84,7 +84,7 @@
 .esri-popup__content {
   position: relative;
   margin: 0 !important;
-  overflow: hidden;
+  overflow: visible;
 }
 .esri-feature {
   background: none !important;
@@ -97,6 +97,7 @@
   position: relative;
   padding: 35px 0 0;
   margin: 0;
+  background: $color-kett-green-secondary;
 }
 .map-popup-tabs {
   position: absolute;
@@ -106,41 +107,65 @@
   width: 100%;
 
   .tab {
+    position: relative;
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 35px;
     cursor: pointer;
-    opacity: 0.3;
-
     span {
       margin-left: 5px;
       font-weight: bold;
       font-size: 16px;
     }
-
     &.active {
-      opacity: 1;
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: calc(50% - 3px);
+        border-top: 6px solid transparent;
+        width: 0px;
+        height: 0px;
+        z-index: 1001;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+      }
     }
   }
 
   .tab-people {
     background: $color-kett-people;
     color: $color-kett-white;
+    &.active {
+      &::after {
+        border-top: 6px solid $color-kett-people;
+      }
+    }
   }
   .tab-places {
     background: $color-kett-places;
     color: $color-kett-white;
+    &.active {
+      &::after {
+        border-top: 6px solid $color-kett-places;
+      }
+    }
   }
   .tab-stories {
     background: $color-kett-stories;
     color: $color-kett-white;
+    &.active {
+      &::after {
+        border-top: 6px solid $color-kett-stories;
+      }
+    }
   }
 }
 .map-popup-data {
   height: 100%;
-  max-height: calc(278px - 30px);
+  max-height: 250px;
   margin: 15px 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -172,6 +197,7 @@
   }
   ul {
     margin: 0;
+    padding: 0 10px 0 40px;
   }
   li {
     text-align: left;
@@ -200,7 +226,9 @@
   }
 }
 .data-actions {
-  float: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   min-height: 47px;
   padding: 10px 20px;
@@ -221,6 +249,100 @@
     transition: all 0.3s ease-in;
     &:hover {
       background: $color-kett-gold;
+    }
+  }
+  .timemachine {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    .back {
+      margin-right: 5px;
+      cursor: pointer;
+      &:hover {
+        color: $color-kett-gold;
+      }
+      .far {
+        margin-right: 5px;
+      }
+    }
+    .forward {
+      margin-left: 5px;
+      cursor: pointer;
+      &:hover {
+        color: $color-kett-gold;
+      }
+      .far {
+        margin-left: 5px;
+      }
+    }
+    .tooltip {
+      position: absolute;
+      width: 250px;
+      padding: 15px;
+      background: $color-kett-black;
+      font-size: 16px;
+      font-size: 1.6rem;
+      line-height: 18px;
+      line-height: 2rem;
+      text-align: left;
+      animation: fadeIn 3s;
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      &.time {
+        bottom: -155px;
+        right: -180px;
+        &::before {
+          content: '';
+          position: absolute;
+          top: -10px;
+          left: 10px;
+          border-bottom: 10px solid $color-kett-black;
+          width: 0px;
+          height: 0px;
+          z-index: 1001;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+        }
+      }
+      &.data {
+        bottom: -15px;
+        right: -280px;
+        &::before {
+          content: '';
+          position: absolute;
+          top: 20px;
+          left: -10px;
+          border-right: 10px solid $color-kett-black;
+          width: 0px;
+          height: 0px;
+          z-index: 1001;
+          border-top: 10px solid transparent;
+          border-bottom: 10px solid transparent;
+        }
+      }
+      div {
+        width: 100%;
+      }
+      span {
+        display: inline-block;
+        margin: 10px 0 0 0;
+        padding: 2px 8px;
+        background: $color-kett-white;
+        color: $color-kett-black;
+        cursor: pointer;
+        &:hover {
+          border-radius: 5px;
+        }
+      }
     }
   }
 }
