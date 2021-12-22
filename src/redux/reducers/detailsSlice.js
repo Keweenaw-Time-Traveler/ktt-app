@@ -29,7 +29,6 @@ export const detailsSlice = createSlice({
     name: '',
     sources: null,
     data: null,
-    detailsPhotosStatus: 'idle',
     attachments: null,
   },
   reducers: {

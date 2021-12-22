@@ -21,18 +21,17 @@ import 'react-image-lightbox/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/pro-light-svg-icons';
 import {
-  faUser,
-  faBuilding,
-  faBookOpen,
   faHeart,
   faShareAlt,
   faPrint,
   faDownload,
 } from '@fortawesome/pro-solid-svg-icons';
 //Components
+import Loader from '../Map/Loader';
 import Source from './Source';
 import Data from './Data';
 import Map from './Map';
+import Related from './Related';
 import Masonry from 'react-masonry-css';
 import Lightbox from 'react-image-lightbox';
 
@@ -138,25 +137,8 @@ const Details = (props) => {
             <FontAwesomeIcon icon={faDownload} className="fa-icon" />
           </button>
         </div>
-        <div className="detail-related">
-          <div className="detail-related-heading">
-            Related Content <span>(129)</span>
-          </div>
-          <div className="detail-related-tabs">
-            <div className="tab people">
-              <FontAwesomeIcon icon={faUser} className="fa-icon" />
-              People
-            </div>
-            <div className="tab places">
-              <FontAwesomeIcon icon={faBuilding} className="fa-icon" />
-              Places
-            </div>
-            <div className="tab stories">
-              <FontAwesomeIcon icon={faBookOpen} className="fa-icon" />
-              Stories
-            </div>
-          </div>
-        </div>
+        <Related />
+        {status !== 'success' && <Loader />}
       </div>
       <Map show={props.show} />
       {isOpen && (

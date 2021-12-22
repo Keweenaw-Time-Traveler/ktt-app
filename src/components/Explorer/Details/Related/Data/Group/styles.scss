@@ -1,0 +1,45 @@
+.related-data-group {
+  margin-bottom: 15px;
+  background-color: #f1f1f1;
+  > div:not(.related-data-group-footer) {
+    padding: 0 10px;
+    cursor: pointer;
+    &::before {
+      content: '';
+      display: inline-block;
+      position: relative;
+      top: -3px;
+      width: 5px;
+      height: 5px;
+      margin-right: 5px;
+      background: #000;
+      border-radius: 50%;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+    &:first-child {
+      padding-top: 3px;
+    }
+  }
+}
+.related-data-group-footer {
+  margin-top: 3px;
+  padding: 5px 10px;
+  background: #000;
+  label {
+    color: #fff;
+    font-size: 14px;
+    font-size: 1.4rem;
+    line-height: 14px;
+    line-height: 1.4rem;
+    letter-spacing: 0.035rem;
+    text-transform: uppercase;
+    font-weight: bolder;
+  }
+  .toggle-switch {
+    position: relative;
+    top: -2px;
+    margin-left: 8px;
+  }
+}

@@ -1,0 +1,111 @@
+@import '../../../../colors.scss';
+.detail-related {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 498;
+  width: 100%;
+  &.open {
+    .detail-related-heading {
+      cursor: pointer;
+    }
+  }
+  .detail-related-heading {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 9px 20px;
+    background: $color-kett-black;
+    color: $color-kett-white;
+    font-size: 30px;
+    font-size: 3rem;
+    line-height: 36;
+    line-height: 3.6rem;
+    letter-spacing: 0.75px;
+    font-weight: 300;
+    span {
+      position: relative;
+      top: -2px;
+      font-size: 20px;
+      font-size: 2rem;
+      line-height: 24;
+      line-height: 2.4rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    .fa-icon {
+      position: relative;
+      top: -5px;
+      font-size: 16px;
+      transition: all 0.3s ease-in-out;
+    }
+    &:hover {
+      .fa-icon {
+        transform: translateY(3px);
+      }
+    }
+  }
+  .detail-related-tabs {
+    display: flex;
+    background: #74716b;
+    &.open {
+      .tab {
+        opacity: 0.3;
+      }
+    }
+    &.closed {
+      .tab {
+        opacity: 1;
+      }
+    }
+    .tab {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 33.3333%;
+      height: 88px;
+      font-size: 23px;
+      font-size: 2.3rem;
+      line-height: 32;
+      line-height: 3.2rem;
+      letter-spacing: 0.57px;
+      color: $color-kett-white;
+      cursor: pointer;
+      &.people {
+        background: $color-kett-people;
+      }
+      &.places {
+        background: $color-kett-places;
+      }
+      &.stories {
+        background: $color-kett-stories;
+      }
+      &.active {
+        opacity: 1;
+      }
+      .fa-icon {
+        font-size: 28px;
+        transition: all 0.3s ease-in-out;
+      }
+      &:hover {
+        .fa-icon {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+  .detail-related-content {
+    height: 0;
+    padding: 10px 20px;
+    background: $color-kett-white;
+    transition: all 0.5s ease-in-out;
+  }
+  &.closed {
+    .detail-related-content {
+      padding: 0;
+    }
+  }
+}

@@ -3,7 +3,7 @@ import React from 'react';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //Styles
-import './styles.css';
+import './styles.scss';
 
 const RadioButton = (props) => {
   return (

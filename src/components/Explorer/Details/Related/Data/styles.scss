@@ -1,0 +1,31 @@
+@import '../../../../../colors.scss';
+.related-data {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* width */
+  &::-webkit-scrollbar {
+    position: relative;
+    width: 10px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #c8c7c7;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #484747;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #484747;
+  }
+  .accordion-heading {
+    letter-spacing: 0.04rem;
+    font-weight: bold;
+    border-bottom: solid thin $color-kett-black;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,60 @@
+@import '../../../../colors.scss';
+.filter-radios {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  .radio-button {
+    height: 100%;
+    &:hover {
+      .radio-icon {
+        transform: scale(1.1);
+      }
+    }
+  }
+  input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    margin-right: 5px;
+    border: 0;
+    overflow: hidden;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    height: 100%;
+    background-color: $color-kett-everything;
+    color: $color-kett-white;
+    text-align: center;
+    border: none;
+    transition: all 0.1s ease-in-out;
+    opacity: 0.3;
+    line-height: 20px;
+    line-height: 2rem;
+    &.people {
+      background: $color-kett-people;
+    }
+    &.places {
+      background: $color-kett-places;
+    }
+    &.stories {
+      background: $color-kett-stories;
+    }
+    .radio-icon {
+      font-size: 20px;
+      transition: all 0.3s ease-in-out;
+    }
+  }
+}
+
+.filter-radios label:hover {
+  cursor: pointer;
+}
+
+.filter-radios input:checked + label {
+  opacity: 1;
+}

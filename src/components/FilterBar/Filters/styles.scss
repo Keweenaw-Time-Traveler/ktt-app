@@ -1,5 +1,4 @@
 @import '../../../colors.scss';
-
 .filters {
   display: flex;
   flex-grow: 1;
@@ -16,67 +15,4 @@
   display: flex;
   align-items: center;
   height: 100%;
-}
-.filter-toggles {
-  display: flex;
-  margin-left: 20px;
-  .toggle-label {
-    margin-right: 10px;
-  }
-  .toggle-icon {
-    margin-right: 5px;
-  }
-}
-.filter-radios {
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-  .radio-button {
-    height: 100%;
-  }
-  input {
-    position: absolute !important;
-    clip: rect(0, 0, 0, 0);
-    height: 1px;
-    width: 1px;
-    border: 0;
-    overflow: hidden;
-  }
-
-  label {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 90px;
-    height: 100%;
-    background-color: $color-kett-everything;
-    color: $color-kett-white;
-    text-align: center;
-    border: none;
-    transition: all 0.1s ease-in-out;
-    opacity: 0.3;
-    line-height: 20px;
-    line-height: 2rem;
-    &.people {
-      background: $color-kett-people;
-    }
-    &.places {
-      background: $color-kett-places;
-    }
-    &.stories {
-      background: $color-kett-stories;
-    }
-    .svg-inline--fa {
-      font-size: 20px;
-    }
-  }
-}
-
-.filter-radios label:hover {
-  cursor: pointer;
-}
-
-.filter-radios input:checked + label {
-  opacity: 1;
 }

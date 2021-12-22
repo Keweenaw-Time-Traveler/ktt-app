@@ -1,6 +1,9 @@
 //React
 import React, { useState, useEffect, useRef } from 'react';
 import $ from 'jquery';
+//Redux
+import { useSelector } from 'react-redux';
+import { selectDetailsId } from '../../../../redux/reducers/detailsSlice';
 //ArchGIS
 import { loadModules } from 'esri-loader';
 //Styles
@@ -9,13 +12,15 @@ import './styles.scss';
 import peopleMarkerImage from './images/marker_person_details.png';
 import placesMarkerImage from './images/marker_place_details.png';
 import storiesMarkerImage from './images/marker_story_details.png';
-//import placeMarkerImage from './images/marker_place.png';
-//import storyMarkerImage from './images/marker_story.png';
+import peopleRelatedMarkerImage from './images/marker_person.png';
+import placesRelatedMarkerImage from './images/marker_place.png';
+import storiesRelatedMarkerImage from './images/marker_story.png';
 //Components
 import Loader from '../../Map/Loader';
 
 export default function Map(props) {
   const { show } = props;
+  const id = useSelector(selectDetailsId);
   const [loadingMap, setLoadingMap] = useState(true);
   const mapRef = useRef();
 
@@ -161,6 +166,44 @@ export default function Map(props) {
             addMarker(type, point);
             gotoMarker(point);
           });
+          //Show On Map Toggle
+          $('.page-content').on(
+            'click',
+            '.related-data-group-footer .toggle-switch-checkbox',
+            function () {
+              const checked = $(this).is(':checked');
+              console.log('SHOW ON MAP', checked);
+              const markers = [];
+              if (checked) {
+                $(this)
+                  .closest('.related-data-group')
+                  .find('div:not(.related-data-group-footer)')
+                  .each(function () {
+                    const title = $(this).data('title');
+                    const id = $(this).data('id');
+                    const recnumber = $(this).data('recnumber');
+                    const loctype = $(this).data('loctype');
+                    const year = $(this).data('year');
+                    const x = $(this).data('x');
+                    const y = $(this).data('y');
+                    if (x && y) {
+                      markers.push({
+                        title,
+                        id,
+                        recnumber,
+                        loctype,
+                        year,
+                        x,
+                        y,
+                      });
+                    }
+                  });
+              }
+              if (markers.length) {
+                addRelatedMarkers('people', markers);
+              }
+            }
+          );
         });
 
         //Map Opacity
@@ -209,6 +252,127 @@ export default function Map(props) {
               `MARKER ERROR: type not valid, unable to generate symbol`
             );
           }
+        }
+        //Add Related Markers
+        function addRelatedMarkers(type, markers) {
+          console.log(type, markers);
+          const graphics = [];
+          markers.forEach((marker) => {
+            const point = new Point({
+              x: marker.x,
+              y: marker.y,
+              spatialReference: { wkid: 3857 },
+            });
+            const attr = {
+              type,
+              title: marker.title,
+              id: marker.id,
+              recnumber: marker.recnumber,
+              loctype: marker.loctype,
+              year: marker.year,
+            };
+            const graphic = new Graphic({
+              geometry: point,
+              attributes: attr,
+            });
+            graphics.push(graphic);
+            createRelatedMarkersLayer(graphics);
+          });
+        }
+        function createRelatedMarkersLayer(graphics) {
+          const markerRenderer = {
+            type: 'unique-value',
+            field: 'type',
+            uniqueValueInfos: [
+              {
+                value: 'people',
+                label: 'People',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: peopleRelatedMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              {
+                value: 'places',
+                label: 'Places',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: placesRelatedMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              {
+                value: 'stories',
+                label: 'Stories',
+                symbol: {
+                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                  url: storiesRelatedMarkerImage,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+            ],
+          };
+          const layer = new FeatureLayer({
+            id: 'related_markers_layer',
+            opacity: 1,
+            visible: show,
+            source: graphics,
+            fields: [
+              {
+                name: 'ObjectID',
+                alias: 'ObjectID',
+                type: 'oid',
+              },
+              {
+                name: 'type',
+                alias: 'Type',
+                type: 'string',
+              },
+              {
+                name: 'title',
+                alias: 'Title',
+                type: 'string',
+              },
+              {
+                name: 'id',
+                alias: 'ID',
+                type: 'string',
+              },
+              {
+                name: 'recnumber',
+                alias: 'RECNUMBER',
+                type: 'string',
+              },
+              {
+                name: 'loctype',
+                alias: 'LOCTYPE',
+                type: 'string',
+              },
+              {
+                name: 'year',
+                alias: 'Year',
+                type: 'string',
+              },
+            ],
+            geometryType: 'point',
+            renderer: markerRenderer,
+            popupTemplate: {
+              title: '{title}',
+              outFields: ['*'],
+              content: asyncMarkerContent,
+            },
+          });
+          addToView(layer);
+          const opts = {
+            duration: 3000,
+          };
+          view.goTo({ zoom: 17 }, opts).then(() => {
+            console.log('RELATED MARKER EXTENT');
+          });
         }
 
         //Pan and Zoom map to a given marker
@@ -263,9 +427,23 @@ export default function Map(props) {
           });
           return newUrl;
         }
+        const asyncMarkerContent = (target) => {
+          const id = target.graphic.attributes.id;
+          const recnumber = target.graphic.attributes.recnumber;
+          const loctype = target.graphic.attributes.loctype;
+          const year = target.graphic.attributes.year;
+          return `
+          <div class="related-marker-info">
+            <div>ID: ${id}</div>
+            <div>RECNUMBER: ${recnumber}</div>
+            <div>LOCTYPE: ${loctype}</div>
+            <div>MAP YEAR: ${year}</div>
+          </div>
+          `;
+        };
       }
     );
-  }, [show]);
+  }, [show, id]);
 
   return (
     <div className={`details-map-container ${show ? 'show' : 'hide'}`}>

@@ -220,43 +220,8 @@ function KeTTMap() {
             });
             //Timeline Segment Click Event
             $('.segment').on('click', function (e) {
-              const min = $(this).data('min');
-              const max = $(this).data('max');
-              const url = $(this).data('url');
-              dateRangeRef.current = `${min}-${max}`;
-              startDateRef.current = `${min}`;
-              endDateRef.current = `${max}`;
-              tileUrlRef.current = url;
-              const filterVal = {
-                search: searchRef.current,
-                date_range: `${min}-${max}`,
-                photos: photosRef.current,
-                featured: featuredRef.current,
-                type: typeRef.current,
-              };
-              const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
-              const { xmin, xmax, ymin, ymax } = extentExpanded;
-              const extent = {
-                xmin: xmin,
-                xmax: xmax,
-                ymin: ymin,
-                ymax: ymax,
-              };
-              console.log('TIME SEGMENT CHOOSEN', filterVal);
-              dispatch(updateTimelineRange(`${min}-${max}`));
-              handleTimePeriod();
-              //ADD TILE LAYER
-              createTileLayer(view.zoom, url);
-              //UPDATE GRID
-              updateGrid(view, filterVal);
-              //LOAD MARKERS
-              if (view.zoom > gridThreshold) {
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
-              }
+              const id = $(this).data('id');
+              moveThroughTime(id);
             });
             //Timeline Reset Click Event
             $('.navbar-middle').on('click', '.timeline-reset', function () {
@@ -300,19 +265,6 @@ function KeTTMap() {
               }
             });
             //Landing Page Search Field Events
-            function landingSearch() {
-              const searchValue = $('#search-landing').val();
-              searchRef.current = `${searchValue}`;
-              const filterVal = {
-                search: `${searchValue}`,
-                date_range: dateRangeRef.current,
-                photos: photosRef.current,
-                featured: featuredRef.current,
-                type: typeRef.current,
-              };
-              console.log('LANDING SEARCH', filterVal);
-              updateGrid(view, filterVal);
-            }
             $('body').on('click', '#intro-options-search-icon', function (e) {
               e.preventDefault();
               landingSearch();
@@ -323,53 +275,6 @@ function KeTTMap() {
               }
             });
             //Main Search Field Click Event
-            function mainSearch() {
-              const searchValue = $('#search').val();
-              searchRef.current = `${searchValue}`;
-              const filterVal = {
-                search: `${searchValue}`,
-                date_range: dateRangeRef.current,
-                photos: photosRef.current,
-                featured: featuredRef.current,
-                type: typeRef.current,
-              };
-              const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
-              const { xmin, xmax, ymin, ymax } = extentExpanded;
-              const extent = {
-                xmin: xmin,
-                xmax: xmax,
-                ymin: ymin,
-                ymax: ymax,
-              };
-              console.log('SEARCH CHANGE', filterVal);
-              //UPDATE GRID
-              updateGrid(view, filterVal);
-              //LOAD MARKERS
-              if (view.zoom > gridThreshold) {
-                if (searchValue !== '') {
-                  asyncMarkers(view, filterVal, extent).then((res) => {
-                    console.log('MARKER RESPONCE', res);
-                    generateMarkers(view, res);
-                  });
-                }
-              }
-              //MAKE SURE TILES ARE HIDDEN
-              hideLayer('tile_layer', view.map.layers);
-              //CLOSE POPUP
-              view.popup.close();
-              //CLOSE DETAILS
-              dispatch(toggleDetails('hide'));
-              //RESET EXTENTS
-              view.goTo(
-                {
-                  zoom: 10,
-                },
-                {
-                  duration: 5000,
-                }
-              );
-            }
             $('#search-icon').on('click', function (e) {
               e.preventDefault();
               mainSearch();
@@ -528,6 +433,119 @@ function KeTTMap() {
               }
             );
             //Marker Popop Timemachine
+            $('.page-content').on('click', '.timemachine .back', function () {
+              const currentId = parseInt($('.segment.active').data('id'));
+              const firstId = parseInt(
+                $('.segment-wrapper.first-wrapper .segment').data('id')
+              );
+              let newSegmentId = currentId > firstId ? currentId - 1 : null;
+              if (newSegmentId) {
+                moveThroughTime(newSegmentId);
+              }
+            });
+            $('.page-content').on(
+              'click',
+              '.timemachine .forward',
+              function () {
+                const currentId = parseInt($('.segment.active').data('id'));
+                const lastId = parseInt(
+                  $('.segment-wrapper.last-wrapper .segment').data('id')
+                );
+                let newSegmentId = currentId < lastId ? currentId + 1 : null;
+                if (newSegmentId) {
+                  moveThroughTime(newSegmentId);
+                }
+              }
+            );
+            //Marker Popop Tooltips
+            $('.page-content').on(
+              'click',
+              '.data-actions .timemachine .tooltip span',
+              function () {
+                $(this).parent().parent().hide();
+              }
+            );
+            //Full Details Click Event
+            $('.page-content').on('click', '.full-details', function () {
+              const $active = $(this).closest('.map-popup');
+              const id = $active.find('li.active span.id').text();
+              const recnumber = $active.find('li.active span.recnumber').text();
+              const loctype = $active.find('li.active span.loctype').text();
+              console.log(
+                'FULL DETAILS BUTTON CLICK',
+                `{id: ${id}, recnumber: ${recnumber}, loctype: ${loctype}`
+              );
+              if (id && recnumber) {
+                dispatch(updateListItem({ recnumber, loctype }));
+                dispatch(getDetails({ id, recnumber, loctype }));
+                dispatch(toggleDetails('show'));
+              }
+            });
+            //Full Details Source Change
+            $('.page-content').on('click', '.map-popup-data li', function () {
+              $(this).addClass('active').siblings().removeClass('active');
+            });
+            //Helper Functions
+            function landingSearch() {
+              const searchValue = $('#search-landing').val();
+              searchRef.current = `${searchValue}`;
+              const filterVal = {
+                search: `${searchValue}`,
+                date_range: dateRangeRef.current,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              console.log('LANDING SEARCH', filterVal);
+              updateGrid(view, filterVal);
+            }
+            function mainSearch() {
+              const searchValue = $('#search').val();
+              searchRef.current = `${searchValue}`;
+              const filterVal = {
+                search: `${searchValue}`,
+                date_range: dateRangeRef.current,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('SEARCH CHANGE', filterVal);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              if (view.zoom > gridThreshold) {
+                if (searchValue !== '') {
+                  asyncMarkers(view, filterVal, extent).then((res) => {
+                    console.log('MARKER RESPONCE', res);
+                    generateMarkers(view, res);
+                  });
+                }
+              }
+              //MAKE SURE TILES ARE HIDDEN
+              hideLayer('tile_layer', view.map.layers);
+              //CLOSE POPUP
+              view.popup.close();
+              //CLOSE DETAILS
+              dispatch(toggleDetails('hide'));
+              //RESET EXTENTS
+              view.goTo(
+                {
+                  zoom: 10,
+                },
+                {
+                  duration: 5000,
+                }
+              );
+            }
             function moveThroughTime(segmentId) {
               const $target = $(`.segment-${segmentId}`);
               const min = $target.data('min');
@@ -581,62 +599,15 @@ function KeTTMap() {
                 dispatch(getList({}));
               }
               //UPDATE MARKER POPUP
-              asyncMarkerPopUp().then(function (res) {
-                view.popup.content = res;
-              });
+              console.log('listRemove', listRemove);
+              if (!listRemove) {
+                asyncMarkerPopUp().then(function (res) {
+                  view.popup.content = res;
+                });
+              } else {
+                view.popup.close();
+              }
             }
-            $('.page-content').on('click', '.timemachine .back', function () {
-              const currentId = parseInt($('.segment.active').data('id'));
-              const firstId = parseInt(
-                $('.segment-wrapper.first-wrapper .segment').data('id')
-              );
-              let newSegmentId = currentId > firstId ? currentId - 1 : null;
-              if (newSegmentId) {
-                moveThroughTime(newSegmentId);
-              }
-            });
-            $('.page-content').on(
-              'click',
-              '.timemachine .forward',
-              function () {
-                const currentId = parseInt($('.segment.active').data('id'));
-                const lastId = parseInt(
-                  $('.segment-wrapper.last-wrapper .segment').data('id')
-                );
-                let newSegmentId = currentId < lastId ? currentId + 1 : null;
-                if (newSegmentId) {
-                  moveThroughTime(newSegmentId);
-                }
-              }
-            );
-            //Marker Popop Tooltips
-            $('.page-content').on(
-              'click',
-              '.data-actions .timemachine .tooltip span',
-              function () {
-                $(this).parent().parent().hide();
-              }
-            );
-            //Full Details Click Event
-            $('.page-content').on('click', '.full-details', function () {
-              const $active = $(this).closest('.map-popup');
-              const id = $active.find('li.active span.id').text();
-              const recnumber = $active.find('li.active span.recnumber').text();
-              const loctype = $active.find('li.active span.loctype').text();
-              console.log(
-                'FULL DETAILS BUTTON CLICK',
-                `{id: ${id}, recnumber: ${recnumber}, loctype: ${loctype}`
-              );
-              if (id && recnumber) {
-                dispatch(updateListItem({ recnumber, loctype }));
-                dispatch(getDetails({ id, recnumber, loctype }));
-                dispatch(toggleDetails('show'));
-              }
-            });
-            //Full Details Source Change
-            $('.page-content').on('click', '.map-popup-data li', function () {
-              $(this).addClass('active').siblings().removeClass('active');
-            });
           })
           .catch(function (e) {
             console.error('Creating FeatureLayer failed', e);
@@ -1928,10 +1899,8 @@ function KeTTMap() {
       .catch((error) => console.log(error));
   };
   const asyncMarkerTitle = (target) => {
-    console.log('ATTR', target.graphic.attributes);
     const id = target.graphic.attributes.id;
     const idSplit = id.split('|');
-    console.log(idSplit);
     return `${idSplit[0]} ${idSplit[1]}, ${idSplit[2]}`;
   };
   const asyncGrid = (filters, size) => {
