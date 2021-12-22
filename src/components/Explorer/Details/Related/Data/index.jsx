@@ -11,13 +11,15 @@ export default function Data(props) {
 
   useEffect(() => {
     const allPanels = $('.detail-related-content .accordion-panel').hide();
-    $('.detail-related-content .accordion-heading').on('click', function () {
+    const allHeadings = $('.detail-related-content .accordion-heading');
+    allHeadings.on('click', function () {
       const isOpen = $(this).hasClass('open');
       if (isOpen) {
         $(this).siblings('.accordion-panel').slideUp();
         $(this).removeClass('open');
       } else {
         allPanels.slideUp();
+        allHeadings.removeClass('open');
         $(this).addClass('open');
         $(this).siblings('.accordion-panel').slideDown();
       }
