@@ -171,6 +171,13 @@ export default function Map(props) {
             'click',
             '.related-data-group-footer .toggle-switch-checkbox',
             function () {
+              console.log('TOGGLE CLICK');
+              const type = $(this)
+                .closest('.detail-related')
+                .find('.detail-related-tabs .active')
+                .data('type');
+              const group = $(this).data('group');
+              console.log('TAB TYPE', type);
               const checked = $(this).is(':checked');
               console.log('SHOW ON MAP', checked);
               const markers = [];
@@ -181,6 +188,7 @@ export default function Map(props) {
                   .each(function () {
                     const title = $(this).data('title');
                     const id = $(this).data('id');
+                    const group = $(this).data('group');
                     const recnumber = $(this).data('recnumber');
                     const loctype = $(this).data('loctype');
                     const year = $(this).data('year');
@@ -198,9 +206,11 @@ export default function Map(props) {
                       });
                     }
                   });
-              }
-              if (markers.length) {
-                addRelatedMarkers('people', markers);
+                if (markers.length) {
+                  addRelatedMarkers(type, group, markers);
+                }
+              } else {
+                removeRelatedMarkers(type, group);
               }
             }
           );
@@ -254,8 +264,7 @@ export default function Map(props) {
           }
         }
         //Add Related Markers
-        function addRelatedMarkers(type, markers) {
-          console.log(type, markers);
+        function addRelatedMarkers(type, group, markers) {
           const graphics = [];
           markers.forEach((marker) => {
             const point = new Point({
@@ -276,10 +285,10 @@ export default function Map(props) {
               attributes: attr,
             });
             graphics.push(graphic);
-            createRelatedMarkersLayer(graphics);
           });
+          createRelatedMarkersLayer(type, group, graphics);
         }
-        function createRelatedMarkersLayer(graphics) {
+        function createRelatedMarkersLayer(type, group, graphics) {
           const markerRenderer = {
             type: 'unique-value',
             field: 'type',
@@ -317,7 +326,7 @@ export default function Map(props) {
             ],
           };
           const layer = new FeatureLayer({
-            id: 'related_markers_layer',
+            id: `related_markers_layer_${type}_${group}`,
             opacity: 1,
             visible: show,
             source: graphics,
@@ -366,15 +375,19 @@ export default function Map(props) {
               content: asyncMarkerContent,
             },
           });
-          addToView(layer);
-          const opts = {
-            duration: 3000,
-          };
-          view.goTo({ zoom: 17 }, opts).then(() => {
-            console.log('RELATED MARKER EXTENT');
-          });
+          addToView(layer, true);
+          // const opts = {
+          //   duration: 3000,
+          // };
+          // view.goTo({ zoom: 17 }, opts).then(() => {
+          //   console.log('RELATED MARKER EXTENT');
+          // });
         }
-
+        //Remove Related Markers
+        function removeRelatedMarkers(type, group) {
+          const layerId = `related_markers_layer_${type}_${group}`;
+          removeFromView(layerId);
+        }
         //Pan and Zoom map to a given marker
         function gotoMarker(point) {
           //console.log('gotoMarker', markerid);
@@ -393,13 +406,13 @@ export default function Map(props) {
             url,
             visible: show,
           });
-          addToView(tileLayer);
+          addToView(tileLayer, false);
         }
 
         // Adds a given layer to the map in the view
-        function addToView(layer) {
-          //console.log('ADD', layer.id);
-          //console.log('CURRENT LAYERS LENGTH', view.map.layers.items.length);
+        function addToView(layer, zoom) {
+          console.log('ADD RELATED LAYER', layer);
+          console.log('CURRENT LAYERS', view.map.layers.items);
           const ifLayers = view.map.layers.items.length;
           if (ifLayers) {
             const existingLayers = view.map.layers.items;
@@ -412,6 +425,30 @@ export default function Map(props) {
             });
           }
           view.map.add(layer);
+          layer.when(
+            function () {
+              if (zoom) {
+                console.log('ZOOM TO EXTENT', layer.fullExtent.extent);
+                view.goTo(layer.fullExtent.extent);
+              }
+            },
+            function (error) {
+              console.log(error);
+            }
+          );
+        }
+        // Removes a given layer to the map in the view
+        function removeFromView(layerId) {
+          console.log('REMOVE RELATED LAYER', layerId);
+          const ifLayers = view.map.layers.items.length;
+          if (ifLayers) {
+            const existingLayers = view.map.layers.items;
+            existingLayers.forEach(function (item, i) {
+              if (layerId === item.id) {
+                view.map.layers.remove(item);
+              }
+            });
+          }
         }
 
         //Get Tiled Map URL based on Map Year
@@ -443,7 +480,7 @@ export default function Map(props) {
         };
       }
     );
-  }, [show, id]);
+  }, []);
 
   return (
     <div className={`details-map-container ${show ? 'show' : 'hide'}`}>

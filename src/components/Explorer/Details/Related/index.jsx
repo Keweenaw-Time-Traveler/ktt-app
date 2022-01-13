@@ -11,6 +11,8 @@ import {
   selectRelatedStatus,
   selectRelatedTotal,
   selectRelatedPeople,
+  selectRelatedPlaces,
+  selectRelatedStories,
 } from '../../../../redux/reducers/relatedSlice';
 //Components
 import Data from './Data';
@@ -32,24 +34,28 @@ export default function Related() {
   const status = useSelector(selectRelatedStatus);
   const total = useSelector(selectRelatedTotal);
   const people = useSelector(selectRelatedPeople);
+  const places = useSelector(selectRelatedPlaces);
+  const stories = useSelector(selectRelatedStories);
   const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {
-    // const $source = $('#details-source').find(':selected');
-    // const mapyear = $source.data('mapyear');
-    // const markerid = $source.data('markerid');
-    // console.log('GET RELATED', {
-    //   id,
-    //   mapyear: `${mapyear}`,
-    //   markerid: `${markerid}`,
-    // });
-    dispatch(
-      getRelated({
-        id: '40F819D5-D072-4E9A-A55A-4E69A9B47F36',
-        mapyear: '1917',
-        markerid: '2292|Laurium|bldg',
-      })
-    );
+    const $source = $('#details-source').find(':selected');
+    const mapyear = $source.data('mapyear');
+    const markerid = $source.data('markerid');
+    console.log('GET RELATED', {
+      id,
+      mapyear: `${mapyear}`,
+      markerid: `${markerid}`,
+    });
+    if (id && mapyear && markerid) {
+      dispatch(
+        getRelated({
+          id: `${id}`,
+          mapyear: `${mapyear}`,
+          markerid: `${markerid}`,
+        })
+      );
+    }
   }, [id]);
 
   const handleHeadingClick = () => {
@@ -65,6 +71,7 @@ export default function Related() {
     if (!show) {
       dispatch(toggleRelated('show'));
       $('.detail-related-content').height(containerHeight());
+    } else {
     }
   };
 
@@ -90,6 +97,7 @@ export default function Related() {
       <div className={`detail-related-tabs ${show ? 'open' : 'closed'}`}>
         <div
           className={`tab people${activeTab === 'people' ? ' active' : ''}`}
+          data-type="people"
           onClick={() => handleTabClick('people')}
         >
           <FontAwesomeIcon icon={faUser} className="fa-icon" />
@@ -97,6 +105,7 @@ export default function Related() {
         </div>
         <div
           className={`tab places${activeTab === 'places' ? ' active' : ''}`}
+          data-type="places"
           onClick={() => handleTabClick('places')}
         >
           <FontAwesomeIcon icon={faBuilding} className="fa-icon" />
@@ -104,6 +113,7 @@ export default function Related() {
         </div>
         <div
           className={`tab stories${activeTab === 'stories' ? ' active' : ''}`}
+          data-type="stories"
           onClick={() => handleTabClick('stories')}
         >
           <FontAwesomeIcon icon={faBookOpen} className="fa-icon" />
@@ -111,7 +121,15 @@ export default function Related() {
         </div>
       </div>
       <div className="detail-related-content">
-        {show ? <Data type="people" data={people} /> : null}
+        {show && activeTab === 'people' ? (
+          <Data type="people" data={people} />
+        ) : null}
+        {show && activeTab === 'places' ? (
+          <Data type="places" data={places} />
+        ) : null}
+        {show && activeTab === 'stories' ? (
+          <Data type="stories" data={stories} />
+        ) : null}
       </div>
     </div>
   );

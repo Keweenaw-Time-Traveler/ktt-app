@@ -8,7 +8,6 @@ import './styles.scss';
 
 export default function Data(props) {
   const { type, data } = props;
-
   useEffect(() => {
     const allPanels = $('.detail-related-content .accordion-panel').hide();
     const allHeadings = $('.detail-related-content .accordion-heading');
@@ -29,14 +28,18 @@ export default function Data(props) {
 
   return (
     <div className={`related-data ${type}`}>
-      {data.map((item, index) => (
-        <div key={index}>
-          <div className="accordion-heading">
-            {item.title} ({item.length})
+      {data.length ? (
+        data.map((item, index) => (
+          <div key={index}>
+            <div className="accordion-heading">
+              {item.title} ({item.length})
+            </div>
+            <Group id={`group-${index}`} results={item.results} />
           </div>
-          <Group id={`group-${index}`} results={item.results} />
-        </div>
-      ))}
+        ))
+      ) : (
+        <span>Sorry, there are no related {type} for this record.</span>
+      )}
     </div>
   );
 }

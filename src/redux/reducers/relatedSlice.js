@@ -6,6 +6,7 @@ export const getRelated = createAsyncThunk(
   'related/getRelated',
   async (related, { dispatch, getState }) => {
     const { id, mapyear, markerid } = related;
+    console.log('RELATED REQUEST', id, mapyear, markerid);
     return axios
       .post('http://geospatialresearch.mtu.edu/related_content.php', {
         id: id,
@@ -27,9 +28,9 @@ export const relatedSlice = createSlice({
     removeRelated: true,
     relatedStatus: 'idle',
     total: '',
-    people: null,
-    places: null,
-    stories: null,
+    people: [],
+    places: [],
+    stories: [],
   },
   reducers: {
     toggleRelated: (state, action) => {
@@ -49,10 +50,10 @@ export const relatedSlice = createSlice({
       // Add details to the state array
       // Update status
       const { payload } = action;
-      console.log('RELATED', payload);
+      console.log('RELATED PAYLOAD', payload);
       state.people = payload.people.groups;
-      //state.places = payload.places.groups;
-      //state.stories = payload.stories.groups;
+      state.places = payload.places.groups;
+      state.stories = [];
       state.total = payload.length;
       state.relatedStatus = 'success';
     });
@@ -65,5 +66,7 @@ export const selectRemoveRelated = (state) => state.related.removeRelated;
 export const selectRelatedStatus = (state) => state.related.relatedStatus;
 export const selectRelatedTotal = (state) => state.related.total;
 export const selectRelatedPeople = (state) => state.related.people;
+export const selectRelatedPlaces = (state) => state.related.places;
+export const selectRelatedStories = (state) => state.related.stories;
 
 export default relatedSlice.reducer;

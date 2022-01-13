@@ -13,6 +13,10 @@ import {
   selectDetailsData,
   selectDetailsAttachments,
 } from '../../../redux/reducers/detailsSlice';
+import {
+  getRelated,
+  selectShowRelated,
+} from '../../../redux/reducers/relatedSlice';
 import { updateListItem } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
@@ -44,6 +48,7 @@ const Details = (props) => {
   const sources = useSelector(selectDetailsSources);
   const data = useSelector(selectDetailsData);
   const attachments = useSelector(selectDetailsAttachments);
+  const showRelated = useSelector(selectShowRelated);
   const [selectedClient, setSelectedClient] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -68,13 +73,25 @@ const Details = (props) => {
     images = attachments.map((item) => item.url);
   }
 
-  function handleSelectChange(event) {
+  function handleSourceChange(event) {
     const value = event.target.value;
     const recnumber = $(event.target).find(':selected').data('recnumber');
     const loctype = $(event.target).find(':selected').data('loctype');
+    const mapyear = $(event.target).find(':selected').data('mapyear');
+    const markerid = $(event.target).find(':selected').data('markerid');
     console.log('UPDATE LIST', recnumber, loctype);
     setSelectedClient(value);
     dispatch(updateListItem({ recnumber, loctype }));
+    if (showRelated) {
+      console.log('UPDATE RELATED', id, mapyear, markerid);
+      dispatch(
+        getRelated({
+          id: `${id}`,
+          mapyear: `${mapyear}`,
+          markerid: `${markerid}`,
+        })
+      );
+    }
   }
 
   function handleCloseClick(event) {
@@ -101,7 +118,7 @@ const Details = (props) => {
           <select
             id="details-source"
             value={selectedClient}
-            onChange={handleSelectChange}
+            onChange={handleSourceChange}
             data-id={id}
           >
             {status === 'success' &&
