@@ -15,6 +15,7 @@ import {
 } from '../../../redux/reducers/detailsSlice';
 import {
   getRelated,
+  toggleRelated,
   selectShowRelated,
 } from '../../../redux/reducers/relatedSlice';
 import { updateListItem } from '../../../redux/reducers/listSlice';
@@ -74,6 +75,8 @@ const Details = (props) => {
   }
 
   function handleSourceChange(event) {
+    dispatch(toggleRelated('hide'));
+    $('.detail-related-content').outerHeight(0);
     const value = event.target.value;
     const recnumber = $(event.target).find(':selected').data('recnumber');
     const loctype = $(event.target).find(':selected').data('loctype');
@@ -82,21 +85,20 @@ const Details = (props) => {
     console.log('UPDATE LIST', recnumber, loctype);
     setSelectedClient(value);
     dispatch(updateListItem({ recnumber, loctype }));
-    if (showRelated) {
-      console.log('UPDATE RELATED', id, mapyear, markerid);
-      dispatch(
-        getRelated({
-          id: `${id}`,
-          mapyear: `${mapyear}`,
-          markerid: `${markerid}`,
-        })
-      );
-    }
+    console.log('UPDATE RELATED', id, mapyear, markerid);
+    dispatch(
+      getRelated({
+        id: `${id}`,
+        mapyear: `${mapyear}`,
+        markerid: `${markerid}`,
+      })
+    );
   }
 
   function handleCloseClick(event) {
     dispatch(updateListItem({ recnumber: '', loctype: '' }));
     dispatch(toggleDetails('hide'));
+    dispatch(toggleRelated('hide'));
   }
 
   function handleThumbClick(index) {

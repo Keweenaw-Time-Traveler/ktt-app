@@ -25,6 +25,7 @@ import {
   faBuilding,
   faBookOpen,
   faChevronDoubleDown,
+  faCircleNotch,
 } from '@fortawesome/pro-solid-svg-icons';
 
 export default function Related() {
@@ -86,7 +87,14 @@ export default function Related() {
     <div className={`detail-related ${show ? 'open' : 'closed'}`}>
       <div className="detail-related-heading" onClick={handleHeadingClick}>
         <div>
-          Related Content <span>({total})</span>
+          Related Content{' '}
+          <span>
+            {status === 'success' ? (
+              `(${total})`
+            ) : (
+              <FontAwesomeIcon icon={faCircleNotch} spin />
+            )}
+          </span>
         </div>
         {show ? (
           <div>

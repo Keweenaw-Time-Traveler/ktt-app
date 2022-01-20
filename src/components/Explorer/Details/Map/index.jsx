@@ -1,9 +1,6 @@
 //React
 import React, { useState, useEffect, useRef } from 'react';
 import $ from 'jquery';
-//Redux
-import { useSelector } from 'react-redux';
-import { selectDetailsId } from '../../../../redux/reducers/detailsSlice';
 //ArchGIS
 import { loadModules } from 'esri-loader';
 //Styles
@@ -20,7 +17,6 @@ import Loader from '../../Map/Loader';
 
 export default function Map(props) {
   const { show } = props;
-  const id = useSelector(selectDetailsId);
   const [loadingMap, setLoadingMap] = useState(true);
   const mapRef = useRef();
 
@@ -74,10 +70,14 @@ export default function Map(props) {
           ],
         });
 
+        // 1. Create the Map
+        const map = new Map({
+          basemap: modern_antique,
+        });
+
+        // 2. Create the View
         const view = new MapView({
-          map: new Map({
-            basemap: modern_antique,
-          }),
+          map: map,
           container: mapRef.current,
           extent: {
             spatialReference: { wkid: 3857 },
@@ -88,7 +88,203 @@ export default function Map(props) {
           },
         });
 
-        //Map UI
+        // 3. Layer - Tiled Background
+
+        // 4. Layer - Source Location
+
+        // 5. Layer - Related Content
+
+        // 6. Event - Source Change
+
+        // 7. Event - Show on Map Toggle
+
+        // 8. Util - Zoom to Extents
+        // 9. Util - Update Tiled Bg
+        // 10. Util - Update Related Content layer
+
+        // Config for Related Content layer
+        const relatedClusterConfig = {
+          type: 'cluster',
+          clusterRadius: '200px',
+          clusterMinSize: '30px',
+          clusterMaxSize: '30px',
+          labelsVisible: true,
+          labelingInfo: [
+            {
+              symbol: {
+                type: 'text',
+                haloColor: '#373837',
+                haloSize: '2px',
+                color: '#f0f0f0',
+                font: {
+                  size: '18px',
+                },
+                xoffset: 0,
+                yoffset: '-30px',
+              },
+              labelPlacement: 'center-center',
+              labelExpressionInfo: {
+                expression:
+                  'Text($feature.cluster_count, "#,###") + " Related " + Proper($feature.cluster_type_type)',
+              },
+            },
+          ],
+          popupTemplate: {
+            title: 'Related {expression/title}',
+            content: `{expression/names}`,
+            fieldInfos: [
+              {
+                fieldName: 'cluster_count',
+                format: {
+                  places: 0,
+                  digitSeparator: true,
+                },
+              },
+              {
+                fieldName: 'expression/title',
+              },
+              {
+                fieldName: 'expression/names',
+              },
+            ],
+            expressionInfos: [
+              {
+                name: 'title',
+                title: 'popup title',
+                type: 'text',
+                expression: `
+                Proper($feature.cluster_type_type)
+                `,
+              },
+              {
+                name: 'names',
+                title: 'list of names',
+                type: 'text',
+                expression: `
+                var list = [];
+                for (var i in $aggregatedFeatures) {
+                  Push(list, i.title);
+                }
+                return list;
+                `,
+              },
+            ],
+          },
+        };
+
+        const relatedMarkerRenderer = {
+          type: 'unique-value',
+          field: 'type',
+          uniqueValueInfos: [
+            {
+              value: 'people',
+              label: 'People',
+              symbol: {
+                type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                url: peopleRelatedMarkerImage,
+                width: '30px',
+                height: '30px',
+              },
+            },
+            {
+              value: 'places',
+              label: 'Places',
+              symbol: {
+                type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                url: placesRelatedMarkerImage,
+                width: '30px',
+                height: '30px',
+              },
+            },
+            {
+              value: 'stories',
+              label: 'Stories',
+              symbol: {
+                type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
+                url: storiesRelatedMarkerImage,
+                width: '30px',
+                height: '30px',
+              },
+            },
+          ],
+        };
+
+        const asyncMarkerContent = (target) => {
+          const id = target.graphic.attributes.id;
+          const recnumber = target.graphic.attributes.recnumber;
+          const loctype = target.graphic.attributes.loctype;
+          const year = target.graphic.attributes.year;
+          return `
+          <div class="related-marker-info">
+            <div>ID: ${id}</div>
+            <div>RECNUMBER: ${recnumber}</div>
+            <div>LOCTYPE: ${loctype}</div>
+            <div>MAP YEAR: ${year}</div>
+          </div>
+          `;
+        };
+
+        // Create Related Content layer
+        const relatedContentLayer = new FeatureLayer({
+          id: `related_content`,
+          opacity: 1,
+          visible: show,
+          outFields: ['*'],
+          source: [],
+          fields: [
+            {
+              name: 'ObjectID',
+              alias: 'ObjectID',
+              type: 'oid',
+            },
+            {
+              name: 'type',
+              alias: 'Type',
+              type: 'string',
+            },
+            {
+              name: 'title',
+              alias: 'Title',
+              type: 'string',
+            },
+            {
+              name: 'id',
+              alias: 'ID',
+              type: 'string',
+            },
+            {
+              name: 'recnumber',
+              alias: 'RECNUMBER',
+              type: 'string',
+            },
+            {
+              name: 'loctype',
+              alias: 'LOCTYPE',
+              type: 'string',
+            },
+          ],
+          objectIdField: 'ObjectID',
+          spatialReference: { wkid: 3857 },
+          geometryType: 'point',
+          featureReduction: relatedClusterConfig,
+          renderer: relatedMarkerRenderer,
+          popupTemplate: {
+            title: '{title}',
+            outFields: ['*'],
+            content: asyncMarkerContent,
+          },
+        });
+
+        //check if features have already been added
+        relatedContentLayer.queryFeatures().then((results) => {
+          if (results.features.length === 0) {
+            console.log('No current features');
+          } else {
+            console.log('This layer already has features');
+          }
+        });
+
+        // Map UI
         const opacitySlider = new Slider({
           container: 'sliderDiv',
           min: 0,
@@ -116,9 +312,10 @@ export default function Map(props) {
           'bottom-right'
         );
 
+        // Wait for View to be loaded
         view.when().then(() => {
-          console.log('DETAILS MAP LOADED');
-          //Set Center at First Load
+          console.log('DETAILS MAP VIEW LOADED');
+          // Wait for Sources, then set center, add Tile, Source and Realated layers to view
           let intervalGetCenter = setInterval(() => {
             const $source = $('#details-source').find(':selected');
             const sourceCheck = $source.data('x');
@@ -132,16 +329,19 @@ export default function Map(props) {
               view.zoom = 21;
               const mapyear = $source.data('mapyear');
               const url = getUrl(mapyear);
-              createTileLayer(url);
-              addMarker($source.data('type'), newPoint);
+              addTileLayer(url);
+              addSourceLayer($source.data('type'), $source.text(), newPoint);
+              addRelatedLayer();
               setLoadingMap(false);
               clearInterval(intervalGetCenter);
             }
           }, 500);
-          //Full Details Source Change
+
+          // Event - Full Details Sources Change
           $('.page-content').on('change', '#details-source', function () {
             const type = $(this).find(':selected').data('type');
             const itemId = $(this).find(':selected').data('id');
+            const name = $(this).find(':selected').text();
             const markerX = $(this).find(':selected').data('x');
             const markerY = $(this).find(':selected').data('y');
             const recnumber = $(this).find(':selected').data('recnumber');
@@ -161,12 +361,21 @@ export default function Map(props) {
               markerid,
               type
             );
+            // Clear map
+            view.popup.close();
+            removeTileLayer();
+            removeSourceLayer();
+            removeRelated('all');
+            //removeLayer(`related_content`);
+            // Update layers
             const url = getUrl(mapyear);
-            createTileLayer(url);
-            addMarker(type, point);
+            addTileLayer(url);
+            addSourceLayer(type, name, point);
+            addRelatedLayer();
             gotoMarker(point);
           });
-          //Show On Map Toggle
+
+          // Event - Show On Map Toggle
           $('.page-content').on(
             'click',
             '.related-data-group-footer .toggle-switch-checkbox',
@@ -176,42 +385,62 @@ export default function Map(props) {
                 .closest('.detail-related')
                 .find('.detail-related-tabs .active')
                 .data('type');
-              const group = $(this).data('group');
               console.log('TAB TYPE', type);
               const checked = $(this).is(':checked');
               console.log('SHOW ON MAP', checked);
               const markers = [];
-              if (checked) {
-                $(this)
-                  .closest('.related-data-group')
-                  .find('div:not(.related-data-group-footer)')
-                  .each(function () {
-                    const title = $(this).data('title');
-                    const id = $(this).data('id');
-                    const group = $(this).data('group');
-                    const recnumber = $(this).data('recnumber');
-                    const loctype = $(this).data('loctype');
-                    const year = $(this).data('year');
-                    const x = $(this).data('x');
-                    const y = $(this).data('y');
-                    if (x && y) {
-                      markers.push({
-                        title,
-                        id,
-                        recnumber,
-                        loctype,
-                        year,
-                        x,
-                        y,
-                      });
-                    }
-                  });
-                if (markers.length) {
-                  addRelatedMarkers(type, group, markers);
-                }
+              $(this)
+                .closest('.related-data-group')
+                .find('div:not(.related-data-group-footer)')
+                .each(function () {
+                  const title = $(this).data('title');
+                  const id = $(this).data('id');
+                  const recnumber = $(this).data('recnumber');
+                  const loctype = $(this).data('loctype');
+                  const year = $(this).data('year');
+                  const x = $(this).data('x');
+                  const y = $(this).data('y');
+                  if (x && y) {
+                    markers.push({
+                      title,
+                      id,
+                      recnumber,
+                      loctype,
+                      year,
+                      x,
+                      y,
+                    });
+                  }
+                });
+              if (checked && markers.length) {
+                addRelated(type, markers);
               } else {
-                removeRelatedMarkers(type, group);
+                view.popup.close();
+                //removeRelated(markers);
+                removeRelated('all');
               }
+            }
+          );
+
+          // Event - Choose new tab when Related Content is open
+          $('.page-content').on(
+            'click',
+            '.detail-related.open .tab',
+            function () {
+              // Clear map
+              view.popup.close();
+              removeRelated('all');
+            }
+          );
+
+          // Event - Close Related Content
+          $('.page-content').on(
+            'click',
+            '.detail-related.open .detail-related-heading',
+            function () {
+              // Clear map
+              view.popup.close();
+              removeRelated('all');
             }
           );
         });
@@ -221,9 +450,36 @@ export default function Map(props) {
           const opacity = opacitySlider.values[0] / 100;
           view.layerViews.items[0].layer.opacity = opacity;
         }
-        //Add Marker
-        function addMarker(type, point) {
-          const ifGraphics = view.graphics.length;
+
+        function gotoMarker(point) {
+          //console.log('gotoMarker', markerid);
+          const opts = {
+            duration: 3000,
+          };
+          view.goTo({ target: point, zoom: 21 }, opts).then(() => {
+            console.log('DETAIL MARKER GOTO');
+          });
+        }
+
+        //Add Tiled Map Layer
+        function addTileLayer(url) {
+          console.log('ADD TILE LAYER');
+          const tileLayer = new TileLayer({
+            id: 'title_layer',
+            url,
+            visible: show,
+          });
+          view.map.add(tileLayer);
+        }
+
+        //Remove Tiled Map Layer
+        function removeTileLayer() {
+          console.log('REMOVE TILE LAYER');
+          removeLayer('title_layer');
+        }
+
+        //Add Source Location Layer
+        function addSourceLayer(type, source, point) {
           let markerUrl = null;
           switch (type.toLowerCase()) {
             case 'people':
@@ -238,35 +494,75 @@ export default function Map(props) {
             default:
               console.log(`TYPE ERROR: ${type} is not a valid option`);
           }
-          //Check for existing markers and then remove
-          if (ifGraphics) {
-            const existingGraphics = view.graphics.items;
-            existingGraphics.forEach(function (item) {
-              view.graphics.remove(item);
-            });
-          }
           if (markerUrl) {
-            const markerSymbol = {
-              type: 'picture-marker', // autocasts as new SimpleMarkerSymbol()
-              url: markerUrl,
-              width: '30px',
-              height: '30px',
-            };
-            const pointGraphic = new Graphic({
+            const sourceGraphic = new Graphic({
               geometry: point,
-              symbol: markerSymbol,
+              attributes: {
+                type,
+                source: source,
+              },
             });
-            view.graphics.add(pointGraphic);
+            const sourceLayer = new FeatureLayer({
+              title: source,
+              id: 'source_location',
+              outFields: ['*'],
+              source: [sourceGraphic],
+              fields: [
+                {
+                  name: 'ObjectID',
+                  alias: 'ObjectID',
+                  type: 'oid',
+                },
+                {
+                  name: 'type',
+                  alias: 'Type',
+                  type: 'string',
+                },
+                {
+                  name: 'source',
+                  alias: 'Source',
+                  type: 'string',
+                },
+              ],
+              objectIdField: 'ObjectID',
+              geometryType: 'point',
+              spatialReference: { wkid: 3857 },
+              renderer: {
+                type: 'simple',
+                symbol: {
+                  type: 'picture-marker',
+                  url: markerUrl,
+                  width: '30px',
+                  height: '30px',
+                },
+              },
+              popupTemplate: {
+                title: '{Source}',
+              },
+            });
+            view.map.add(sourceLayer);
           } else {
-            console.log(
-              `MARKER ERROR: type not valid, unable to generate symbol`
-            );
+            console.log('Error: Source Layer not able to be added');
           }
         }
-        //Add Related Markers
-        function addRelatedMarkers(type, group, markers) {
-          const graphics = [];
+
+        //Remove Source Location Layer
+        function removeSourceLayer() {
+          console.log('REMOVE SOURCE LOCATION LAYER');
+          removeLayer('source_location');
+        }
+
+        //Add Related Content Layer
+        function addRelatedLayer() {
+          view.map.add(relatedContentLayer);
+        }
+
+        function addRelated(type, markers) {
+          console.log('ADD FEATURES TYPE', type);
+          // create an array of graphics based on markers
+          let graphics = [];
           markers.forEach((marker) => {
+            //console.log('MARKER', markers);
             const point = new Point({
               x: marker.x,
               y: marker.y,
@@ -278,7 +574,6 @@ export default function Map(props) {
               id: marker.id,
               recnumber: marker.recnumber,
               loctype: marker.loctype,
-              year: marker.year,
             };
             const graphic = new Graphic({
               geometry: point,
@@ -286,165 +581,126 @@ export default function Map(props) {
             });
             graphics.push(graphic);
           });
-          createRelatedMarkersLayer(type, group, graphics);
-        }
-        function createRelatedMarkersLayer(type, group, graphics) {
-          const markerRenderer = {
-            type: 'unique-value',
-            field: 'type',
-            uniqueValueInfos: [
-              {
-                value: 'people',
-                label: 'People',
-                symbol: {
-                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
-                  url: peopleRelatedMarkerImage,
-                  width: '30px',
-                  height: '30px',
-                },
-              },
-              {
-                value: 'places',
-                label: 'Places',
-                symbol: {
-                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
-                  url: placesRelatedMarkerImage,
-                  width: '30px',
-                  height: '30px',
-                },
-              },
-              {
-                value: 'stories',
-                label: 'Stories',
-                symbol: {
-                  type: 'picture-marker', // autocasts as new PictureMarkerSymbol()
-                  url: storiesRelatedMarkerImage,
-                  width: '30px',
-                  height: '30px',
-                },
-              },
-            ],
+
+          // addEdits object tells applyEdits that you want to add the features
+          const addEdits = {
+            addFeatures: graphics,
           };
-          const layer = new FeatureLayer({
-            id: `related_markers_layer_${type}_${group}`,
-            opacity: 1,
-            visible: show,
-            source: graphics,
-            fields: [
-              {
-                name: 'ObjectID',
-                alias: 'ObjectID',
-                type: 'oid',
-              },
-              {
-                name: 'type',
-                alias: 'Type',
-                type: 'string',
-              },
-              {
-                name: 'title',
-                alias: 'Title',
-                type: 'string',
-              },
-              {
-                name: 'id',
-                alias: 'ID',
-                type: 'string',
-              },
-              {
-                name: 'recnumber',
-                alias: 'RECNUMBER',
-                type: 'string',
-              },
-              {
-                name: 'loctype',
-                alias: 'LOCTYPE',
-                type: 'string',
-              },
-              {
-                name: 'year',
-                alias: 'Year',
-                type: 'string',
-              },
-            ],
-            geometryType: 'point',
-            renderer: markerRenderer,
-            popupTemplate: {
-              title: '{title}',
-              outFields: ['*'],
-              content: asyncMarkerContent,
-            },
-          });
-          addToView(layer, true);
-          // const opts = {
-          //   duration: 3000,
-          // };
-          // view.goTo({ zoom: 17 }, opts).then(() => {
-          //   console.log('RELATED MARKER EXTENT');
-          // });
+
+          // apply the edits to the layer
+          applyEditsToLayer(addEdits);
         }
-        //Remove Related Markers
-        function removeRelatedMarkers(type, group) {
-          const layerId = `related_markers_layer_${type}_${group}`;
-          removeFromView(layerId);
-        }
-        //Pan and Zoom map to a given marker
-        function gotoMarker(point) {
-          //console.log('gotoMarker', markerid);
-          const opts = {
-            duration: 3000,
-          };
-          view.goTo({ target: point, zoom: 21 }, opts).then(() => {
-            console.log('DETAIL MARKER GOTO');
+
+        function removeRelated(markers) {
+          let removeRequest = [];
+          if (markers !== 'all') {
+            markers.forEach((marker) => {
+              removeRequest.push(marker.id);
+            });
+          }
+          // query for the features you want to remove
+          relatedContentLayer.queryFeatures().then((results) => {
+            let removeItems = [];
+            results.features.forEach((feature) => {
+              if (markers !== 'all') {
+                const includes = removeRequest.includes(feature.attributes.id);
+                if (includes) {
+                  removeItems.push({ objectId: feature.attributes.ObjectID });
+                }
+              } else {
+                removeItems.push({ objectId: feature.attributes.ObjectID });
+              }
+            });
+            // edits object tells apply edits that you want to delete the features
+            const deleteEdits = {
+              deleteFeatures: removeItems,
+            };
+            // apply edits to the layer
+            applyEditsToLayer(deleteEdits);
           });
         }
 
-        //Add Tiled Map Layer
-        function createTileLayer(url) {
-          const tileLayer = new TileLayer({
-            id: 'title_layer',
-            url,
-            visible: show,
-          });
-          addToView(tileLayer, false);
+        function applyEditsToLayer(edits) {
+          relatedContentLayer
+            .applyEdits(edits)
+            .then((results) => {
+              // get extent of the Source Location layer
+              let sourceExtent = null;
+              const existingLayers = view.map.layers.items;
+              existingLayers.forEach(function (item, i) {
+                if (item.id === 'source_location') {
+                  sourceExtent = item.fullExtent;
+                }
+              });
+              // if edits were removed
+              if (results.deleteFeatureResults.length > 0) {
+                if (sourceExtent) {
+                  view.goTo(sourceExtent);
+                }
+                console.log(
+                  results.deleteFeatureResults.length,
+                  'features have been removed'
+                );
+              }
+              // if features were added - call queryFeatures to return
+              //    newly added graphics
+              if (results.addFeatureResults.length > 0) {
+                let objectIds = [];
+                results.addFeatureResults.forEach((item) => {
+                  objectIds.push(item.objectId);
+                });
+                // query the newly added features from the layer
+                relatedContentLayer
+                  .queryFeatures({
+                    objectIds: objectIds,
+                  })
+                  .then((results) => {
+                    console.log(
+                      results.features.length,
+                      'features have been added.'
+                    );
+                    relatedContentLayer.queryExtent().then((results) => {
+                      const relatedExtent = results.extent.clone();
+                      if (sourceExtent) {
+                        const sourceExtentClone = sourceExtent.clone();
+                        const fullExtent =
+                          relatedExtent.union(sourceExtentClone);
+                        view.goTo(fullExtent);
+                      } else {
+                        view.goTo(relatedExtent);
+                      }
+                    });
+                  });
+              }
+            })
+            .catch((error) => {
+              console.error();
+            });
         }
 
-        // Adds a given layer to the map in the view
-        function addToView(layer, zoom) {
-          console.log('ADD RELATED LAYER', layer);
-          console.log('CURRENT LAYERS', view.map.layers.items);
+        //Remove Layer based on ID
+        function removeLayer(layerId) {
           const ifLayers = view.map.layers.items.length;
           if (ifLayers) {
             const existingLayers = view.map.layers.items;
             //const existingLayersIDs = existingLayers.map((layer) => layer.id);
             //console.log('existingLayersIDs', existingLayersIDs);
             existingLayers.forEach(function (item, i) {
-              if (layer.id === item.id) {
+              if (layerId === item.id) {
                 view.map.layers.remove(item);
               }
             });
           }
-          view.map.add(layer);
-          layer.when(
-            function () {
-              if (zoom) {
-                console.log('ZOOM TO EXTENT', layer.fullExtent.extent);
-                view.goTo(layer.fullExtent.extent);
-              }
-            },
-            function (error) {
-              console.log(error);
-            }
-          );
         }
+
         // Removes a given layer to the map in the view
-        function removeFromView(layerId) {
-          console.log('REMOVE RELATED LAYER', layerId);
+        function removeFromView(layer) {
+          console.log('REMOVE RELATED LAYER', layer);
           const ifLayers = view.map.layers.items.length;
           if (ifLayers) {
             const existingLayers = view.map.layers.items;
             existingLayers.forEach(function (item, i) {
-              if (layerId === item.id) {
+              if (layer.id === item.id) {
                 view.map.layers.remove(item);
               }
             });
@@ -464,20 +720,6 @@ export default function Map(props) {
           });
           return newUrl;
         }
-        const asyncMarkerContent = (target) => {
-          const id = target.graphic.attributes.id;
-          const recnumber = target.graphic.attributes.recnumber;
-          const loctype = target.graphic.attributes.loctype;
-          const year = target.graphic.attributes.year;
-          return `
-          <div class="related-marker-info">
-            <div>ID: ${id}</div>
-            <div>RECNUMBER: ${recnumber}</div>
-            <div>LOCTYPE: ${loctype}</div>
-            <div>MAP YEAR: ${year}</div>
-          </div>
-          `;
-        };
       }
     );
   }, []);
