@@ -31,13 +31,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  top: -10px;
-  right: -10px;
-  width: 20px;
-  height: 20px;
+  top: 5px;
+  right: 0;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
   .fa-icon {
-    font-size: 16px;
+    font-size: 22px;
     color: $color-kett-grey-secondary;
     &:hover {
       color: $color-kett-black;

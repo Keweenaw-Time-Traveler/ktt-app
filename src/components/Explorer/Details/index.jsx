@@ -19,17 +19,19 @@ import {
   selectShowRelated,
 } from '../../../redux/reducers/relatedSlice';
 import { updateListItem } from '../../../redux/reducers/listSlice';
+//Tooptip
+import Tooltip from 'react-tooltip-lite';
 //Styles
 import './styles.scss';
 import 'react-image-lightbox/style.css';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/pro-light-svg-icons';
 import {
   faHeart,
   faShareAlt,
   faPrint,
   faDownload,
+  faChevronDoubleLeft,
 } from '@fortawesome/pro-solid-svg-icons';
 //Components
 import Loader from '../Map/Loader';
@@ -113,7 +115,9 @@ const Details = (props) => {
         <div className="details-title">
           <h1>{name}</h1>
           <div className="details-close" onClick={handleCloseClick}>
-            <FontAwesomeIcon icon={faTimes} className="fa-icon" />
+            <Tooltip content="Close Details" direction="right">
+              <FontAwesomeIcon icon={faChevronDoubleLeft} className="fa-icon" />
+            </Tooltip>
           </div>
         </div>
         <div className="details-sources">

@@ -15,6 +15,8 @@ export default function Group(props) {
   const { id, results } = props;
   const [checked, setChecked] = useState(false);
 
+  console.log('GROUP RESULTS', results);
+
   const handleChange = (checked, id) => {
     setChecked(checked);
     console.log(`TOOGLE ID: ${id}`);
@@ -36,7 +38,7 @@ export default function Group(props) {
           data-id={item.id}
           data-recnumber={item.recnumber}
           data-loctype={item.loctype}
-          data-year={item.year}
+          data-year={item.map_year}
           data-x={item.x}
           data-y={item.y}
           onClick={() => handleClick(item.id, item.recnumber, item.loctype)}

@@ -8,6 +8,7 @@ import './styles.scss';
 
 export default function Data(props) {
   const { type, data } = props;
+  console.log('DATA', data);
   useEffect(() => {
     const allPanels = $('.detail-related-content .accordion-panel').hide();
     const allHeadings = $('.detail-related-content .accordion-heading');

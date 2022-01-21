@@ -275,15 +275,6 @@ export default function Map(props) {
           },
         });
 
-        //check if features have already been added
-        relatedContentLayer.queryFeatures().then((results) => {
-          if (results.features.length === 0) {
-            console.log('No current features');
-          } else {
-            console.log('This layer already has features');
-          }
-        });
-
         // Map UI
         const opacitySlider = new Slider({
           container: 'sliderDiv',
@@ -364,9 +355,9 @@ export default function Map(props) {
             // Clear map
             view.popup.close();
             removeTileLayer();
-            removeSourceLayer();
+            //removeSourceLayer();
             removeRelated('all');
-            //removeLayer(`related_content`);
+            removeLayer(`related_content`);
             // Update layers
             const url = getUrl(mapyear);
             addTileLayer(url);
@@ -416,11 +407,17 @@ export default function Map(props) {
                 addRelated(type, markers);
               } else {
                 view.popup.close();
-                //removeRelated(markers);
-                removeRelated('all');
+                removeRelated(markers);
+                //removeRelated('all');
               }
             }
           );
+
+          // Event - Choose accordion heading
+          $('.accordion-heading').on('click', function () {
+            // view.popup.close();
+            // removeRelated('all');
+          });
 
           // Event - Choose new tab when Related Content is open
           $('.page-content').on(
@@ -558,7 +555,7 @@ export default function Map(props) {
         }
 
         function addRelated(type, markers) {
-          console.log('ADD FEATURES TYPE', type);
+          console.log('MAP ADD FEATURES', type, markers);
           // create an array of graphics based on markers
           let graphics = [];
           markers.forEach((marker) => {
@@ -592,6 +589,7 @@ export default function Map(props) {
         }
 
         function removeRelated(markers) {
+          console.log('MAP REMOVE FEATURES', markers);
           let removeRequest = [];
           if (markers !== 'all') {
             markers.forEach((marker) => {
@@ -641,6 +639,7 @@ export default function Map(props) {
                   results.deleteFeatureResults.length,
                   'features have been removed'
                 );
+                relatedContentLayer.refresh();
               }
               // if features were added - call queryFeatures to return
               //    newly added graphics
@@ -670,6 +669,7 @@ export default function Map(props) {
                         view.goTo(relatedExtent);
                       }
                     });
+                    relatedContentLayer.refresh();
                   });
               }
             })

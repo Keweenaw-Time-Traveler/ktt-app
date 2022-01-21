@@ -40,23 +40,30 @@ export default function Related() {
   const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {
-    const $source = $('#details-source').find(':selected');
-    const mapyear = $source.data('mapyear');
-    const markerid = $source.data('markerid');
-    console.log('GET RELATED', {
-      id,
-      mapyear: `${mapyear}`,
-      markerid: `${markerid}`,
-    });
-    if (id && mapyear && markerid) {
-      dispatch(
-        getRelated({
-          id: `${id}`,
+    console.log('RELATED');
+    let intervalGetCenter = setInterval(() => {
+      const $source = $('#details-source').find(':selected');
+      const sourceCheck = $source.data('mapyear');
+      if (sourceCheck) {
+        const mapyear = $source.data('mapyear');
+        const markerid = $source.data('markerid');
+        console.log('GET RELATED', {
+          id,
           mapyear: `${mapyear}`,
           markerid: `${markerid}`,
-        })
-      );
-    }
+        });
+        if (id && mapyear && markerid) {
+          dispatch(
+            getRelated({
+              id: `${id}`,
+              mapyear: `${mapyear}`,
+              markerid: `${markerid}`,
+            })
+          );
+        }
+        clearInterval(intervalGetCenter);
+      }
+    }, 500);
   }, [id]);
 
   const handleHeadingClick = () => {

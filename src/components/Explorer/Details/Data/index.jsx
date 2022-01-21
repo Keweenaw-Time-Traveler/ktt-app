@@ -1,5 +1,7 @@
 //React
 import React from 'react';
+//Tooptip
+import Tooltip from 'react-tooltip-lite';
 //Styles
 import './styles.scss';
 
@@ -15,8 +17,10 @@ export default function Data(props) {
         {item.fields &&
           item.fields.map((item, index) => (
             <div className="detail-item" key={index}>
-              <span className="label">{item.title}</span>
-              {item.value}
+              <Tooltip content={item.tooltip} direction="right">
+                <span className="label">{item.title}</span>
+                {item.value}
+              </Tooltip>
             </div>
           ))}
       </div>
