@@ -118,9 +118,9 @@ export default function Timeline() {
         <div className="label-max">{timeline.max}</div>
       </div>
       {resetStatus && (
-        <div className="timeline-reset" onClick={handleResetClick}>
+        <button className="timeline-reset" onClick={handleResetClick}>
           Reset
-        </div>
+        </button>
       )}
     </>
   );

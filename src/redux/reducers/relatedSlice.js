@@ -53,7 +53,7 @@ export const relatedSlice = createSlice({
       console.log('RELATED PAYLOAD', payload);
       state.people = payload.people.groups;
       state.places = payload.places.groups;
-      state.stories = [];
+      state.stories = payload.stories.groups;
       state.total = payload.length;
       state.relatedStatus = 'success';
     });

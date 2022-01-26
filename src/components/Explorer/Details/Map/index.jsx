@@ -366,7 +366,7 @@ export default function Map(props) {
             gotoMarker(point);
           });
 
-          // Event - Show On Map Toggle
+          // Event - "Show On Map" Toggle
           $('.page-content').on(
             'click',
             '.related-data-group-footer .toggle-switch-checkbox',
@@ -412,12 +412,6 @@ export default function Map(props) {
               }
             }
           );
-
-          // Event - Choose accordion heading
-          $('.accordion-heading').on('click', function () {
-            // view.popup.close();
-            // removeRelated('all');
-          });
 
           // Event - Choose new tab when Related Content is open
           $('.page-content').on(
@@ -677,7 +671,6 @@ export default function Map(props) {
               console.error();
             });
         }
-
         //Remove Layer based on ID
         function removeLayer(layerId) {
           const ifLayers = view.map.layers.items.length;
@@ -687,20 +680,6 @@ export default function Map(props) {
             //console.log('existingLayersIDs', existingLayersIDs);
             existingLayers.forEach(function (item, i) {
               if (layerId === item.id) {
-                view.map.layers.remove(item);
-              }
-            });
-          }
-        }
-
-        // Removes a given layer to the map in the view
-        function removeFromView(layer) {
-          console.log('REMOVE RELATED LAYER', layer);
-          const ifLayers = view.map.layers.items.length;
-          if (ifLayers) {
-            const existingLayers = view.map.layers.items;
-            existingLayers.forEach(function (item, i) {
-              if (layer.id === item.id) {
                 view.map.layers.remove(item);
               }
             });

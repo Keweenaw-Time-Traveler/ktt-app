@@ -21,7 +21,7 @@ import {
 import {
   getList,
   updateListItem,
-  selectRemoveList,
+  selectShowList,
 } from '../../../redux/reducers/listSlice';
 import {
   getDetails,
@@ -43,15 +43,15 @@ import storyMarkerImage from './images/marker_story.png';
 //Functional Component
 function KeTTMap() {
   const dispatch = useDispatch();
-  const listRemove = useSelector(selectRemoveList);
+  const listShow = useSelector(selectShowList);
   const [zoom, setZoom] = useState(10);
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
   const mapRef = useRef();
   const searchRef = useRef('');
-  const dateRangeRef = useRef('1875-2021');
-  const startDateRef = useRef('1800');
-  const endDateRef = useRef('2020');
+  const dateRangeRef = useRef('1850-2021');
+  const startDateRef = useRef('1850');
+  const endDateRef = useRef('2021');
   const typeRef = useRef('everything');
   const photosRef = useRef('false');
   const featuredRef = useRef('false');
@@ -164,12 +164,14 @@ function KeTTMap() {
           .then(() => {
             window.markerExtent = null; //Used to determine if markers need to be updated, see watchUtils.whenTrue below
             window.timePeriod = null; //Used to determine if time period needs to be chosen, see watchUtils.whenTrue below
-
+            console.log('VIEW SETTINGS', view);
+            const min = $('#date-range .label-min').text();
+            const max = $('#date-range .label-max').text();
             const startingFilters = {
               search: '',
-              date_range: '1875-2021',
-              startDate: '1875',
-              endDate: '2021',
+              date_range: `${min}-${max}`,
+              startDate: `${min}`,
+              endDate: `${max}`,
               location: 'Keweenaw',
               photos: 'false',
               featured: 'false',
@@ -177,7 +179,7 @@ function KeTTMap() {
             };
             updateGrid(view, startingFilters);
 
-            //Choose a Time Popup Change Event
+            //"Choose a Time" Popup Change Event
             $('#time-chooser-select').on('change', function (e) {
               e.preventDefault();
               const $selected = $(this).find(':selected');
@@ -206,6 +208,7 @@ function KeTTMap() {
               };
               console.log('TIME CHOOSER CHANGE', filterVal);
               dispatch(updateTimelineRange(`${min}-${max}`));
+              dispatch(updateReset(true));
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
@@ -225,44 +228,7 @@ function KeTTMap() {
             });
             //Timeline Reset Click Event
             $('.navbar-middle').on('click', '.timeline-reset', function () {
-              //console.log('TIMELINE', timeline);
-              const min = '1875';
-              const max = '2021';
-              const url = '';
-              dateRangeRef.current = `${min}-${max}`;
-              startDateRef.current = `${min}`;
-              endDateRef.current = `${max}`;
-              tileUrlRef.current = url;
-              const filterVal = {
-                search: searchRef.current,
-                date_range: `${min}-${max}`,
-                photos: photosRef.current,
-                featured: featuredRef.current,
-                type: typeRef.current,
-              };
-              const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
-              const { xmin, xmax, ymin, ymax } = extentExpanded;
-              const extent = {
-                xmin: xmin,
-                xmax: xmax,
-                ymin: ymin,
-                ymax: ymax,
-              };
-              console.log('TIMELINE RESET', filterVal);
-              dispatch(updateTimelineRange(`${min}-${max}`));
-              handleTimePeriod();
-              //ADD TILE LAYER
-              createTileLayer(view.zoom, url);
-              //UPDATE GRID
-              updateGrid(view, filterVal);
-              //LOAD MARKERS
-              if (view.zoom > gridThreshold) {
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
-              }
+              resetMap();
             });
             //Landing Page Search Field Events
             $('body').on('click', '#intro-options-search-icon', function (e) {
@@ -302,6 +268,8 @@ function KeTTMap() {
                 ymin: ymin,
                 ymax: ymax,
               };
+              //CLEAR POPUP
+              view.popup.close();
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
@@ -345,6 +313,8 @@ function KeTTMap() {
                 };
               }
               console.log('TOGGLE', filterVal);
+              //CLEAR POPUP
+              view.popup.close();
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
@@ -376,7 +346,6 @@ function KeTTMap() {
             //Popup Tabs Click Event
             $('.page-content').on('click', '.map-popup-tabs .tab', function () {
               let tabType = $(this).find('.tab-type').text();
-              console.log(tabType);
               $(this).addClass('active').siblings().removeClass('active');
               $(this)
                 .closest('.map-popup')
@@ -486,6 +455,43 @@ function KeTTMap() {
               $(this).addClass('active').siblings().removeClass('active');
             });
             //Helper Functions
+            function resetMap() {
+              const min = $('#date-range .label-min').text();
+              const max = $('#date-range .label-max').text();
+              const url = '';
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              tileUrlRef.current = url;
+              const filterVal = {
+                search: searchRef.current,
+                date_range: `${min}-${max}`,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              console.log('RESET MAIN MAP', min, max, filterVal);
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              handleTimePeriod();
+              //CLOSE ANY OPEN POPUPS
+              view.popup.close();
+              //ADD TILE LAYER
+              createTileLayer(view.zoom, url);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //RESET ZOOM
+              const point = new Point({
+                x: -9847493.299600473,
+                y: 5961570.438394273,
+                spatialReference: { wkid: 3857 },
+              });
+              const opts = {
+                duration: 3000,
+              };
+              view.goTo({ target: point, zoom: 10 }, opts).then(() => {
+                console.log('RESET ZOOM', point, 10);
+              });
+            }
             function landingSearch() {
               const searchValue = $('#search-landing').val();
               searchRef.current = `${searchValue}`;
@@ -501,10 +507,15 @@ function KeTTMap() {
             }
             function mainSearch() {
               const searchValue = $('#search').val();
+              const min = $('#date-range .label-min').text();
+              const max = $('#date-range .label-max').text();
               searchRef.current = `${searchValue}`;
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
               const filterVal = {
                 search: `${searchValue}`,
-                date_range: dateRangeRef.current,
+                date_range: `${min}-${max}`,
                 photos: photosRef.current,
                 featured: featuredRef.current,
                 type: typeRef.current,
@@ -595,18 +606,14 @@ function KeTTMap() {
               dispatch(updateStartDate(`${min}`));
               dispatch(updateEndDate(`${max}`));
               dispatch(updateReset(true));
-              if (!listRemove) {
+              if (listShow) {
                 dispatch(getList({}));
               }
               //UPDATE MARKER POPUP
-              console.log('listRemove', listRemove);
-              if (!listRemove) {
-                asyncMarkerPopUp().then(function (res) {
-                  view.popup.content = res;
-                });
-              } else {
-                view.popup.close();
-              }
+              console.log('listShow', listShow);
+              asyncMarkerPopUp().then(function (res) {
+                view.popup.content = res;
+              });
             }
           })
           .catch(function (e) {
@@ -1524,6 +1531,7 @@ function KeTTMap() {
     );
   }, [dispatch]);
 
+  //POPUP - When grid item is clicked
   const asyncGridPopUp = (target) => {
     //console.log('TARGET', target);
     let filters = {
@@ -1598,41 +1606,31 @@ function KeTTMap() {
             <span class="mapyear">${item.map_year}</span>
             </li>`;
         });
-        let peopleStatus = '',
-          placesStatus = '',
-          storiesStatus = '';
-        if (peopleCount) {
-          peopleStatus = ' active';
-          placesStatus = '';
-          storiesStatus = '';
-        } else if (placesCount) {
-          peopleStatus = '';
-          placesStatus = ' active';
-          storiesStatus = '';
-        } else if (storiesCount) {
-          peopleStatus = '';
-          placesStatus = '';
-          storiesStatus = ' active';
-        }
+        let tabStatus = getTabStatus({
+          peopleCount,
+          placesCount,
+          storiesCount,
+        });
+        //console.log('POPUP TAB STATUS', tabStatus);
         return `
         <div class="map-popup grid">
           <div class="map-popup-tabs">
-            <div class="tab tab-people${peopleStatus}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
-            <div class="tab tab-places${placesStatus}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
-            <div class="tab tab-stories${storiesStatus}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
+            <div class="tab tab-people${tabStatus.people}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
+            <div class="tab tab-places${tabStatus.places}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
+            <div class="tab tab-stories${tabStatus.stories}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
           </div>
           <div class="map-popup-data">
-            <div class="data data-people${peopleStatus}">
+            <div class="data data-people${tabStatus.people}">
               <ul>
               ${stringPeople}
               </ul>
             </div>
-            <div class="data data-places${placesStatus}">
+            <div class="data data-places${tabStatus.places}">
               <ul>
               ${stringPlaces}
               </ul>
             </div>
-            <div class="data data-stories${storiesStatus}">
+            <div class="data data-stories${tabStatus.stories}">
               <ul>
               ${stringStories}
               </ul>
@@ -1644,6 +1642,7 @@ function KeTTMap() {
       .catch((error) => console.log(error));
   };
 
+  //POPUP - When list item is clicked
   const asyncMarkerInfo = (recnumber, markerid, loctype, type, filterVal) => {
     //console.log('asyncMarkerInfo', recnumber, markerid, filterVal);
     let filters = {
@@ -1759,7 +1758,10 @@ function KeTTMap() {
       })
       .catch((error) => console.log(error));
   };
+
+  //POPUP - When marker is clicked
   const asyncMarkerPopUp = (target) => {
+    console.log('TARGET', target);
     //const layerID = target ? target.graphic.layer.id : null;
     const targetID = target ? target.graphic.attributes.id : null;
     const markerID = targetID ? targetID : activeMarkerIdRef.current;
@@ -1786,11 +1788,8 @@ function KeTTMap() {
         //     : res.data.inactive;
         const source = res.data.active;
         const peopleCount = source.people.length;
-        console.log('PEOPLE COUNT', peopleCount);
         const placesCount = source.places.length;
-        console.log('PLACES COUNT', peopleCount);
         const storiesCount = source.stories.length;
-        console.log('STORIES COUNT', peopleCount);
         const peopleData = source.people.results;
         const placesData = source.places.results;
         const storiesData = source.stories.results;
@@ -1803,16 +1802,16 @@ function KeTTMap() {
           return `<li${style}>${person.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const placesTitles = placesData.map((place) => {
-          const id = place.id;
-          const recnumber = place.recnumber;
+          const id = arcgisSafeString(place.id);
+          const recnumber = arcgisSafeString(place.recnumber);
           const loctype = place.loctype;
           const highlight = place.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
           return `<li${style}>${place.title}<span class="id">${id}</span><span class="recnumber">${recnumber}</span><span class="loctype">${loctype}</span></li>`;
         });
         const storiesTitles = storiesData.map((story) => {
-          const id = story.id;
-          const recnumber = story.recnumber;
+          const id = arcgisSafeString(story.id);
+          const recnumber = arcgisSafeString(story.recnumber);
           const loctype = story.loctype;
           const highlight = story.highlighted;
           const style = highlight === 'true' ? ' class="active"' : '';
@@ -1834,51 +1833,40 @@ function KeTTMap() {
           stringPlaces = stringPlaces + title;
         });
         storiesTitles.forEach((title) => {
+          console.log('title', title);
           stringStories = stringStories + title;
         });
-        let peopleStatus = '',
-          placesStatus = '',
-          storiesStatus = '',
-          noResultsStatus = '';
-        if (peopleCount) {
-          peopleStatus = ' active';
-          placesStatus = '';
-          storiesStatus = '';
-        } else if (placesCount) {
-          peopleStatus = '';
-          placesStatus = ' active';
-          storiesStatus = '';
-        } else if (storiesCount) {
-          peopleStatus = '';
-          placesStatus = '';
-          storiesStatus = ' active';
-        } else {
-          noResultsStatus = ' active';
-        }
+        let tabStatus = getTabStatus({
+          peopleCount,
+          placesCount,
+          storiesCount,
+        });
+        console.log('POPUP TAB STATUS', tabStatus);
+        console.log('stringStories', stringStories);
         return `
         <div class="map-popup marker">
           <div class="map-popup-tabs">
-            <div class="tab tab-people${peopleStatus}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
-            <div class="tab tab-places${placesStatus}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
-            <div class="tab tab-stories${storiesStatus}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
+            <div class="tab tab-people${tabStatus.people}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
+            <div class="tab tab-places${tabStatus.places}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
+            <div class="tab tab-stories${tabStatus.stories}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
           </div>
           <div class="map-popup-data">
-            <div class="data data-people${peopleStatus}">
+            <div class="data data-people${tabStatus.people}">
               <ul>
               ${stringPeople}
               </ul>
             </div>
-            <div class="data data-places${placesStatus}">
+            <div class="data data-places${tabStatus.places}">
               <ul>
               ${stringPlaces}
               </ul>
             </div>
-            <div class="data data-stories${storiesStatus}">
+            <div class="data data-stories${tabStatus.stories}">
               <ul>
               ${stringStories}
               </ul>
             </div>
-            <div class="data data-no-results${noResultsStatus}">
+            <div class="data data-no-results${tabStatus.noResultsStatus}">
               <ul>
                 <li>Sorry, there are no records here during this time period. Try moving forward or back in time.</li>
               </ul>
@@ -1956,9 +1944,101 @@ function KeTTMap() {
       })
       .catch((error) => console.log(error));
   };
+  const getTabStatus = (tabCount) => {
+    let tabStatus = {
+      people: '',
+      places: '',
+      stories: '',
+      noResultsStatus: '',
+    };
+    const { peopleCount, placesCount, storiesCount } = tabCount;
+    //console.log('TAB COUNT', peopleCount, placesCount, storiesCount);
+    const radioActive = $('.filter-radios input:checked + label').attr('class');
+    //console.log('RADIO ACTIVE', radioActive);
+    if (peopleCount + placesCount + storiesCount) {
+      switch (radioActive) {
+        case 'everything':
+          if (peopleCount) {
+            tabStatus = {
+              people: ' active',
+              places: '',
+              stories: '',
+              noResultsStatus: '',
+            };
+          } else if (placesCount) {
+            tabStatus = {
+              people: '',
+              places: ' active',
+              stories: '',
+              noResultsStatus: '',
+            };
+          } else if (storiesCount) {
+            tabStatus = {
+              people: '',
+              places: '',
+              stories: ' active',
+              noResultsStatus: '',
+            };
+          } else {
+            tabStatus = {
+              people: ' active',
+              places: '',
+              stories: '',
+              noResultsStatus: '',
+            };
+          }
+          break;
+        case 'people':
+          tabStatus = {
+            people: ' active',
+            places: '',
+            stories: '',
+            noResultsStatus: '',
+          };
+          break;
+        case 'places':
+          tabStatus = {
+            people: '',
+            places: ' active',
+            stories: '',
+            noResultsStatus: '',
+          };
+          break;
+        case 'stories':
+          tabStatus = {
+            people: '',
+            places: '',
+            stories: ' active',
+            noResultsStatus: '',
+          };
+          break;
+        default:
+          tabStatus = {
+            people: ' active',
+            places: '',
+            stories: '',
+            noResultsStatus: '',
+          };
+      }
+    } else {
+      tabStatus = {
+        people: '',
+        places: '',
+        stories: '',
+        noResultsStatus: ' active',
+      };
+    }
+    return tabStatus;
+  };
   const handleTimePeriod = () => {
     window.timePeriod = true;
     setShowTimeChooser(false);
+  };
+  const arcgisSafeString = (str) => {
+    console.log('str', str);
+    let safeString = str.replace('{', '&#123;');
+    safeString = safeString.replace('}', '&#125;');
+    return safeString;
   };
   const open = useSelector(selectShowDetails);
   const wrapperClasses = open ? 'map-wrapper close' : 'map-wrapper';

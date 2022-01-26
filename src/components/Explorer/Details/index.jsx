@@ -76,6 +76,11 @@ const Details = (props) => {
     images = attachments.map((item) => item.url);
   }
 
+  // Event - Reset Timeline
+  $('.navbar-middle').on('click', '.timeline-reset', function () {
+    closeDetails();
+  });
+
   function handleSourceChange(event) {
     dispatch(toggleRelated('hide'));
     $('.detail-related-content').outerHeight(0);
@@ -98,15 +103,19 @@ const Details = (props) => {
   }
 
   function handleCloseClick(event) {
-    dispatch(updateListItem({ recnumber: '', loctype: '' }));
-    dispatch(toggleDetails('hide'));
-    dispatch(toggleRelated('hide'));
+    closeDetails();
   }
 
   function handleThumbClick(index) {
     console.log('THUMB CLICK', index);
     setPhotoIndex(index);
     setIsOpen(true);
+  }
+
+  function closeDetails() {
+    dispatch(updateListItem({ recnumber: '', loctype: '' }));
+    dispatch(toggleDetails('hide'));
+    dispatch(toggleRelated('hide'));
   }
 
   return (

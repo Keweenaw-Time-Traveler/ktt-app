@@ -24,13 +24,14 @@
   margin: 0 0 30px 0;
   padding: 10px;
 }
-.esri-feature-content {
+.esri-widget__list {
   height: 100%;
   max-height: 250px;
-  margin: 15px 0;
+  margin: 15px 0 !important;
   overflow-y: auto;
   overflow-x: hidden;
   flex-grow: 1;
+  cursor: initial;
   /* width */
   &::-webkit-scrollbar {
     position: relative;
@@ -50,10 +51,7 @@
   &::-webkit-scrollbar-thumb:hover {
     background: $color-kett-gold;
   }
-}
-.esri-widget__list {
-  margin: 0;
-  padding: 0 10px 0 40px;
+
   li {
     text-align: left;
     font-size: 16px;
@@ -61,7 +59,6 @@
     line-height: 26px;
     line-height: 2.6rem;
     letter-spacing: 0.2px;
-    cursor: pointer;
     &::marker {
       color: $color-kett-green-primary;
     }

@@ -55,11 +55,14 @@
   background: $color-kett-gold;
 }
 .timeline-reset {
-  color: $color-kett-white;
   margin-right: 25px;
+  padding: 0 15px;
+  color: $color-kett-white;
+  background: $color-kett-grey-secondary;
+  border: none;
   text-transform: uppercase;
   cursor: pointer;
   &:hover {
-    color: $color-kett-gold;
+    background: $color-kett-gold;
   }
 }

@@ -64,7 +64,7 @@ export const listSlice = createSlice({
     },
     updateListItem: (state, action) => {
       const { payload } = action;
-      console.log('UPDATE LIST ITEM', payload);
+      //console.log('UPDATE LIST ITEM', payload);
       state.listItemId = payload;
     },
   },
