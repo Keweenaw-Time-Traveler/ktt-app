@@ -5,6 +5,7 @@ import $ from 'jquery';
 import { useDispatch } from 'react-redux';
 import { getDetails } from '../../../../../../redux/reducers/detailsSlice';
 import { toggleRelated } from '../../../../../../redux/reducers/relatedSlice';
+import { updateListItem } from '../../../../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
 //Components
@@ -12,7 +13,7 @@ import ToggleSwitch from './ToggleSwitch';
 
 export default function Group(props) {
   const dispatch = useDispatch();
-  const { id, results } = props;
+  const { id, results, type } = props;
   const [checked, setChecked] = useState(false);
 
   console.log('GROUP RESULTS', results);
@@ -27,6 +28,7 @@ export default function Group(props) {
     dispatch(getDetails({ id, recnumber, loctype }));
     dispatch(toggleRelated('hide'));
     $('.detail-related-content').outerHeight(0);
+    dispatch(updateListItem({ recnumber, loctype }));
   };
 
   return (
@@ -34,11 +36,14 @@ export default function Group(props) {
       {results.map((item, index) => (
         <div
           key={index}
+          className="related-data-item"
           data-title={item.title}
           data-id={item.id}
+          data-type={type}
           data-recnumber={item.recnumber}
+          data-markerid={item.markerid}
           data-loctype={item.loctype}
-          data-year={item.map_year}
+          data-mapyear={item.map_year}
           data-x={item.x}
           data-y={item.y}
           onClick={() => handleClick(item.id, item.recnumber, item.loctype)}

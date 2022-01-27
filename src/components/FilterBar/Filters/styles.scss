@@ -10,6 +10,10 @@
 .filters-left {
   display: flex;
   align-items: center;
+  min-width: 280px;
+  @media screen and (min-width: 1400px) {
+    min-width: 370px;
+  }
 }
 .filters-right {
   display: flex;

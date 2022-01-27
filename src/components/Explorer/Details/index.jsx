@@ -138,7 +138,7 @@ const Details = (props) => {
           >
             {status === 'success' &&
               sources.map((item, index) => (
-                <Source key={index} type={type} data={item} />
+                <Source key={index} type={type} data={item} id={id} />
               ))}
           </select>
         </div>

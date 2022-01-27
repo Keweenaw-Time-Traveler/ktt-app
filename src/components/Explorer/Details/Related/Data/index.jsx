@@ -35,7 +35,7 @@ export default function Data(props) {
             <div className="accordion-heading">
               {item.title} ({item.length})
             </div>
-            <Group id={`group-${index}`} results={item.results} />
+            <Group id={`group-${index}`} results={item.results} type={type} />
           </div>
         ))
       ) : (

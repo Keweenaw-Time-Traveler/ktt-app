@@ -1,0 +1,40 @@
+.results {
+  width: 100%;
+  height: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: #408482;
+  color: #fff;
+  font-size: 20px;
+  font-size: 2rem;
+  line-height: 22px;
+  line-height: 2.2rem;
+  letter-spacing: 0.75px;
+  font-weight: 300;
+  @media screen and (min-width: 1400px) {
+    font-size: 30px;
+    font-size: 3rem;
+    line-height: 30px;
+    line-height: 3rem;
+  }
+}
+
+.results span {
+  position: relative;
+  top: 2px;
+  margin-left: 10px;
+  font-size: 16px;
+  font-size: 1.6rem;
+  line-height: 20px;
+  line-height: 2rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  @media screen and (min-width: 1400px) {
+    font-size: 20px;
+    font-size: 2rem;
+    line-height: 24px;
+    line-height: 2.4rem;
+  }
+}

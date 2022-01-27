@@ -13,6 +13,7 @@ import { faCircleNotch } from '@fortawesome/pro-solid-svg-icons';
 import './styles.scss';
 //Components
 import Section from './Section';
+import Results from './Results';
 
 const List = (props) => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const List = (props) => {
 
   return (
     <div className={`list-wrapper ${props.show ? 'show' : 'hide'}`}>
+      <Results />
       <div className="list-results">
         {list.active.people && (
           <Section

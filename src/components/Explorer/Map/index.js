@@ -326,7 +326,27 @@ function KeTTMap() {
               }
             });
             //List Item Click Event
+            //TODO: combine similar
             $('.page-content').on('click', '.list-results-item', function () {
+              const type = $(this).data('type');
+              const itemId = $(this).data('id');
+              const markerX = $(this).data('x');
+              const markerY = $(this).data('y');
+              const recnumber = $(this).data('recnumber');
+              const markerid = $(this).data('markerid');
+              const loctype = $(this).data('loctype');
+              const mapyear = $(this).data('mapyear');
+              const point = new Point({
+                x: markerX,
+                y: markerY,
+                spatialReference: { wkid: 3857 },
+              });
+              updateTimeline(mapyear);
+              gotoMarker(point, itemId, recnumber, markerid, loctype, type);
+            });
+            //Related Content List Item Click
+            //TODO: combine similar
+            $('.page-content').on('click', '.related-data-item', function () {
               const type = $(this).data('type');
               const itemId = $(this).data('id');
               const markerX = $(this).data('x');
@@ -434,7 +454,7 @@ function KeTTMap() {
                 $(this).parent().parent().hide();
               }
             );
-            //Full Details Click Event
+            //Map Popup - Full Details click Event
             $('.page-content').on('click', '.full-details', function () {
               const $active = $(this).closest('.map-popup');
               const id = $active.find('li.active span.id').text();
@@ -450,9 +470,30 @@ function KeTTMap() {
                 dispatch(toggleDetails('show'));
               }
             });
-            //Full Details Source Change
+            //Map Popup - click new list item
             $('.page-content').on('click', '.map-popup-data li', function () {
               $(this).addClass('active').siblings().removeClass('active');
+            });
+            //Full Details - source change
+            //TODO: combine similar
+            $('.page-content').on('change', '#details-source', function () {
+              const type = $(this).find(':selected').data('type');
+              const itemId = $(this).find(':selected').data('id');
+              const markerX = $(this).find(':selected').data('x');
+              const markerY = $(this).find(':selected').data('y');
+              const recnumber = $(this).find(':selected').data('recnumber');
+              const markerid = $(this).find(':selected').data('markerid');
+              const loctype = $(this).find(':selected').data('loctype');
+              const mapyear = $(this).find(':selected').data('mapyear');
+              const point = new Point({
+                x: markerX,
+                y: markerY,
+                spatialReference: { wkid: 3857 },
+              });
+              console.log('SOURCE CHANGE', mapyear);
+              window.timePeriod = null;
+              updateTimeline(mapyear);
+              gotoMarker(point, itemId, recnumber, markerid, loctype, type);
             });
             //Helper Functions
             function resetMap() {

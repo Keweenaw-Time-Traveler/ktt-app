@@ -2,7 +2,7 @@
 import React from 'react';
 
 export default function Source(props) {
-  const { type, data } = props;
+  const { type, data, id } = props;
 
   return (
     <option
@@ -10,6 +10,7 @@ export default function Source(props) {
       data-type={type}
       data-x={data.x}
       data-y={data.y}
+      data-id={id}
       data-recnumber={data.recnumber}
       data-markerid={data.markerid}
       data-loctype={data.loctype}

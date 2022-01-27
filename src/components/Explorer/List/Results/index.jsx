@@ -6,7 +6,7 @@ import {
   selectAllList,
   selectListStatus,
   selectShowList,
-} from '../../../redux/reducers/listSlice';
+} from '../../../../redux/reducers/listSlice';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/pro-solid-svg-icons';
