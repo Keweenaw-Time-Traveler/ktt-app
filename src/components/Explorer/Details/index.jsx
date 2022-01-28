@@ -5,6 +5,7 @@ import $ from 'jquery';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   toggleDetails,
+  getDetails,
   selectDetailsStatus,
   selectDetailsName,
   selectDetailsId,
@@ -89,10 +90,12 @@ const Details = (props) => {
     const loctype = $(event.target).find(':selected').data('loctype');
     const mapyear = $(event.target).find(':selected').data('mapyear');
     const markerid = $(event.target).find(':selected').data('markerid');
-    console.log('UPDATE LIST', recnumber, loctype);
+    console.log('UPDATE LIST', { recnumber, loctype });
     setSelectedClient(value);
     dispatch(updateListItem({ recnumber, loctype }));
-    console.log('UPDATE RELATED', id, mapyear, markerid);
+    console.log('UPDATE DETAILS', { id, recnumber, loctype });
+    dispatch(getDetails({ id, recnumber, loctype }));
+    console.log('UPDATE RELATED', { id, mapyear, markerid });
     dispatch(
       getRelated({
         id: `${id}`,

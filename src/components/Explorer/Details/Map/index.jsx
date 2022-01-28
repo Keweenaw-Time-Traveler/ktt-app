@@ -54,6 +54,7 @@ export default function Map(props) {
         Slider,
         BasemapToggle,
       ]) => {
+        // Create the Basemap
         const modern_antique = new Basemap({
           baseLayers: [
             new TileLayer({
@@ -70,12 +71,12 @@ export default function Map(props) {
           ],
         });
 
-        // 1. Create the Map
+        // Create the Map
         const map = new Map({
           basemap: modern_antique,
         });
 
-        // 2. Create the View
+        // Create the View
         const view = new MapView({
           map: map,
           container: mapRef.current,
@@ -88,21 +89,7 @@ export default function Map(props) {
           },
         });
 
-        // 3. Layer - Tiled Background
-
-        // 4. Layer - Source Location
-
-        // 5. Layer - Related Content
-
-        // 6. Event - Source Change
-
-        // 7. Event - Show on Map Toggle
-
-        // 8. Util - Zoom to Extents
-        // 9. Util - Update Tiled Bg
-        // 10. Util - Update Related Content layer
-
-        // Config for Related Content layer
+        // Feature Reduction for relatedContentLayer
         const relatedClusterConfig = {
           type: 'cluster',
           clusterRadius: '200px',
@@ -171,7 +158,7 @@ export default function Map(props) {
             ],
           },
         };
-
+        // Renderer for relatedContentLayer
         const relatedMarkerRenderer = {
           type: 'unique-value',
           field: 'type',
@@ -208,7 +195,7 @@ export default function Map(props) {
             },
           ],
         };
-
+        // Popup for relatedContentLayer
         const asyncMarkerContent = (target) => {
           const id = target.graphic.attributes.id;
           const recnumber = target.graphic.attributes.recnumber;
@@ -223,8 +210,7 @@ export default function Map(props) {
           </div>
           `;
         };
-
-        // Create Related Content layer
+        // Create relatedContentLayer
         const relatedContentLayer = new FeatureLayer({
           id: `related_content`,
           opacity: 1,
@@ -274,7 +260,6 @@ export default function Map(props) {
             content: asyncMarkerContent,
           },
         });
-
         // Map UI
         const opacitySlider = new Slider({
           container: 'sliderDiv',
@@ -355,9 +340,8 @@ export default function Map(props) {
             // Clear map
             view.popup.close();
             removeTileLayer();
-            //removeSourceLayer();
+            removeLayer('source_location');
             removeRelated('all');
-            removeLayer(`related_content`);
             // Update layers
             const url = getUrl(mapyear);
             addTileLayer(url);
@@ -366,7 +350,44 @@ export default function Map(props) {
             gotoMarker(point);
           });
 
-          // Event - "Show On Map" Toggle
+          // Event - Related Content choose item
+          $('.page-content').on(
+            'click',
+            '.detail-related .related-data-item',
+            function () {
+              setLoadingMap(true);
+              // Clear map
+              view.popup.close();
+              removeRelated('all');
+              // Update map
+              let intervalNewCenter = setInterval(() => {
+                const $source = $('#details-source').find(':selected');
+                const sourceCheck = $source.data('x');
+                if (sourceCheck) {
+                  const newPoint = new Point({
+                    x: $source.data('x'),
+                    y: $source.data('y'),
+                    spatialReference: { wkid: 3857 },
+                  });
+                  view.center = newPoint;
+                  view.zoom = 21;
+                  const mapyear = $source.data('mapyear');
+                  const url = getUrl(mapyear);
+                  addTileLayer(url);
+                  addSourceLayer(
+                    $source.data('type'),
+                    $source.text(),
+                    newPoint
+                  );
+                  addRelatedLayer();
+                  setLoadingMap(false);
+                  clearInterval(intervalNewCenter);
+                }
+              }, 500);
+            }
+          );
+
+          // Event - Related Content map toggle
           $('.page-content').on(
             'click',
             '.related-data-group-footer .toggle-switch-checkbox',
@@ -413,7 +434,7 @@ export default function Map(props) {
             }
           );
 
-          // Event - Choose new tab when Related Content is open
+          // Event - Related Content tab change
           $('.page-content').on(
             'click',
             '.detail-related.open .tab',
@@ -424,7 +445,7 @@ export default function Map(props) {
             }
           );
 
-          // Event - Close Related Content
+          // Event - Related Content close
           $('.page-content').on(
             'click',
             '.detail-related.open .detail-related-heading',
@@ -439,7 +460,15 @@ export default function Map(props) {
         //Map Opacity
         function updateOpacity() {
           const opacity = opacitySlider.values[0] / 100;
-          view.layerViews.items[0].layer.opacity = opacity;
+          const ifLayers = view.map.layers.items.length;
+          if (ifLayers) {
+            const existingLayers = view.map.layers.items;
+            existingLayers.forEach(function (item, i) {
+              if (item.id === 'tile_layer') {
+                item.opacity = opacity;
+              }
+            });
+          }
         }
 
         function gotoMarker(point) {
@@ -456,17 +485,18 @@ export default function Map(props) {
         function addTileLayer(url) {
           console.log('ADD TILE LAYER');
           const tileLayer = new TileLayer({
-            id: 'title_layer',
+            id: 'tile_layer',
             url,
             visible: show,
           });
           view.map.add(tileLayer);
+          updateOpacity();
         }
 
         //Remove Tiled Map Layer
         function removeTileLayer() {
           console.log('REMOVE TILE LAYER');
-          removeLayer('title_layer');
+          removeLayer('tile_layer');
         }
 
         //Add Source Location Layer
@@ -535,12 +565,6 @@ export default function Map(props) {
           } else {
             console.log('Error: Source Layer not able to be added');
           }
-        }
-
-        //Remove Source Location Layer
-        function removeSourceLayer() {
-          console.log('REMOVE SOURCE LOCATION LAYER');
-          removeLayer('source_location');
         }
 
         //Add Related Content Layer

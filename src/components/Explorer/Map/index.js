@@ -873,7 +873,15 @@ function KeTTMap() {
 
         function updateOpacity() {
           const opacity = opacitySlider.values[0] / 100;
-          view.layerViews.items[0].layer.opacity = opacity;
+          const ifLayers = view.map.layers.items.length;
+          if (ifLayers) {
+            const existingLayers = view.map.layers.items;
+            existingLayers.forEach(function (item, i) {
+              if (item.id === 'tile_layer') {
+                item.opacity = opacity;
+              }
+            });
+          }
         }
 
         function updateGrid(view, filters) {
@@ -1465,6 +1473,7 @@ function KeTTMap() {
             visible: show,
           });
           addToView(tileLayer);
+          updateOpacity();
         }
 
         function hideLayer(id, layers) {
@@ -2076,7 +2085,6 @@ function KeTTMap() {
     setShowTimeChooser(false);
   };
   const arcgisSafeString = (str) => {
-    console.log('str', str);
     let safeString = str.replace('{', '&#123;');
     safeString = safeString.replace('}', '&#125;');
     return safeString;

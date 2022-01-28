@@ -40,7 +40,6 @@ export default function Related() {
   const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {
-    console.log('RELATED');
     let intervalGetCenter = setInterval(() => {
       const $source = $('#details-source').find(':selected');
       const sourceCheck = $source.data('mapyear');

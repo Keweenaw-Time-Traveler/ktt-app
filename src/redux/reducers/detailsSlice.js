@@ -5,6 +5,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 export const getDetails = createAsyncThunk(
   'details/getDetails',
   async (details, { dispatch, getState }) => {
+    //console.log('GET DETAILS THUNK', details);
     const { id, recnumber, loctype } = details;
     return axios
       .post('http://geospatialresearch.mtu.edu/full_details.php', {

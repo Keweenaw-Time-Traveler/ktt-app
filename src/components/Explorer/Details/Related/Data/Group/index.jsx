@@ -16,7 +16,7 @@ export default function Group(props) {
   const { id, results, type } = props;
   const [checked, setChecked] = useState(false);
 
-  console.log('GROUP RESULTS', results);
+  //console.log('GROUP RESULTS', results);
 
   const handleChange = (checked, id) => {
     setChecked(checked);
@@ -24,7 +24,11 @@ export default function Group(props) {
   };
 
   const handleClick = (id, recnumber, loctype) => {
-    console.log(`GET DETAILS: ${id}, ${recnumber}, ${loctype}`);
+    console.log('RELATED CLICK - GET FULL DETAILS:', {
+      id,
+      recnumber,
+      loctype,
+    });
     dispatch(getDetails({ id, recnumber, loctype }));
     dispatch(toggleRelated('hide'));
     $('.detail-related-content').outerHeight(0);
