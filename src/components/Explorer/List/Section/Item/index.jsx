@@ -7,6 +7,7 @@ import {
   selectActiveItem,
 } from '../../../../../redux/reducers/listSlice';
 import { toggleDetails } from '../../../../../redux/reducers/detailsSlice';
+import { toggleRelated } from '../../../../../redux/reducers/relatedSlice';
 //Tooptip
 import Tooltip from 'react-tooltip-lite';
 
@@ -29,6 +30,7 @@ export default function Item(props) {
   const handleListItemClick = () => {
     dispatch(updateListItem({ id: '', recnumber: '', recname: '' }));
     dispatch(toggleDetails('hide'));
+    dispatch(toggleRelated('hide'));
   };
 
   return (

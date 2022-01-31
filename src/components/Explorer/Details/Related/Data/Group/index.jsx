@@ -13,7 +13,7 @@ import ToggleSwitch from './ToggleSwitch';
 
 export default function Group(props) {
   const dispatch = useDispatch();
-  const { id, results, type } = props;
+  const { id, results, type, mapit } = props;
   const [checked, setChecked] = useState(false);
 
   //console.log('GROUP RESULTS', results);
@@ -55,17 +55,19 @@ export default function Group(props) {
           {item.title}
         </div>
       ))}
-      <div className="related-data-group-footer">
-        <label>Show On Map</label>
-        <ToggleSwitch
-          id={`toggle-${id}`}
-          group={id}
-          small
-          disabled={false}
-          checked={checked}
-          onChange={handleChange}
-        />
-      </div>
+      {mapit && (
+        <div className="related-data-group-footer">
+          <label>Show On Map</label>
+          <ToggleSwitch
+            id={`toggle-${id}`}
+            group={id}
+            small
+            disabled={false}
+            checked={checked}
+            onChange={handleChange}
+          />
+        </div>
+      )}
     </div>
   );
 }

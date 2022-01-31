@@ -60,6 +60,7 @@ function KeTTMap() {
   const activeMarkerIdRef = useRef('');
   const activeMarkerLoctypeRef = useRef('');
   const activeMarkerTypeRef = useRef('');
+  const markersLoadedRef = useRef(false);
 
   //Sets the zoom level where the map transitions from Grid to Markers
   const gridThreshold = 18;
@@ -698,12 +699,10 @@ function KeTTMap() {
                 console.log('WINDOW', markerExtent);
                 window.markerExtent = extentClone.expand(10);
               }
-
               const isInside = window.markerExtent.contains(extentClone);
-              console.log('Is inside', isInside);
 
               //LOAD MARKERS
-              if (!isInside) {
+              if (!isInside || !markersLoadedRef.current) {
                 const expanded = view.extent.clone().expand(10);
                 window.markerExtent = expanded;
                 const { xmin, xmax, ymin, ymax } = expanded;
@@ -723,6 +722,7 @@ function KeTTMap() {
                 asyncMarkers(view, filters, extent).then((res) => {
                   console.log('MARKER MAP RESPONCE', res);
                   generateMarkers(view, res);
+                  markersLoadedRef.current = true;
                 });
               }
             }
@@ -744,6 +744,7 @@ function KeTTMap() {
               const level_4 = '0.05';
               layers.items.forEach((layer, index) => {
                 if (view.zoom <= 10) {
+                  view.popup.close();
                   if (layer.id === `grid_layer_${level_1}`) {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
@@ -768,6 +769,7 @@ function KeTTMap() {
                     layer.visible = false;
                   }
                 } else if (view.zoom > 10 && view.zoom <= 13) {
+                  view.popup.close();
                   if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -792,6 +794,7 @@ function KeTTMap() {
                     layer.visible = false;
                   }
                 } else if (view.zoom > 13 && view.zoom <= 16) {
+                  view.popup.close();
                   if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -816,6 +819,7 @@ function KeTTMap() {
                     layer.visible = false;
                   }
                 } else if (view.zoom > 16 && view.zoom <= gridThreshold) {
+                  view.popup.close();
                   if (layer.id === `grid_layer_${level_1}`) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -1811,7 +1815,7 @@ function KeTTMap() {
 
   //POPUP - When marker is clicked
   const asyncMarkerPopUp = (target) => {
-    console.log('TARGET', target);
+    //console.log('TARGET', target);
     //const layerID = target ? target.graphic.layer.id : null;
     const targetID = target ? target.graphic.attributes.id : null;
     const markerID = targetID ? targetID : activeMarkerIdRef.current;
@@ -1883,7 +1887,6 @@ function KeTTMap() {
           stringPlaces = stringPlaces + title;
         });
         storiesTitles.forEach((title) => {
-          console.log('title', title);
           stringStories = stringStories + title;
         });
         let tabStatus = getTabStatus({
@@ -1892,7 +1895,6 @@ function KeTTMap() {
           storiesCount,
         });
         console.log('POPUP TAB STATUS', tabStatus);
-        console.log('stringStories', stringStories);
         return `
         <div class="map-popup marker">
           <div class="map-popup-tabs">
