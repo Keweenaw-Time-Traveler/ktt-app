@@ -24,6 +24,7 @@ import {
   updateReset,
 } from '../../../redux/reducers/timelineSlice';
 import { toggleDetails } from '../../../redux/reducers/detailsSlice';
+import { toggleRelated } from '../../../redux/reducers/relatedSlice';
 //Styles
 import './styles.scss';
 //Font Awesome
@@ -47,6 +48,7 @@ export default function Search() {
       dispatch(getList({}));
       dispatch(updateListItem({ id: '', recnumber: '' }));
       dispatch(toggleDetails('hide'));
+      dispatch(toggleRelated('hide'));
       //Reset Timeline
       window.timePeriod = null;
       dispatch(updateActiveSegment(null));
@@ -86,7 +88,7 @@ export default function Search() {
           type="text"
           id="search"
           name="search"
-          placeholder="Search First Name"
+          placeholder="Search People, Places, Stories"
           value={filters.search}
           onKeyDown={handleKeyDown}
           onChange={(e) => dispatch(updateSearch(e.target.value))}

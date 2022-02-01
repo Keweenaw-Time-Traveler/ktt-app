@@ -63,7 +63,7 @@ function KeTTMap() {
   const markersLoadedRef = useRef(false);
 
   //Sets the zoom level where the map transitions from Grid to Markers
-  const gridThreshold = 18;
+  const gridThreshold = 17;
 
   useEffect(() => {
     loadModules(
@@ -363,6 +363,38 @@ function KeTTMap() {
               });
               updateTimeline(mapyear);
               gotoMarker(point, itemId, recnumber, markerid, loctype, type);
+              // Update map in background
+              const searchValue = $(this).text();
+              const min = $('#date-range .label-min').text();
+              const max = $('#date-range .label-max').text();
+              searchRef.current = `${searchValue}`;
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              const filterVal = {
+                search: `${searchValue}`,
+                date_range: `${min}-${max}`,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('MAP TO SHOW RELATED', filterVal);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              asyncMarkers(view, filterVal, extent).then((res) => {
+                console.log('MARKER RESPONCE', res);
+                generateMarkers(view, res);
+              });
             });
             //Popup Tabs Click Event
             $('.page-content').on('click', '.map-popup-tabs .tab', function () {
@@ -412,7 +444,11 @@ function KeTTMap() {
                 const id = $(this).find('span.id').text();
                 const recnumber = $(this).find('span.recnumber').text();
                 const loctype = $(this).find('span.loctype').text();
-                console.log(id, recnumber, loctype);
+                console.log('MARKER POPUP LIST CLICK', {
+                  id,
+                  recnumber,
+                  loctype,
+                });
                 if (id && recnumber) {
                   dispatch(updateListItem({ recnumber, loctype }));
                   dispatch(getDetails({ id, recnumber, loctype }));
@@ -1764,41 +1800,31 @@ function KeTTMap() {
         storiesTitles.forEach((title) => {
           stringStories = stringStories + title;
         });
-        let peopleStatus = '',
-          placesStatus = '',
-          storiesStatus = '';
-        if (type === 'people') {
-          peopleStatus = ' active';
-          placesStatus = '';
-          storiesStatus = '';
-        } else if (type === 'places') {
-          peopleStatus = '';
-          placesStatus = ' active';
-          storiesStatus = '';
-        } else if (type === 'stories') {
-          peopleStatus = '';
-          placesStatus = '';
-          storiesStatus = ' active';
-        }
+        let tabStatus = getTabStatus({
+          peopleCount,
+          placesCount,
+          storiesCount,
+        });
+        console.log('POPUP TAB STATUS', tabStatus);
         return `
         <div class="map-popup marker">
           <div class="map-popup-tabs">
-            <div class="tab tab-people${peopleStatus}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
-            <div class="tab tab-places${placesStatus}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
-            <div class="tab tab-stories${storiesStatus}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
+            <div class="tab tab-people${tabStatus.people}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
+            <div class="tab tab-places${tabStatus.places}"><i class="fas fa-building"></i> <span>(${placesCount})</span><span class="tab-type" style="display: none;">places</span></div>
+            <div class="tab tab-stories${tabStatus.stories}"><i class="fas fa-book-open"></i> <span>(${storiesCount})</span><span class="tab-type" style="display: none;">stories</span></div>
           </div>
           <div class="map-popup-data">
-            <div class="data data-people${peopleStatus}">
+            <div class="data data-people${tabStatus.people}">
               <ul>
               ${stringPeople}
               </ul>
             </div>
-            <div class="data data-places${placesStatus}">
+            <div class="data data-places${tabStatus.places}">
               <ul>
               ${stringPlaces}
               </ul>
             </div>
-            <div class="data data-stories${storiesStatus}">
+            <div class="data data-stories${tabStatus.stories}">
               <ul>
               ${stringStories}
               </ul>
