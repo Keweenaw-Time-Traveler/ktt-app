@@ -6,9 +6,14 @@ import {
   getList,
   selectAllList,
   selectListStatus,
+  selectErrorMessage,
 } from '../../../redux/reducers/listSlice';
 //Font Awesome
-import { faCircleNotch } from '@fortawesome/pro-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCircleNotch,
+  faExclamationTriangle,
+} from '@fortawesome/pro-solid-svg-icons';
 //Styles
 import './styles.scss';
 //Components
@@ -19,6 +24,7 @@ const List = (props) => {
   const dispatch = useDispatch();
   const list = useSelector(selectAllList);
   const listStatus = useSelector(selectListStatus);
+  const errormessage = useSelector(selectErrorMessage);
 
   useEffect(() => {
     if (listStatus === 'idle') {
@@ -29,6 +35,11 @@ const List = (props) => {
   return (
     <div className={`list-wrapper ${props.show ? 'show' : 'hide'}`}>
       <Results />
+      {errormessage && (
+        <div className="list-error">
+          <FontAwesomeIcon icon={faExclamationTriangle} /> {errormessage}
+        </div>
+      )}
       <div className="list-results">
         {list.active.people && (
           <Section

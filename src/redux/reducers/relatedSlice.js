@@ -8,7 +8,7 @@ export const getRelated = createAsyncThunk(
     const { id, mapyear, markerid } = related;
     console.log('RELATED REQUEST', id, mapyear, markerid);
     return axios
-      .post('http://geospatialresearch.mtu.edu/related_content.php', {
+      .post('https://geospatialresearch.mtu.edu/related_content.php', {
         id: id,
         mapyear: mapyear,
         markerid: markerid,

@@ -74,7 +74,7 @@ export function loadMarkersAsync(filters) {
     //dispatch(setHasLoaded(false));
     const extent = getState().markers.extent;
     axios
-      .post('http://geospatialresearch.mtu.edu/markers.php', {
+      .post('https://geospatialresearch.mtu.edu/markers.php', {
         search: search,
         geometry: {
           xmin: extent.xmin,

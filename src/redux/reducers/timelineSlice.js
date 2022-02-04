@@ -6,7 +6,7 @@ export const getTimeline = createAsyncThunk(
   'timeline/getTimeline',
   async (arg, { dispatch, getState }) => {
     return axios
-      .post('http://geospatialresearch.mtu.edu/date_picker.php')
+      .post('https://geospatialresearch.mtu.edu/date_picker.php')
       .then((res) => {
         return res.data;
       })

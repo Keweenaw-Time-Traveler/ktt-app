@@ -8,7 +8,7 @@ export const getDetails = createAsyncThunk(
     //console.log('GET DETAILS THUNK', details);
     const { id, recnumber, loctype } = details;
     return axios
-      .post('http://geospatialresearch.mtu.edu/full_details.php', {
+      .post('https://geospatialresearch.mtu.edu/full_details.php', {
         personid: id,
         recnumber: recnumber,
         loctype: loctype,

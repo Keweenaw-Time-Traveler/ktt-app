@@ -16,15 +16,31 @@ export const getList = createAsyncThunk(
     console.log('LIST SEARCH VALUE', search);
     console.log('LIST FILTER VALUES', filters);
     return axios
-      .post('http://geospatialresearch.mtu.edu/list.php', {
+      .post('https://geospatialresearch.mtu.edu/list.php', {
         search,
         geometry: null,
         filters,
       })
       .then((res) => {
-        return res.data;
+        return {
+          errormessage: false,
+          results: res.data,
+        };
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        return {
+          errormessage: error.message,
+          results: {
+            active: {
+              length: 0,
+              people: false,
+              places: false,
+              stories: false,
+            },
+          },
+        };
+      });
   }
 );
 
@@ -53,6 +69,7 @@ export const listSlice = createSlice({
       },
     },
     listStatus: 'idle',
+    errormessage: false,
   },
   reducers: {
     toggleList: (state, action) => {
@@ -76,7 +93,9 @@ export const listSlice = createSlice({
     builder.addCase(getList.fulfilled, (state, action) => {
       // Add list to the state array
       // Update status
-      state.entities = action.payload;
+      const { results, errormessage } = action.payload;
+      state.entities = results;
+      state.errormessage = errormessage;
       state.listStatus = 'success';
     });
   },
@@ -87,6 +106,7 @@ export const selectShowList = (state) => state.list.showList;
 export const selectRemoveList = (state) => state.list.removeList;
 export const selectAllList = (state) => state.list.entities;
 export const selectListStatus = (state) => state.list.listStatus;
+export const selectErrorMessage = (state) => state.list.errormessage;
 export const selectActiveItem = (state) => state.list.listItemId;
 
 export default listSlice.reducer;
