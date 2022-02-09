@@ -187,7 +187,6 @@ function KeTTMap() {
           .then(() => {
             window.markerExtent = null; //Used to determine if markers need to be updated, see watchUtils.whenTrue below
             window.timePeriod = null; //Used to determine if time period needs to be chosen, see watchUtils.whenTrue below
-            console.log('VIEW SETTINGS', view);
             const min = $('#date-range .label-min').text();
             const max = $('#date-range .label-max').text();
             const startingFilters = {
@@ -753,7 +752,7 @@ function KeTTMap() {
 
         watchUtils.whenTrue(view, 'stationary', function () {
           if (view.ready && view.extent) {
-            console.log('VIEW UI', view.ui);
+            //console.log('VIEW UI', view.ui);
             console.log('VIEW EXTENT', view.extent);
             //console.log('VIEW SCALE', view.scale);
             //console.log('VIEW ZOOM', view.zoom);
