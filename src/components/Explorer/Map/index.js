@@ -203,7 +203,7 @@ function KeTTMap() {
               type: 'everything',
             };
             updateGrid(view, startingFilters);
-            //Map Picker Click Event
+            //Map Picker List Item Click Event
             $('.page-content').on('click', '.map-picker li', function () {
               const min = $(this).find('span.min').text();
               const max = $(this).find('span.max').text();
@@ -222,9 +222,7 @@ function KeTTMap() {
               dispatch(updateStartDate(`${min}`));
               dispatch(updateEndDate(`${max}`));
               dispatch(updateReset(true));
-              if (listShow) {
-                dispatch(getList({}));
-              }
+              dispatch(getList({}));
             });
             //"Choose a Time" Popup Change Event
             $('#time-chooser-select').on('change', function (e) {
@@ -550,11 +548,9 @@ function KeTTMap() {
             function resetMap() {
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
-              const url = '';
               dateRangeRef.current = `${min}-${max}`;
               startDateRef.current = `${min}`;
               endDateRef.current = `${max}`;
-              tileUrlRef.current = url;
               const filterVal = {
                 search: searchRef.current,
                 date_range: `${min}-${max}`,
@@ -563,12 +559,10 @@ function KeTTMap() {
                 type: typeRef.current,
               };
               console.log('RESET MAIN MAP', min, max, filterVal);
-              dispatch(updateTimelineRange(`${min}-${max}`));
-              handleTimePeriod();
               //CLOSE ANY OPEN POPUPS
               view.popup.close();
-              //ADD TILE LAYER
-              createTileLayer(url);
+              //HIDE TILE LAYER
+              toggleTiles('hide');
               //UPDATE GRID
               updateGrid(view, filterVal);
               //RESET ZOOM
@@ -583,6 +577,22 @@ function KeTTMap() {
               view.goTo({ target: point, zoom: 10 }, opts).then(() => {
                 console.log('RESET ZOOM', point, 10);
               });
+            }
+            function resetTimeline() {
+              const min = $('#date-range .label-min').text();
+              const max = $('#date-range .label-max').text();
+              window.timePeriod = null;
+              dispatch(updateActiveSegment(null));
+              dispatch(updateLeftPip('0%'));
+              dispatch(updateRightPip('100%'));
+              dispatch(updateDateRange(`${min}-${max}`));
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              dispatch(updateStartDate(`${min}`));
+              dispatch(updateEndDate(`${max}`));
+              dispatch(updateReset(false));
+              if (listShow) {
+                dispatch(getList({}));
+              }
             }
             function landingSearch() {
               const searchValue = $('#search-landing').val();
@@ -633,10 +643,14 @@ function KeTTMap() {
                   });
                 }
               }
+              //UPDATE TIMELINE
+              resetTimeline();
               //CLOSE POPUP
               view.popup.close();
               //CLOSE DETAILS
               dispatch(toggleDetails('hide'));
+              //HIDE TILES
+              toggleTiles('hide');
               //RESET EXTENTS
               view.goTo(
                 {
@@ -963,6 +977,23 @@ function KeTTMap() {
             existingLayers.forEach(function (item, i) {
               if (item.id === 'tile_layer') {
                 item.opacity = opacity;
+              }
+            });
+          }
+        }
+
+        function toggleTiles(state) {
+          tileUrlRef.current = '';
+          const ifLayers = view.map.layers.items.length;
+          if (ifLayers) {
+            const existingLayers = view.map.layers.items;
+            existingLayers.forEach(function (item, i) {
+              if (item.id === 'tile_layer') {
+                if (state === 'show') {
+                  item.visible = true;
+                } else {
+                  item.visible = false;
+                }
               }
             });
           }

@@ -79,7 +79,7 @@ export default function Search(props) {
                 type="text"
                 id="search-landing"
                 name="search"
-                placeholder="Search People, Places, Stories"
+                placeholder="Search People, Places or Stories"
                 value={filters.search}
                 onKeyDown={handleKeyDown}
                 onChange={(e) => dispatch(updateSearch(e.target.value))}
