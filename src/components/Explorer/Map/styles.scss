@@ -93,6 +93,41 @@
 .esri-feature-content {
   padding: 0;
 }
+.esri-expand__content {
+  background: $color-kett-white;
+}
+.map-picker {
+  width: 250px;
+  padding: 20px;
+  h2 {
+    margin: 0 0 10px 0;
+  }
+  p {
+    margin: 0 0 15px 0;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+      display: block;
+      margin-bottom: 5px;
+      cursor: pointer;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      &:hover {
+        color: $color-kett-green-primary;
+      }
+      span {
+        display: none;
+      }
+    }
+  }
+}
 .map-popup {
   position: relative;
   padding: 35px 0 0;

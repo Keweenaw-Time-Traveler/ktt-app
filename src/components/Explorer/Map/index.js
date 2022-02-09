@@ -31,6 +31,8 @@ import {
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
+//Modules
+import { mapPickerList, mapPickerCount } from './modules/mapPicker';
 //ArchGIS
 import { loadModules } from 'esri-loader';
 //Styles
@@ -79,6 +81,7 @@ function KeTTMap() {
         'esri/core/watchUtils',
         'esri/geometry/Point',
         'esri/widgets/Slider',
+        'esri/widgets/Expand',
         'esri/widgets/BasemapToggle',
       ],
       {
@@ -97,6 +100,7 @@ function KeTTMap() {
         watchUtils,
         Point,
         Slider,
+        Expand,
         BasemapToggle,
       ]) => {
         //console.log('STATE LIST VALUE', listValue);
@@ -158,8 +162,26 @@ function KeTTMap() {
           view,
           nextBasemap: 'satellite',
         });
-        view.ui.add(basemapToggle, 'bottom-right');
-
+        const mapPickerExpand = new Expand({
+          expandIconClass: 'esri-icon-collection',
+          view: view,
+          content: 'loading...',
+          expandTooltip: 'Map Overlays',
+          group: 'top-right',
+        });
+        let baseMapExpand = new Expand({
+          expandIconClass: 'esri-icon-basemap',
+          view: view,
+          content: basemapToggle,
+          expandTooltip: 'Basemap',
+          group: 'top-right',
+        });
+        view.ui.add([mapPickerExpand, baseMapExpand], 'top-right');
+        mapPickerExpand.when().then(function (picker) {
+          mapPickerList().then((res) => {
+            picker.content = res;
+          });
+        });
         view
           .when()
           .then(() => {
@@ -179,7 +201,29 @@ function KeTTMap() {
               type: 'everything',
             };
             updateGrid(view, startingFilters);
-
+            //"Choose a Time" Popup Change Event
+            $('.page-content').on('click', '.map-picker li', function () {
+              const min = $(this).find('span.min').text();
+              const max = $(this).find('span.max').text();
+              const left = $(this).find('span.left').text();
+              const right = $(this).find('span.right').text();
+              const url = $(this).find('span.url').text();
+              const segmentId = $(`.segment[data-min=${min}]`).data('id');
+              dateChange(min, max, url);
+              createTileLayer(url);
+              handleTimePeriod();
+              //UPDATE TIMELINE
+              dispatch(updateActiveSegment(`${segmentId}`));
+              dispatch(updateLeftPip(left));
+              dispatch(updateRightPip(right));
+              dispatch(updateDateRange(`${min}-${max}`));
+              dispatch(updateStartDate(`${min}`));
+              dispatch(updateEndDate(`${max}`));
+              dispatch(updateReset(true));
+              if (listShow) {
+                dispatch(getList({}));
+              }
+            });
             //"Choose a Time" Popup Change Event
             $('#time-chooser-select').on('change', function (e) {
               e.preventDefault();
@@ -187,40 +231,8 @@ function KeTTMap() {
               const min = $selected.data('min');
               const max = $selected.data('max');
               const url = $selected.data('url');
-              dateRangeRef.current = `${min}-${max}`;
-              startDateRef.current = `${min}`;
-              endDateRef.current = `${max}`;
-              tileUrlRef.current = url;
-              const filterVal = {
-                search: searchRef.current,
-                date_range: `${min}-${max}`,
-                photos: photosRef.current,
-                featured: featuredRef.current,
-                type: typeRef.current,
-              };
-              const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
-              const { xmin, xmax, ymin, ymax } = extentExpanded;
-              const extent = {
-                xmin: xmin,
-                xmax: xmax,
-                ymin: ymin,
-                ymax: ymax,
-              };
-              console.log('TIME CHOOSER CHANGE', filterVal);
-              dispatch(updateTimelineRange(`${min}-${max}`));
-              dispatch(updateReset(true));
-              //UPDATE GRID
-              updateGrid(view, filterVal);
-              //LOAD MARKERS
-              if (view.zoom > gridThreshold) {
-                asyncMarkers(view, filterVal, extent).then((res) => {
-                  console.log('MARKER RESPONCE', res);
-                  generateMarkers(view, res);
-                });
-              }
-              //ADD TILE LAYER
-              createTileLayer(view.zoom, url);
+              dateChange(min, max, url);
+              createTileLayer(url);
             });
             //Timeline Segment Click Event
             $('.segment').on('click', function (e) {
@@ -554,7 +566,7 @@ function KeTTMap() {
               //CLOSE ANY OPEN POPUPS
               view.popup.close();
               //ADD TILE LAYER
-              createTileLayer(view.zoom, url);
+              createTileLayer(url);
               //UPDATE GRID
               updateGrid(view, filterVal);
               //RESET ZOOM
@@ -619,8 +631,6 @@ function KeTTMap() {
                   });
                 }
               }
-              //MAKE SURE TILES ARE HIDDEN
-              hideLayer('tile_layer', view.map.layers);
               //CLOSE POPUP
               view.popup.close();
               //CLOSE DETAILS
@@ -666,7 +676,7 @@ function KeTTMap() {
               dispatch(updateTimelineRange(`${min}-${max}`));
               handleTimePeriod();
               //ADD TILE LAYER
-              createTileLayer(view.zoom, url);
+              createTileLayer(url);
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
@@ -692,6 +702,40 @@ function KeTTMap() {
               asyncMarkerPopUp().then(function (res) {
                 view.popup.content = res;
               });
+            }
+            function dateChange(min, max, url) {
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              tileUrlRef.current = url;
+              const filterVal = {
+                search: searchRef.current,
+                date_range: `${min}-${max}`,
+                photos: photosRef.current,
+                featured: featuredRef.current,
+                type: typeRef.current,
+              };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
+              console.log('TIME CHOOSER CHANGE', filterVal);
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              dispatch(updateReset(true));
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              if (view.zoom > gridThreshold) {
+                asyncMarkers(view, filterVal, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
+                });
+              }
             }
           })
           .catch(function (e) {
@@ -874,8 +918,7 @@ function KeTTMap() {
                   }
                   if (
                     layer.id === 'marker_layer_active' ||
-                    layer.id === 'marker_layer_inactive' ||
-                    layer.id === 'tile_layer'
+                    layer.id === 'marker_layer_inactive'
                   ) {
                     console.log('HIDE', layer.id);
                     layer.visible = false;
@@ -899,8 +942,7 @@ function KeTTMap() {
                   }
                   if (
                     layer.id === 'marker_layer_active' ||
-                    layer.id === 'marker_layer_inactive' ||
-                    layer.id === 'tile_layer'
+                    layer.id === 'marker_layer_inactive'
                   ) {
                     console.log('SHOW', layer.id);
                     layer.visible = true;
@@ -1505,12 +1547,11 @@ function KeTTMap() {
           addToView(layer);
         }
 
-        function createTileLayer(zoom, url) {
-          const show = zoom > gridThreshold ? true : false;
+        function createTileLayer(url) {
           const tileLayer = new TileLayer({
             id: 'tile_layer',
             url,
-            visible: show,
+            visible: true,
           });
           addToView(tileLayer);
           updateOpacity();
@@ -1565,7 +1606,7 @@ function KeTTMap() {
                 dispatch(updateDateRange(`${min}-${max}`));
                 dispatch(updateStartDate(`${min}`));
                 dispatch(updateEndDate(`${max}`));
-                createTileLayer(view.zoom, url);
+                createTileLayer(url);
                 handleTimePeriod();
                 dispatch(updateReset(true));
                 dispatch(getList({}));
