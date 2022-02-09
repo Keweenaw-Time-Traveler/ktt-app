@@ -79,7 +79,7 @@ export default function Search(props) {
                 type="text"
                 id="search-landing"
                 name="search"
-                placeholder="Start your search here!"
+                placeholder="Search People, Places, Stories"
                 value={filters.search}
                 onKeyDown={handleKeyDown}
                 onChange={(e) => dispatch(updateSearch(e.target.value))}
@@ -110,14 +110,14 @@ export default function Search(props) {
             </button>
           </div>
         </Tooltip>
-        <Tooltip
+        {/* <Tooltip
           content="Featured stories is a great way to get started!"
           isOpen={showToolTips}
         >
           <div className="intro-options-button intro-options-stories">
             <button>Featured stories</button>
           </div>
-        </Tooltip>
+        </Tooltip> */}
       </div>
 
       <div className={`intro-options-mini-map ${showMap ? 'show' : 'hide'}`}>

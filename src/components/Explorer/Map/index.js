@@ -176,7 +176,10 @@ function KeTTMap() {
           expandTooltip: 'Basemap',
           group: 'top-right',
         });
-        view.ui.add([mapPickerExpand, baseMapExpand], 'top-right');
+        view.ui.add(
+          [mapPickerExpand, opacitySlider, baseMapExpand],
+          'top-right'
+        );
         mapPickerExpand.when().then(function (picker) {
           mapPickerList().then((res) => {
             picker.content = res;
@@ -200,7 +203,7 @@ function KeTTMap() {
               type: 'everything',
             };
             updateGrid(view, startingFilters);
-            //"Choose a Time" Popup Change Event
+            //Map Picker Click Event
             $('.page-content').on('click', '.map-picker li', function () {
               const min = $(this).find('span.min').text();
               const max = $(this).find('span.max').text();
@@ -2010,8 +2013,7 @@ function KeTTMap() {
     return `${idSplit[0]} ${idSplit[1]}, ${idSplit[2]}`;
   };
   const asyncGrid = (filters, size) => {
-    let ms = 0;
-    let timer = setInterval(() => ms++, 1);
+    setLoadingMarkers(true);
     const { search, date_range, photos, featured, type } = filters;
     const payload = {
       search: search,
@@ -2027,7 +2029,7 @@ function KeTTMap() {
     return axios
       .post('http://geospatialresearch.mtu.edu/grid.php', payload)
       .then((res) => {
-        clearInterval(timer);
+        setLoadingMarkers(false);
         return res.data;
       })
       .catch((error) => console.log(error));
@@ -2162,9 +2164,6 @@ function KeTTMap() {
   return (
     <div className={wrapperClasses}>
       <div className="webmap map" ref={mapRef} />
-      <div className="loader">
-        <div className="loader-zoom">Zoom: {zoom}</div>
-      </div>
       <Chooser show={showTimeChooser} update={handleTimePeriod} />
       {loadingMarkers && <Loader />}
     </div>

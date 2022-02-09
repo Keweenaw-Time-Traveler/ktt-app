@@ -33,11 +33,40 @@ export default function Menu() {
         >
           <ul>
             <li>
+              <a href="https://www.keweenawhistory.com/" target="_blank">
+                Home
+              </a>
+            </li>
+            <li>
               <NavLink exact to="/">
                 Explorer
               </NavLink>
             </li>
             <li>
+              <a
+                href="http://geospatialresearch.mtu.edu/kett/index.html?task=color"
+                target="_blank"
+              >
+                Transcribe the Map
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.keweenawhistory.com/upcoming-events.html"
+                target="_blank"
+              >
+                Upcoming Events
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.keweenawhistory.com/contact-us.html"
+                target="_blank"
+              >
+                Contact Us
+              </a>
+            </li>
+            {/* <li>
               <NavLink exact to="/login">
                 Login
               </NavLink>
@@ -46,7 +75,7 @@ export default function Menu() {
               <NavLink exact to="/signup">
                 Signup
               </NavLink>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </div>

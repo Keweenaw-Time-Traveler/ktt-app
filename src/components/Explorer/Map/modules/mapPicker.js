@@ -5,27 +5,14 @@ function mapPickerList() {
   return axios
     .post('http://geospatialresearch.mtu.edu/map_picker.php')
     .then((res) => {
-      const min = 1850;
-      const max = 2021;
-      const total = max - min;
       const segmentData = res.data.maps;
       const segments = [];
-      let prevPercent = 0;
-      const segmentNum = segmentData.length;
       segmentData.forEach((segment, index) => {
         const segmentMin = segment.min;
         const segmentMax = segment.max;
-        const segmentTotal = segmentMax - segmentMin;
-        const segmentPercent = (segmentTotal / total) * 100;
-        const left = `${prevPercent}%`;
-        const right =
-          segmentNum === index + 1
-            ? '100%'
-            : `${prevPercent + segmentPercent}%`;
-        prevPercent = prevPercent + segmentPercent;
+        const left = $(`.segment[data-min=${segmentMin}]`).data('left');
+        const right = $(`.segment[data-min=${segmentMin}]`).data('right');
         segments.push({
-          id: index + 1,
-          size: segmentPercent,
           left,
           right,
           dateMin: segmentMin,

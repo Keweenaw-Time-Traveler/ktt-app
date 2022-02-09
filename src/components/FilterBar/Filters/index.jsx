@@ -103,7 +103,7 @@ export default function Filters() {
               onChange={handleChange}
             />
           </div>
-          <div className="filter-toogle">
+          {/* <div className="filter-toogle">
             <label htmlFor="featured" className="toggle-label">
               <FontAwesomeIcon icon={faStar} className="toggle-icon" />
               Featured
@@ -115,7 +115,7 @@ export default function Filters() {
               checked={featured}
               onChange={setFeatured}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
