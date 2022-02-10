@@ -42,11 +42,13 @@ import everythingMarkerImage from './images/marker_everything.png';
 import peopleMarkerImage from './images/marker_person.png';
 import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
+//Font Awesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestion } from '@fortawesome/pro-solid-svg-icons';
 //Functional Component
 function KeTTMap() {
   const dispatch = useDispatch();
   const listShow = useSelector(selectShowList);
-  const [zoom, setZoom] = useState(10);
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
   const mapRef = useRef();
@@ -143,9 +145,13 @@ function KeTTMap() {
         });
 
         //Map UI
-        view.ui.move('zoom', 'top-right');
+        view.ui.move({
+          component: 'zoom',
+          position: 'top-right',
+          index: 0,
+        });
         const opacitySlider = new Slider({
-          container: 'sliderDiv',
+          view,
           min: 0,
           max: 100,
           values: [100],
@@ -163,13 +169,13 @@ function KeTTMap() {
           nextBasemap: 'satellite',
         });
         const mapPickerExpand = new Expand({
+          view,
           expandIconClass: 'esri-icon-collection',
-          view: view,
           content: 'loading...',
           expandTooltip: 'Map Overlays',
           group: 'top-right',
         });
-        let baseMapExpand = new Expand({
+        const baseMapExpand = new Expand({
           expandIconClass: 'esri-icon-basemap',
           view: view,
           content: basemapToggle,
@@ -177,9 +183,10 @@ function KeTTMap() {
           group: 'top-right',
         });
         view.ui.add(
-          [mapPickerExpand, opacitySlider, baseMapExpand],
+          [mapPickerExpand, baseMapExpand, opacitySlider],
           'top-right'
         );
+        view.ui.add('share-story', 'bottom-right');
         mapPickerExpand.when().then(function (picker) {
           mapPickerList().then((res) => {
             picker.content = res;
@@ -782,8 +789,6 @@ function KeTTMap() {
                 spatialReference: { wkid: 3857 },
               })
             );
-            //view.ui.remove(basemapToggle);
-            setZoom(view.zoom);
             const markerExtent = window.markerExtent;
             const timePeriod = window.timePeriod;
             const extentClone = view.extent.clone();
@@ -823,10 +828,7 @@ function KeTTMap() {
               }
             }
             if (view.zoom > gridThreshold) {
-              view.ui.add(opacitySlider, {
-                position: 'top-right',
-                index: 2,
-              });
+              view.ui.add(opacitySlider, 'top-right');
             } else if (view.zoom <= gridThreshold) {
               view.ui.remove(opacitySlider);
             }
@@ -2195,6 +2197,14 @@ function KeTTMap() {
   return (
     <div className={wrapperClasses}>
       <div className="webmap map" ref={mapRef} />
+      <div id="share-story" className="share-story">
+        <FontAwesomeIcon icon={faQuestion} className="fa-icon" />
+        <span>
+          Share a
+          <br />
+          story
+        </span>
+      </div>
       <Chooser show={showTimeChooser} update={handleTimePeriod} />
       {loadingMarkers && <Loader />}
     </div>

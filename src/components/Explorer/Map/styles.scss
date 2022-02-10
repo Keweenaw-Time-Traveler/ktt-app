@@ -128,6 +128,47 @@
     }
   }
 }
+.share-story {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 90px;
+  margin: 0 20px 20px 0;
+  border-radius: 50%;
+  background: $color-kett-green-3;
+  color: $color-kett-white;
+  transition-property: all;
+  transition-timing-function: ease-out;
+  transition-duration: 0.5s;
+
+  .fa-icon {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 20;
+    line-height: 2rem;
+    letter-spacing: 0.4px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  &.show {
+    right: 15px;
+  }
+
+  &.hide {
+    right: -110px;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
 .map-popup {
   position: relative;
   padding: 35px 0 0;

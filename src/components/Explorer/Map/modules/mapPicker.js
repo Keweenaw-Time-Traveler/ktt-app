@@ -34,7 +34,7 @@ function mapPickerList() {
         list = list + item;
       });
       return `<div class="map-picker">
-          <h2>Overlay Options</h2>
+          <h2>Map Options</h2>
           <p>Choose a map overlay</p>
           <ul>
             ${list}

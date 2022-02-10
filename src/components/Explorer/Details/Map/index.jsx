@@ -30,10 +30,9 @@ export default function Map(props) {
         'esri/layers/TileLayer',
         'esri/layers/FeatureLayer',
         'esri/Graphic',
-        'esri/geometry/SpatialReference',
-        'esri/core/watchUtils',
         'esri/geometry/Point',
         'esri/widgets/Slider',
+        'esri/widgets/Expand',
         'esri/widgets/BasemapToggle',
       ],
       {
@@ -48,10 +47,9 @@ export default function Map(props) {
         TileLayer,
         FeatureLayer,
         Graphic,
-        SpatialReference,
-        watchUtils,
         Point,
         Slider,
+        Expand,
         BasemapToggle,
       ]) => {
         // Create the Basemap
@@ -261,6 +259,7 @@ export default function Map(props) {
           },
         });
         // Map UI
+        view.ui.move('zoom', 'top-right');
         const opacitySlider = new Slider({
           container: 'sliderDiv',
           min: 0,
@@ -275,19 +274,18 @@ export default function Map(props) {
           },
         });
         opacitySlider.on(['thumb-change', 'thumb-drag'], updateOpacity);
-        view.ui.add(opacitySlider, {
-          position: 'top-right',
-          index: 2,
+        const basemapToggle = new BasemapToggle({
+          view,
+          nextBasemap: 'satellite',
         });
-        view.ui.move('zoom', 'top-right');
-        view.ui.add(
-          new BasemapToggle({
-            view,
-            nextBasemap: 'satellite',
-          }),
-          'bottom-right'
-        );
-
+        const baseMapExpand = new Expand({
+          expandIconClass: 'esri-icon-basemap',
+          view: view,
+          content: basemapToggle,
+          expandTooltip: 'Basemap',
+          group: 'top-right',
+        });
+        view.ui.add([baseMapExpand, opacitySlider], 'top-right');
         // Wait for View to be loaded
         view.when().then(() => {
           console.log('DETAILS MAP VIEW LOADED');
