@@ -1,0 +1,14 @@
+@import '../../../colors.scss';
+.submit-wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 100%;
+  padding: 10px 20px 160px;
+  background: $color-kett-white;
+  color: $color-kett-black;
+  text-align: left;
+  box-shadow: 10px 1px 20px rgba(0, 0, 0, 0.3);
+}

@@ -10,9 +10,14 @@ import {
   selectShowDetails,
   selectRemoveDetails,
 } from '../../redux/reducers/detailsSlice';
+import {
+  selectShowSubmit,
+  selectRemoveSubmit,
+} from '../../redux/reducers/submitSlice';
 //Components
 import List from './List';
 import Details from './Details';
+import Submit from './Submit';
 import Map from './Map';
 //import EsriMap from './TestMap';
 //Styles
@@ -23,11 +28,14 @@ export default function ExplorerApp() {
   const removeList = useSelector(selectRemoveList);
   const showDetails = useSelector(selectShowDetails);
   const removeDetails = useSelector(selectRemoveDetails);
+  const showSubmit = useSelector(selectShowSubmit);
+  const removeSubmit = useSelector(selectRemoveSubmit);
 
   return (
     <>
       {removeList ? null : <List show={showList} />}
       {removeDetails ? null : <Details show={showDetails} />}
+      {removeSubmit ? null : <Submit show={showSubmit} />}
       <Map />
     </>
   );

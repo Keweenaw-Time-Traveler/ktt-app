@@ -28,6 +28,7 @@ import {
   toggleDetails,
   selectShowDetails,
 } from '../../../redux/reducers/detailsSlice';
+import { toggleSubmit } from '../../../redux/reducers/submitSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
@@ -65,6 +66,7 @@ function KeTTMap() {
   const activeMarkerLoctypeRef = useRef('');
   const activeMarkerTypeRef = useRef('');
   const markersLoadedRef = useRef(false);
+  const storyMode = useRef(false);
 
   //Sets the zoom level where the map transitions from Grid to Markers
   const gridThreshold = 17;
@@ -142,6 +144,17 @@ function KeTTMap() {
             ymin: startingExtent.ymin,
             ymax: startingExtent.ymax,
           },
+        });
+
+        //Share a Story
+        $('#share-story').on('click', function () {
+          if (!storyMode.current) {
+            storyMode.current = true;
+            dispatch(toggleSubmit('show'));
+          } else {
+            storyMode.current = false;
+            dispatch(toggleSubmit('hide'));
+          }
         });
 
         //Map UI
