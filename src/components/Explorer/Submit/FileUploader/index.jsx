@@ -1,24 +1,28 @@
-//React
-import React, { useRef } from 'react';
-//Styles
-import './styles.scss';
+import React from 'react';
+import { Formik, Form } from 'formik';
 
-const FileUploader = (onFileSelectSuccess, onFileSelectError) => {
-  const fileInput = useRef(null);
-  const handleFileInput = (e) => {
-    // handle validations
-    const file = e.target.files[0];
-    if (file.size > 1024)
-      onFileSelectError({ error: 'File size cannot exceed more than 1MB' });
-    else onFileSelectSuccess(file);
+const FileUploader = (props) => {
+  const handleSubmit = (values) => {
+    let data = new FormData();
+    data.append('photo1', values.photo1);
   };
+
   return (
-    <div className="file-uploader">
-      <input type="file" onChange={handleFileInput}></input>
-      <button
-        onClick={(e) => fileInput.current && fileInput.current.click()}
-        className="btn btn-primary"
-      ></button>
+    <div>
+      <Formik initialValues={{ photo1: '' }} onSubmit={handleSubmit}>
+        {(formProps) => (
+          <Form>
+            <input
+              type="file"
+              name="file"
+              onChange={(event) => {
+                formProps.setFieldValue('photo1', event.target.files[0]);
+              }}
+            />
+            <button type="Submit">Submit</button>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };
