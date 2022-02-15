@@ -6,9 +6,42 @@
   flex-direction: column;
   width: 400px;
   height: 100%;
-  padding: 10px 20px 160px;
+  padding: 10px 20px 20px;
   background: $color-kett-white;
   color: $color-kett-black;
   text-align: left;
   box-shadow: 10px 1px 20px rgba(0, 0, 0, 0.3);
+}
+.submit-title {
+  position: relative;
+  padding: 0 40px 0 0;
+  min-height: 36px;
+  margin: 0;
+  font-size: 30px;
+  font-size: 3rem;
+  line-height: 36;
+  line-height: 3.6rem;
+  letter-spacing: 0.75px;
+  font-weight: normal;
+}
+.submit-instructions {
+  margin: 0 0 20px 0;
+}
+.submit-close {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 15px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  .fa-icon {
+    font-size: 22px;
+    color: $color-kett-grey-secondary;
+    &:hover {
+      color: $color-kett-black;
+    }
+  }
 }

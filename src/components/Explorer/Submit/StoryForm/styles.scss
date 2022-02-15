@@ -1,0 +1,58 @@
+@import '../../../../colors.scss';
+.story-form {
+  label {
+    display: block;
+    width: 100%;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+  }
+  input {
+    width: 100%;
+    border-radius: 0;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    font-family: 'Lato', sans-serif;
+  }
+  textarea {
+    width: 100%;
+    min-height: 150px;
+    border-radius: 0;
+    padding: 10px;
+    margin: 0;
+    border: 1px solid #ced4da;
+    font-family: 'Lato', sans-serif;
+  }
+  .story-form-group {
+    margin: 0 0 20px;
+  }
+  .help {
+    margin-top: 5px;
+    line-height: 18px;
+  }
+  .message {
+    margin: 0 5px 0 0;
+    font-size: 80%;
+    color: $color-kett-grey-primary;
+  }
+  .error {
+    font-size: 80%;
+    color: $color-kett-stories;
+  }
+  .attachments {
+    display: flex;
+    flex-wrap: wrap;
+    input {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  }
+  .submit-button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    background: $color-kett-gold;
+    color: $color-kett-black;
+  }
+}

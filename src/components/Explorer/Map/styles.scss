@@ -96,6 +96,9 @@
 .esri-expand__content {
   background: $color-kett-white;
 }
+.esri-ui-corner .esri-component {
+  box-shadow: none;
+}
 .map-picker {
   width: 250px;
   padding: 20px;
@@ -142,11 +145,9 @@
   transition-property: all;
   transition-timing-function: ease-out;
   transition-duration: 0.5s;
-
   .fa-icon {
     font-size: 20px;
   }
-
   span {
     font-size: 16px;
     font-size: 1.6rem;
@@ -156,15 +157,36 @@
     font-weight: 400;
     cursor: pointer;
   }
-
-  &.show {
-    right: 15px;
+  &:hover {
+    transform: translateY(-4px);
   }
-
-  &.hide {
-    right: -110px;
+}
+.explorer-help {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 90px;
+  margin: 0 20px 20px 0;
+  border-radius: 50%;
+  background: $color-kett-green-3;
+  color: $color-kett-white;
+  transition-property: all;
+  transition-timing-function: ease-out;
+  transition-duration: 0.5s;
+  .fa-icon {
+    font-size: 20px;
   }
-
+  span {
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 20;
+    line-height: 2rem;
+    letter-spacing: 0.4px;
+    font-weight: 400;
+    cursor: pointer;
+  }
   &:hover {
     transform: translateY(-4px);
   }
@@ -355,6 +377,7 @@
       }
     }
     .tooltip {
+      display: none;
       position: absolute;
       width: 250px;
       padding: 15px;

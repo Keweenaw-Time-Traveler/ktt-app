@@ -1,18 +1,37 @@
 //React
 import React, { useState } from 'react';
+//Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleSubmit } from '../../../redux/reducers/submitSlice';
+//Tooptip
+import Tooltip from 'react-tooltip-lite';
 //Styles
 import './styles.scss';
+//Font Awesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDoubleLeft } from '@fortawesome/pro-solid-svg-icons';
 //Components
-import FileUploader from './FileUploader';
+import StoryForm from './StoryForm';
 
 const Submit = (props) => {
+  const dispatch = useDispatch();
+
+  function handleCloseClick() {
+    dispatch(toggleSubmit('hide'));
+  }
+
   return (
     <div className={`submit-wrapper ${props.show ? 'show' : 'hide'}`}>
-      <div className="title">Share a Story</div>
-      <div className="instructions">
+      <div className="submit-title">Share a Story</div>
+      <div className="submit-close" onClick={handleCloseClick}>
+        <Tooltip content="Cancel Story Submission" direction="right">
+          <FontAwesomeIcon icon={faChevronDoubleLeft} className="fa-icon" />
+        </Tooltip>
+      </div>
+      <div className="submit-instructions">
         Click a point on the map to locate your story.
       </div>
-      <FileUploader />
+      <StoryForm />
     </div>
   );
 };

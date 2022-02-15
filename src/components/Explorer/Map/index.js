@@ -45,7 +45,7 @@ import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestion } from '@fortawesome/pro-solid-svg-icons';
+import { faPencil, faQuestion } from '@fortawesome/pro-solid-svg-icons';
 //Functional Component
 function KeTTMap() {
   const dispatch = useDispatch();
@@ -66,7 +66,6 @@ function KeTTMap() {
   const activeMarkerLoctypeRef = useRef('');
   const activeMarkerTypeRef = useRef('');
   const markersLoadedRef = useRef(false);
-  const storyMode = useRef(false);
 
   //Sets the zoom level where the map transitions from Grid to Markers
   const gridThreshold = 17;
@@ -148,13 +147,7 @@ function KeTTMap() {
 
         //Share a Story
         $('#share-story').on('click', function () {
-          if (!storyMode.current) {
-            storyMode.current = true;
-            dispatch(toggleSubmit('show'));
-          } else {
-            storyMode.current = false;
-            dispatch(toggleSubmit('hide'));
-          }
+          dispatch(toggleSubmit('show'));
         });
 
         //Map UI
@@ -199,7 +192,7 @@ function KeTTMap() {
           [mapPickerExpand, baseMapExpand, opacitySlider],
           'top-right'
         );
-        view.ui.add('share-story', 'bottom-right');
+        view.ui.add('share-help', 'bottom-right');
         mapPickerExpand.when().then(function (picker) {
           mapPickerList().then((res) => {
             picker.content = res;
@@ -734,7 +727,6 @@ function KeTTMap() {
                 dispatch(getList({}));
               }
               //UPDATE MARKER POPUP
-              console.log('listShow', listShow);
               asyncMarkerPopUp().then(function (res) {
                 view.popup.content = res;
               });
@@ -781,9 +773,15 @@ function KeTTMap() {
         view.on('click', function (event) {
           //console.log(event.mapPoint);
           view.hitTest(event).then(function (response) {
-            // do something with the result graphic
-            var graphic = response.results[0].graphic;
-            console.log('GRAPHIC ATTR', graphic.attributes);
+            let graphic = response.results[0].graphic;
+            console.log('GRAPHIC ATTR', graphic);
+            // let layer = graphic.layer.id;
+            // if ((layer = 'marker_layer_active')) {
+            //   asyncMarkerPopUp().then(function (res) {
+            //     view.popup.content = res.title;
+            //     view.popup.content = res.body;
+            //   });
+            // }
           });
         });
 
@@ -1338,6 +1336,11 @@ function KeTTMap() {
                 alias: 'Size',
                 type: 'string',
               },
+              {
+                name: 'title',
+                alias: 'Title',
+                type: 'string',
+              },
             ],
             objectIdField: 'ObjectID',
             geometryType: 'point',
@@ -1346,7 +1349,7 @@ function KeTTMap() {
               symbol: gridSymbol,
             },
             popupTemplate: {
-              title: '{id} {type}',
+              title: '{title}',
               outFields: ['*'],
               content: asyncGridPopUp,
             },
@@ -1356,12 +1359,12 @@ function KeTTMap() {
 
         function generateMarkers(view, markers) {
           const allActive = markers.active.length ? markers.active.results : [];
-          const allInActive = markers.inactive.length
-            ? markers.inactive.results
-            : [];
+          // const allInActive = markers.inactive.length
+          //   ? markers.inactive.results
+          //   : [];
           //console.log('allActive', allActive);
           const activeGraphics = [];
-          const inactiveGraphics = [];
+          // const inactiveGraphics = [];
           allActive.forEach((marker) => {
             if (marker.x) {
               const point = new Point({
@@ -1499,7 +1502,7 @@ function KeTTMap() {
             geometryType: 'point',
             renderer: markerRenderer,
             popupTemplate: {
-              title: asyncMarkerTitle,
+              title: 'Record Location',
               outFields: ['*'],
               content: asyncMarkerPopUp,
             },
@@ -1677,7 +1680,7 @@ function KeTTMap() {
           };
           view.goTo({ target: point, zoom: newZoom }, opts).then(() => {
             view.popup.open({
-              title: `Item ID: ${itemId}`,
+              title: '',
               location: view.center,
             });
             const filterVal = {
@@ -1696,7 +1699,8 @@ function KeTTMap() {
             };
             asyncMarkerInfo(recnumber, markerid, loctype, type, filterVal).then(
               function (res) {
-                view.popup.content = res;
+                view.popup.title = res.title;
+                view.popup.content = res.body;
               }
             );
             //LOAD MARKERS
@@ -1841,6 +1845,7 @@ function KeTTMap() {
       .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
       .then((res) => {
         const active = res.data.active;
+        const title = active.title ? active.title : 'Record Location';
         const peopleCount = active.people.length;
         const placesCount = active.places.length;
         const storiesCount = active.stories.length;
@@ -1895,7 +1900,9 @@ function KeTTMap() {
           storiesCount,
         });
         console.log('POPUP TAB STATUS', tabStatus);
-        return `
+        return {
+          title,
+          body: `
         <div class="map-popup marker">
           <div class="map-popup-tabs">
             <div class="tab tab-people${tabStatus.people}"><i class="fas fa-user"></i> <span>(${peopleCount})</span><span class="tab-type" style="display: none;">people</span></div>
@@ -1923,14 +1930,15 @@ function KeTTMap() {
             <div class="full-details">Full details</div>
           </div>
         </div>
-        `;
+        `,
+        };
       })
       .catch((error) => console.log(error));
   };
 
   //POPUP - When marker is clicked
   const asyncMarkerPopUp = (target) => {
-    //console.log('TARGET', target);
+    //console.log('TARGET', target.graphic.attributes);
     //const layerID = target ? target.graphic.layer.id : null;
     const targetID = target ? target.graphic.attributes.id : null;
     const markerID = targetID ? targetID : activeMarkerIdRef.current;
@@ -2054,9 +2062,29 @@ function KeTTMap() {
       .catch((error) => console.log(error));
   };
   const asyncMarkerTitle = (target) => {
-    const id = target.graphic.attributes.id;
-    const idSplit = id.split('|');
-    return `${idSplit[0]} ${idSplit[1]}, ${idSplit[2]}`;
+    const targetID = target ? target.graphic.attributes.id : null;
+    const markerID = targetID ? targetID : activeMarkerIdRef.current;
+    if (targetID) activeMarkerIdRef.current = markerID;
+    let filters = {
+      search: searchRef.current,
+      id: markerID,
+      recnumber: '',
+      filters: {
+        date_range: dateRangeRef.current,
+        photos: photosRef.current,
+        featured: featuredRef.current,
+        type: 'everything',
+      },
+    };
+    return axios
+      .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
+      .then((res) => {
+        const sourceTitle = res.data.active.title;
+        console.log('POPUP TITLE', sourceTitle);
+        const title = sourceTitle ? sourceTitle : 'Record Location';
+        return title;
+      })
+      .catch((error) => console.log(error));
   };
   const asyncGrid = (filters, size) => {
     setLoadingMarkers(true);
@@ -2210,13 +2238,23 @@ function KeTTMap() {
   return (
     <div className={wrapperClasses}>
       <div className="webmap map" ref={mapRef} />
-      <div id="share-story" className="share-story">
-        <FontAwesomeIcon icon={faQuestion} className="fa-icon" />
-        <span>
-          Share a
-          <br />
-          story
-        </span>
+      <div id="share-help">
+        <div id="share-story" className="share-story">
+          <FontAwesomeIcon icon={faPencil} className="fa-icon" />
+          <span>
+            Share a
+            <br />
+            story
+          </span>
+        </div>
+        <div id="explorer-help" className="explorer-help">
+          <FontAwesomeIcon icon={faQuestion} className="fa-icon" />
+          <span>
+            I need
+            <br />
+            help
+          </span>
+        </div>
       </div>
       <Chooser show={showTimeChooser} update={handleTimePeriod} />
       {loadingMarkers && <Loader />}
