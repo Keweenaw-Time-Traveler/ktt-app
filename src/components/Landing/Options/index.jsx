@@ -94,7 +94,7 @@ export default function Search(props) {
             </div>
           </div>
         </Tooltip>
-        <Tooltip
+        {/* <Tooltip
           content="Don't feel like searching? Exploring the map sounds like the option for you!"
           direction="down"
           isOpen={showToolTips}
@@ -109,7 +109,7 @@ export default function Search(props) {
               the map
             </button>
           </div>
-        </Tooltip>
+        </Tooltip> */}
         {/* <Tooltip
           content="Featured stories is a great way to get started!"
           isOpen={showToolTips}
