@@ -19,7 +19,7 @@ import {
   toggleRelated,
   selectShowRelated,
 } from '../../../redux/reducers/relatedSlice';
-import { updateListItem } from '../../../redux/reducers/listSlice';
+import { updateListItem, toggleList } from '../../../redux/reducers/listSlice';
 //Tooptip
 import Tooltip from 'react-tooltip-lite';
 //Styles
@@ -55,7 +55,7 @@ const Details = (props) => {
   const showRelated = useSelector(selectShowRelated);
   const [selectedClient, setSelectedClient] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   let thumbs = [];
   let images = [];
 
@@ -112,13 +112,14 @@ const Details = (props) => {
   function handleThumbClick(index) {
     console.log('THUMB CLICK', index);
     setPhotoIndex(index);
-    setIsOpen(true);
+    setIsLightboxOpen(true);
   }
 
   function closeDetails() {
     dispatch(updateListItem({ recnumber: '', loctype: '' }));
     dispatch(toggleDetails('hide'));
     dispatch(toggleRelated('hide'));
+    dispatch(toggleList('show'));
   }
 
   return (
@@ -176,12 +177,12 @@ const Details = (props) => {
         {status !== 'success' && <Loader />}
       </div>
       <Map show={props.show} />
-      {isOpen && (
+      {isLightboxOpen && (
         <Lightbox
           mainSrc={images[photoIndex]}
           nextSrc={images[(photoIndex + 1) % images.length]}
           prevSrc={images[(photoIndex + images.length - 1) % images.length]}
-          onCloseRequest={() => setIsOpen(false)}
+          onCloseRequest={() => setIsLightboxOpen(false)}
           onMovePrevRequest={() => {
             setPhotoIndex((photoIndex + images.length - 1) % images.length);
           }}

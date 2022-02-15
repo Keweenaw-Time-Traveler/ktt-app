@@ -20,6 +20,7 @@ import {
 } from '../../../redux/reducers/timelineSlice';
 import {
   getList,
+  toggleList,
   updateListItem,
   selectShowList,
 } from '../../../redux/reducers/listSlice';
@@ -32,12 +33,14 @@ import { toggleSubmit } from '../../../redux/reducers/submitSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
+import ModalVideo from 'react-modal-video';
 //Modules
 import { mapPickerList, mapPickerCount } from './modules/mapPicker';
 //ArchGIS
 import { loadModules } from 'esri-loader';
 //Styles
 import './styles.scss';
+import 'react-modal-video/css/modal-video.css';
 //Images
 import everythingMarkerImage from './images/marker_everything.png';
 import peopleMarkerImage from './images/marker_person.png';
@@ -52,6 +55,7 @@ function KeTTMap() {
   const listShow = useSelector(selectShowList);
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
   const mapRef = useRef();
   const searchRef = useRef('');
   const dateRangeRef = useRef('1850-2021');
@@ -148,6 +152,10 @@ function KeTTMap() {
         //Share a Story
         $('#share-story').on('click', function () {
           dispatch(toggleSubmit('show'));
+        });
+        //Get Help
+        $('#explorer-help').on('click', function () {
+          setIsVideoOpen(true);
         });
 
         //Map UI
@@ -476,6 +484,7 @@ function KeTTMap() {
                 });
                 if (id && recnumber) {
                   dispatch(updateListItem({ recnumber, loctype }));
+                  dispatch(toggleList('hide'));
                   dispatch(getDetails({ id, recnumber, loctype }));
                   dispatch(toggleDetails('show'));
                 } else {
@@ -528,6 +537,7 @@ function KeTTMap() {
               );
               if (id && recnumber) {
                 dispatch(updateListItem({ recnumber, loctype }));
+                dispatch(toggleList('hide'));
                 dispatch(getDetails({ id, recnumber, loctype }));
                 dispatch(toggleDetails('show'));
               }
@@ -729,6 +739,9 @@ function KeTTMap() {
               //UPDATE MARKER POPUP
               asyncMarkerPopUp().then(function (res) {
                 view.popup.content = res;
+              });
+              asyncMarkerTitle().then(function (res) {
+                view.popup.title = res;
               });
             }
             function dateChange(min, max, url) {
@@ -1502,7 +1515,7 @@ function KeTTMap() {
             geometryType: 'point',
             renderer: markerRenderer,
             popupTemplate: {
-              title: 'Record Location',
+              title: asyncMarkerTitle,
               outFields: ['*'],
               content: asyncMarkerPopUp,
             },
@@ -2258,6 +2271,13 @@ function KeTTMap() {
       </div>
       <Chooser show={showTimeChooser} update={handleTimePeriod} />
       {loadingMarkers && <Loader />}
+      <ModalVideo
+        channel="vimeo"
+        autoplay
+        isOpen={isVideoOpen}
+        videoId="677400038"
+        onClose={() => setIsVideoOpen(false)}
+      />
     </div>
   );
 }
