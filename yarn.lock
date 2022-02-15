@@ -5474,6 +5474,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dom-helpers@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "dom-helpers@npm:3.4.0"
+  dependencies:
+    "@babel/runtime": ^7.1.2
+  checksum: 7625598dbfef65a50801e194b88f277ab398dd92c27398280fd8d69294326f05d9b0588922560ba50e10d9fe5ee8096f90995d679b7db2b776afd579d495b962
+  languageName: node
+  linkType: hard
+
 "dom-serializer@npm:0":
   version: 0.2.2
   resolution: "dom-serializer@npm:0.2.2"
@@ -9164,6 +9173,7 @@ fsevents@^1.2.7:
     react-infinite-scroll-component: ^6.1.0
     react-is: ^16.13.1
     react-masonry-css: ^1.0.16
+    react-modal-video: ^1.2.8
     react-redux: ^7.2.4
     react-router-dom: ^5.2.0
     react-scripts: 3.4.3
@@ -12361,7 +12371,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-lifecycles-compat@npm:^3.0.0":
+"react-lifecycles-compat@npm:^3.0.0, react-lifecycles-compat@npm:^3.0.4":
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
   checksum: 82176a55ef7526414d770d5e07dc1d28b4c7f20281f22c6f53f3a98df9dbbb5d70c94bebee57b4ea8ccc2eee430b907ca7b564a42fbdd0ed21e7c43bfee35404
@@ -12374,6 +12384,18 @@ fsevents@^1.2.7:
   peerDependencies:
     react: ">=16.0.0"
   checksum: aa1e32eadc1d3f3e5f7ecc3c7925e376a133475083cb23e49f1558d228b6c6391b07a252f09d6d69e8b261835fcfa93a1f1e1cca72039b28fd54f46bef09c604
+  languageName: node
+  linkType: hard
+
+"react-modal-video@npm:^1.2.8":
+  version: 1.2.8
+  resolution: "react-modal-video@npm:1.2.8"
+  dependencies:
+    react-transition-group: ^2.2.1
+  peerDependencies:
+    react: ^16.2.0 || ^17.0.0
+    react-dom: ^16.2.0 || ^17.0.0
+  checksum: 6ac014e5bbf803b59134ea8bd258f4507a4c7d2ab562a0f0e9808ddae0b9f7d8d156322671ac3d7877950d9496a87b8bd4e0d1d6e541d5c843022865e193371e
   languageName: node
   linkType: hard
 
@@ -12544,6 +12566,21 @@ fsevents@^1.2.7:
     react: ^15.5.4 || ^16.0.0
     react-dom: ^15.5.4 || ^16.0.0
   checksum: e0b9c97cd6d199ad2bde1017cb0220046c4d810ffbc89d8df27175b1dc2fa18be2a60f78337a7a8d68960c8f61ab973c88852a812649ec42b934b3e4d5c8ddbb
+  languageName: node
+  linkType: hard
+
+"react-transition-group@npm:^2.2.1":
+  version: 2.9.0
+  resolution: "react-transition-group@npm:2.9.0"
+  dependencies:
+    dom-helpers: ^3.4.0
+    loose-envify: ^1.4.0
+    prop-types: ^15.6.2
+    react-lifecycles-compat: ^3.0.4
+  peerDependencies:
+    react: ">=15.0.0"
+    react-dom: ">=15.0.0"
+  checksum: eefed08c48a0d377b5fac3ac7fac54ed986d5dcdd4494f36075954c9d2d257072a9d18cc02c6d8e6698034722b1ff9419ad0c24ef068dea742edcff9f8ea4ba9
   languageName: node
   linkType: hard
 
