@@ -11,6 +11,27 @@
   color: $color-kett-black;
   text-align: left;
   box-shadow: 10px 1px 20px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* width */
+  &::-webkit-scrollbar {
+    position: relative;
+    width: 10px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: $color-kett-white;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #484747;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #484747;
+  }
 }
 .submit-title {
   position: relative;
