@@ -98,7 +98,8 @@
 .esri-ui-corner .esri-component {
   box-shadow: none;
 }
-.map-picker {
+.main-map-picker,
+.details-map-picker {
   width: 250px;
   padding: 20px;
   h2 {

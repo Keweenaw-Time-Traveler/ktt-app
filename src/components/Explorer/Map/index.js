@@ -225,7 +225,7 @@ function KeTTMap() {
             };
             updateGrid(view, startingFilters);
             //Map Picker List Item Click Event
-            $('.page-content').on('click', '.map-picker li', function () {
+            $('.page-content').on('click', '.main-map-picker li', function () {
               const min = $(this).find('span.min').text();
               const max = $(this).find('span.max').text();
               const left = $(this).find('span.left').text();

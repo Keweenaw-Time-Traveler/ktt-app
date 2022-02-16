@@ -14,6 +14,8 @@ import placesRelatedMarkerImage from './images/marker_place.png';
 import storiesRelatedMarkerImage from './images/marker_story.png';
 //Components
 import Loader from '../../Map/Loader';
+//Modules
+import { detailsmMapPickerList } from './modules/detailsMapPickerList';
 
 export default function Map(props) {
   const { show } = props;
@@ -285,7 +287,23 @@ export default function Map(props) {
           expandTooltip: 'Basemap',
           group: 'top-right',
         });
-        view.ui.add([baseMapExpand, opacitySlider], 'top-right');
+        const detailsMapPickerExpand = new Expand({
+          view,
+          expandIconClass: 'esri-icon-collection',
+          content: 'loading...',
+          expandTooltip: 'Map Overlays',
+          group: 'top-right',
+        });
+        view.ui.add(
+          [detailsMapPickerExpand, baseMapExpand, opacitySlider],
+          'top-right'
+        );
+        detailsMapPickerExpand.when().then(function (picker) {
+          detailsmMapPickerList().then((res) => {
+            picker.content = res;
+          });
+        });
+
         // Wait for View to be loaded
         view.when().then(() => {
           console.log('DETAILS MAP VIEW LOADED');
@@ -346,6 +364,7 @@ export default function Map(props) {
             addSourceLayer(type, name, point);
             addRelatedLayer();
             gotoMarker(point);
+            updateMapPicker();
           });
 
           // Event - Related Content choose item
@@ -453,6 +472,31 @@ export default function Map(props) {
               removeRelated('all');
             }
           );
+
+          // Event - Map Picker List Item Click Event
+          $('.page-content').on('click', '.details-map-picker li', function () {
+            console.log('DETAILS MAP PICKER');
+            const type = $('#details-source').find(':selected').data('type');
+            const markerX = $('#details-source').find(':selected').data('x');
+            const markerY = $('#details-source').find(':selected').data('y');
+            const name = $('#details-source').find(':selected').text();
+            const url = $(this).find('span.url').text();
+            const point = new Point({
+              x: markerX,
+              y: markerY,
+              spatialReference: { wkid: 3857 },
+            });
+            // Clear map
+            view.popup.close();
+            removeTileLayer();
+            removeLayer('source_location');
+            removeRelated('all');
+            // Update layers
+            addTileLayer(url);
+            addSourceLayer(type, name, point);
+            addRelatedLayer();
+            gotoMarker(point);
+          });
         });
 
         //Map Opacity
@@ -720,6 +764,13 @@ export default function Map(props) {
             }
           });
           return newUrl;
+        }
+
+        //Update Map Picker
+        function updateMapPicker() {
+          detailsmMapPickerList().then((res) => {
+            detailsMapPickerExpand.content = res;
+          });
         }
       }
     );
