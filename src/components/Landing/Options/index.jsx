@@ -42,6 +42,7 @@ export default function Search(props) {
     dispatch(updateLandingView({ show: false, remove: true }));
     dispatch(toggleList('show'));
     dispatch(updateMapView(true));
+    dispatch(turnOnToolTips(false));
   };
 
   const handleSearchClick = (e) => {
@@ -70,7 +71,7 @@ export default function Search(props) {
     <div className={`intro-options ${props.show ? 'show' : 'hide'}`}>
       <div className="intro-options-main">
         <Tooltip
-          content="Know what you are looking for? Search for it here!"
+          content="Start your search of our historical data and maps here"
           isOpen={showToolTips}
         >
           <div className="intro-options-search">
@@ -129,7 +130,6 @@ export default function Search(props) {
           <img src={miniMap} alt="Map key" />
         </Tooltip>
       </div>
-
       <div
         className={`intro-options-help ${showHelp ? 'show' : 'hide'}`}
         onClick={handleHelpClick}
