@@ -150,13 +150,19 @@ function KeTTMap() {
         });
 
         //Share a Story
-        $('#share-story').on('click', function () {
-          dispatch(toggleSubmit('show'));
-        });
+        $('#share-story')
+          .delay(2000)
+          .css('opacity', '1')
+          .on('click', function () {
+            dispatch(toggleSubmit('show'));
+          });
         //Get Help
-        $('#explorer-help').on('click', function () {
-          setIsVideoOpen(true);
-        });
+        $('#explorer-help')
+          .delay(2000)
+          .css('opacity', '1')
+          .on('click', function () {
+            setIsVideoOpen(true);
+          });
 
         //Map UI
         view.ui.move({
@@ -487,6 +493,7 @@ function KeTTMap() {
                   dispatch(toggleList('hide'));
                   dispatch(getDetails({ id, recnumber, loctype }));
                   dispatch(toggleDetails('show'));
+                  dispatch(toggleSubmit('hide'));
                 } else {
                   console.log('Sorry, id or recumber is missing');
                 }
@@ -540,6 +547,7 @@ function KeTTMap() {
                 dispatch(toggleList('hide'));
                 dispatch(getDetails({ id, recnumber, loctype }));
                 dispatch(toggleDetails('show'));
+                dispatch(toggleSubmit('hide'));
               }
             });
             //Map Popup - click new list item
