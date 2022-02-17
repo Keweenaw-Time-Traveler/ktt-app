@@ -796,13 +796,6 @@ function KeTTMap() {
           view.hitTest(event).then(function (response) {
             let graphic = response.results[0].graphic;
             console.log('GRAPHIC ATTR', graphic);
-            // let layer = graphic.layer.id;
-            // if ((layer = 'marker_layer_active')) {
-            //   asyncMarkerPopUp().then(function (res) {
-            //     view.popup.content = res.title;
-            //     view.popup.content = res.body;
-            //   });
-            // }
           });
         });
 
@@ -873,6 +866,14 @@ function KeTTMap() {
               const level_3 = '0.1';
               const level_4 = '0.05';
               layers.items.forEach((layer, index) => {
+                if (layer.id === 'tile_layer') {
+                  view.map.reorder(layer, 0);
+                }
+                if (layer.id === 'marker_layer_active') {
+                  const totalLayers = layers.items.length;
+                  const maxIndex = totalLayers - 1;
+                  view.map.reorder(layer, maxIndex);
+                }
                 if (view.zoom <= 10) {
                   view.popup.close();
                   if (layer.id === `grid_layer_${level_1}`) {
