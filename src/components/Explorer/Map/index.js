@@ -22,7 +22,6 @@ import {
   getList,
   toggleList,
   updateListItem,
-  selectShowList,
 } from '../../../redux/reducers/listSlice';
 import {
   getDetails,
@@ -52,7 +51,6 @@ import { faPencil, faQuestion } from '@fortawesome/pro-solid-svg-icons';
 //Functional Component
 function KeTTMap() {
   const dispatch = useDispatch();
-  const listShow = useSelector(selectShowList);
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -621,9 +619,7 @@ function KeTTMap() {
               dispatch(updateStartDate(`${min}`));
               dispatch(updateEndDate(`${max}`));
               dispatch(updateReset(false));
-              if (listShow) {
-                dispatch(getList({}));
-              }
+              dispatch(getList({}));
             }
             function landingSearch() {
               const searchValue = $('#search-landing').val();
@@ -741,9 +737,7 @@ function KeTTMap() {
               dispatch(updateStartDate(`${min}`));
               dispatch(updateEndDate(`${max}`));
               dispatch(updateReset(true));
-              if (listShow) {
-                dispatch(getList({}));
-              }
+              dispatch(getList({}));
               //UPDATE MARKER POPUP
               asyncMarkerPopUp().then(function (res) {
                 view.popup.content = res;
