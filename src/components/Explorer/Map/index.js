@@ -1378,11 +1378,11 @@ function KeTTMap() {
             },
           });
           addToView(grid);
-          if (zoom) {
-            grid.when().then(function (layer) {
-              view.goTo(layer.fullExtent, { duration: 3000 });
-            });
-          }
+          // if (zoom) {
+          //   grid.when().then(function (layer) {
+          //     view.goTo(layer.fullExtent, { duration: 3000 });
+          //   });
+          // }
         }
 
         function generateMarkers(view, markers) {
