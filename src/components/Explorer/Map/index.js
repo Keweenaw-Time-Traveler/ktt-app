@@ -228,6 +228,20 @@ function KeTTMap() {
               type: 'everything',
             };
             updateGrid(view, startingFilters);
+            //Landing Page Explore Button
+            $('body').on('click', '.intro-options-explore', function (e) {
+              console.log('EXPLORE BUTTON');
+              e.preventDefault();
+              let newExtent = undefined;
+              view.map.layers.items.forEach((layer, index) => {
+                if (layer.id === 'grid_layer_6') {
+                  console.log('LAYER ID', layer);
+                  newExtent = layer.fullExtent;
+                }
+              });
+              view.goTo(newExtent, { duration: 3000 });
+              setShowTimeChooser(true);
+            });
             //Map Picker List Item Click Event
             $('.page-content').on('click', '.main-map-picker li', function () {
               const min = $(this).find('span.min').text();
@@ -632,7 +646,16 @@ function KeTTMap() {
                 type: typeRef.current,
               };
               console.log('LANDING SEARCH', filterVal);
-              updateGrid(view, filterVal);
+              const point = new Point({
+                x: -9847493.299600473,
+                y: 5961570.438394273,
+                spatialReference: { wkid: 3857 },
+              });
+              view
+                .goTo({ target: point, zoom: 10 }, { duration: 3000 })
+                .then(() => {
+                  updateGrid(view, filterVal);
+                });
             }
             function mainSearch() {
               const searchValue = $('#search').val();
@@ -649,27 +672,7 @@ function KeTTMap() {
                 featured: featuredRef.current,
                 type: typeRef.current,
               };
-              const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
-              const { xmin, xmax, ymin, ymax } = extentExpanded;
-              const extent = {
-                xmin: xmin,
-                xmax: xmax,
-                ymin: ymin,
-                ymax: ymax,
-              };
               console.log('SEARCH CHANGE', filterVal);
-              //UPDATE GRID
-              updateGrid(view, filterVal);
-              //LOAD MARKERS
-              if (view.zoom > gridThreshold) {
-                if (searchValue !== '') {
-                  asyncMarkers(view, filterVal, extent).then((res) => {
-                    console.log('MARKER RESPONCE', res);
-                    generateMarkers(view, res);
-                  });
-                }
-              }
               //UPDATE TIMELINE
               resetTimeline();
               //CLOSE POPUP
@@ -679,14 +682,16 @@ function KeTTMap() {
               //HIDE TILES
               toggleTiles('hide');
               //RESET EXTENTS
-              view.goTo(
-                {
-                  zoom: 10,
-                },
-                {
-                  duration: 5000,
-                }
-              );
+              const point = new Point({
+                x: -9847493.299600473,
+                y: 5961570.438394273,
+                spatialReference: { wkid: 3857 },
+              });
+              view
+                .goTo({ target: point, zoom: 10 }, { duration: 3000 })
+                .then(() => {
+                  updateGrid(view, filterVal);
+                });
             }
             function moveThroughTime(segmentId) {
               const $target = $(`.segment-${segmentId}`);
@@ -1296,8 +1301,10 @@ function KeTTMap() {
             },
           };
           let show = false;
+          let zoom = false;
           if (size === '6' && view.zoom <= 10) {
             show = true;
+            zoom = true;
           } else if (size === '1' && view.zoom > 10 && view.zoom <= 13) {
             show = true;
           } else if (size === '0.1' && view.zoom > 13 && view.zoom <= 16) {
@@ -1371,6 +1378,11 @@ function KeTTMap() {
             },
           });
           addToView(grid);
+          if (zoom) {
+            grid.when().then(function (layer) {
+              view.goTo(layer.fullExtent, { duration: 3000 });
+            });
+          }
         }
 
         function generateMarkers(view, markers) {
@@ -1622,6 +1634,9 @@ function KeTTMap() {
           });
           addToView(tileLayer);
           updateOpacity();
+          tileLayer.when().then(function (layer) {
+            view.goTo(layer.fullExtent, { duration: 3000 });
+          });
         }
 
         function hideLayer(id, layers) {
