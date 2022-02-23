@@ -7,6 +7,7 @@ import {
   selectAllList,
   selectListStatus,
   selectErrorMessage,
+  selectShowList,
 } from '../../../redux/reducers/listSlice';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,12 +26,13 @@ const List = (props) => {
   const list = useSelector(selectAllList);
   const listStatus = useSelector(selectListStatus);
   const errormessage = useSelector(selectErrorMessage);
+  const listOpen = useSelector(selectShowList);
 
   useEffect(() => {
     if (listStatus === 'idle') {
       dispatch(getList({}));
     }
-  }, [listStatus, dispatch]);
+  }, [listStatus, listOpen, dispatch]);
 
   return (
     <div className={`list-wrapper ${props.show ? 'show' : 'hide'}`}>

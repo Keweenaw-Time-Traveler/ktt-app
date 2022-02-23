@@ -251,8 +251,11 @@ function KeTTMap() {
               const url = $(this).find('span.url').text();
               const segmentId = $(`.segment[data-min=${min}]`).data('id');
               dateChange(min, max, url);
-              createTileLayer(url);
+              createTileLayer({ url, zoom: false });
               handleTimePeriod();
+              //SET ACTIVE LIST ITEM
+              $(this).parent().find('li').removeClass('active');
+              $(this).addClass('active');
               //UPDATE TIMELINE
               dispatch(updateActiveSegment(`${segmentId}`));
               dispatch(updateLeftPip(left));
@@ -271,7 +274,7 @@ function KeTTMap() {
               const max = $selected.data('max');
               const url = $selected.data('url');
               dateChange(min, max, url);
-              createTileLayer(url);
+              createTileLayer({ url, zoom: true });
             });
             //Timeline Segment Click Event
             $('.segment').on('click', function (e) {
@@ -724,7 +727,7 @@ function KeTTMap() {
               dispatch(updateTimelineRange(`${min}-${max}`));
               handleTimePeriod();
               //ADD TILE LAYER
-              createTileLayer(url);
+              createTileLayer({ url, zoom: false });
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
@@ -1626,7 +1629,9 @@ function KeTTMap() {
           addToView(layer);
         }
 
-        function createTileLayer(url) {
+        function createTileLayer(options) {
+          const { url, zoom } = options;
+          console.log('TITLE SETTINGS', url, zoom);
           const tileLayer = new TileLayer({
             id: 'tile_layer',
             url,
@@ -1635,7 +1640,9 @@ function KeTTMap() {
           addToView(tileLayer);
           updateOpacity();
           tileLayer.when().then(function (layer) {
-            view.goTo(layer.fullExtent, { duration: 3000 });
+            if (zoom) {
+              view.goTo(layer.fullExtent, { duration: 3000 });
+            }
           });
         }
 
@@ -1688,7 +1695,7 @@ function KeTTMap() {
                 dispatch(updateDateRange(`${min}-${max}`));
                 dispatch(updateStartDate(`${min}`));
                 dispatch(updateEndDate(`${max}`));
-                createTileLayer(url);
+                createTileLayer({ url, zoom: false });
                 handleTimePeriod();
                 dispatch(updateReset(true));
                 dispatch(getList({}));

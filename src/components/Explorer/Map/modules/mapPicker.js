@@ -21,6 +21,7 @@ function mapPickerList() {
           url: segment.url,
         });
       });
+
       let list = '';
       $.each(segments, (index, segment) => {
         const item = `<li>
