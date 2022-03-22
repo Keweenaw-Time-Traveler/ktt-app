@@ -1390,12 +1390,12 @@ function KeTTMap() {
 
         function generateMarkers(view, markers) {
           const allActive = markers.active.length ? markers.active.results : [];
-          // const allInActive = markers.inactive.length
-          //   ? markers.inactive.results
-          //   : [];
+          const allInActive = markers.inactive.length
+            ? markers.inactive.results
+            : [];
           //console.log('allActive', allActive);
           const activeGraphics = [];
-          // const inactiveGraphics = [];
+          const inactiveGraphics = [];
           allActive.forEach((marker) => {
             if (marker.x) {
               const point = new Point({
@@ -1419,32 +1419,32 @@ function KeTTMap() {
               );
             }
           });
-          // allInActive.forEach((marker) => {
-          //   if (marker.x) {
-          //     const point = new Point({
-          //       x: marker.x,
-          //       y: marker.y,
-          //       spatialReference: { wkid: 3857 },
-          //     });
-          //     const graphic = new Graphic({
-          //       geometry: point,
-          //       attributes: marker,
-          //     });
-          //     inactiveGraphics.push(graphic);
-          //   } else {
-          //     console.log(
-          //       'EMPTY MARKER VALUE - ID: ',
-          //       marker.id,
-          //       'X: ',
-          //       marker.x
-          //     );
-          //   }
-          // });
-          // if (inactiveGraphics.length > 0) {
-          //   createInactiveMarkerLayer(view, inactiveGraphics);
-          // } else {
-          //   console.log('No Inactive markers in this area');
-          // }
+          allInActive.forEach((marker) => {
+            if (marker.x) {
+              const point = new Point({
+                x: marker.x,
+                y: marker.y,
+                spatialReference: { wkid: 3857 },
+              });
+              const graphic = new Graphic({
+                geometry: point,
+                attributes: marker,
+              });
+              inactiveGraphics.push(graphic);
+            } else {
+              console.log(
+                'EMPTY MARKER VALUE - ID: ',
+                marker.id,
+                'X: ',
+                marker.x
+              );
+            }
+          });
+          if (inactiveGraphics.length > 0) {
+            createInactiveMarkerLayer(view, inactiveGraphics);
+          } else {
+            console.log('No Inactive markers in this area');
+          }
           if (activeGraphics.length > 0) {
             createActiveMarkerLayer(view, activeGraphics);
           } else {
@@ -2163,6 +2163,7 @@ function KeTTMap() {
           ymax: ymax,
           spatialReference: { wkid: 3857 },
         },
+        inactive: 'true',
         filters: {
           date_range: date_range,
           photos: photos,
