@@ -1656,7 +1656,8 @@ function KeTTMap() {
             geometryType: 'point',
             renderer: markerRenderer,
             popupTemplate: {
-              title: 'INACTIVE {ID}',
+              title: asyncMarkerTitle,
+              outFields: ['*'],
               content: asyncMarkerPopUp,
             },
           });
@@ -1746,7 +1747,7 @@ function KeTTMap() {
           activeMarkerIdRef.current = markerid;
           activeMarkerLoctypeRef.current = loctype;
           activeMarkerTypeRef.current = type;
-          const newZoom = gridThreshold + 2;
+          const newZoom = inactiveThreshold + 1;
           const opts = {
             duration: 3000,
           };
@@ -2115,7 +2116,7 @@ function KeTTMap() {
             </div>
             <div class="data data-no-results${tabStatus.noResultsStatus}">
               <ul>
-                <li>Sorry, there are no records here during this time period. Try moving forward or back in time.</li>
+                <li>The records for this location are in a different time period. To see them try moving forward or back in time.</li>
               </ul>
             </div>
           </div>
