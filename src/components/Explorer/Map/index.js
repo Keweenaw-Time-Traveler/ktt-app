@@ -68,9 +68,11 @@ function KeTTMap() {
   const activeMarkerLoctypeRef = useRef('');
   const activeMarkerTypeRef = useRef('');
   const markersLoadedRef = useRef(false);
+  const inactiveStatus = useRef(false);
 
   //Sets the zoom level where the map transitions from Grid to Markers
   const gridThreshold = 17;
+  const inactiveThreshold = 19;
 
   useEffect(() => {
     loadModules(
@@ -329,7 +331,11 @@ function KeTTMap() {
               updateGrid(view, filterVal);
               //LOAD MARKERS
               if (view.zoom > gridThreshold) {
-                asyncMarkers(view, filterVal, extent).then((res) => {
+                let inactive = 'false';
+                if (view.zoom > inactiveThreshold) {
+                  inactive = 'true';
+                }
+                asyncMarkers(view, filterVal, inactive, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
                 });
@@ -374,7 +380,11 @@ function KeTTMap() {
               updateGrid(view, filterVal);
               //LOAD MARKERS
               if (view.zoom > gridThreshold) {
-                asyncMarkers(view, filterVal, extent).then((res) => {
+                let inactive = 'false';
+                if (view.zoom > inactiveThreshold) {
+                  inactive = 'true';
+                }
+                asyncMarkers(view, filterVal, inactive, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
                 });
@@ -445,7 +455,11 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              asyncMarkers(view, filterVal, extent).then((res) => {
+              let inactive = 'false';
+              if (view.zoom > inactiveThreshold) {
+                inactive = 'true';
+              }
+              asyncMarkers(view, filterVal, inactive, extent).then((res) => {
                 console.log('MARKER RESPONCE', res);
                 generateMarkers(view, res);
               });
@@ -732,7 +746,11 @@ function KeTTMap() {
               updateGrid(view, filterVal);
               //LOAD MARKERS
               if (view.zoom > gridThreshold) {
-                asyncMarkers(view, filterVal, extent).then((res) => {
+                let inactive = 'false';
+                if (view.zoom > inactiveThreshold) {
+                  inactive = 'true';
+                }
+                asyncMarkers(view, filterVal, inactive, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
                 });
@@ -782,7 +800,11 @@ function KeTTMap() {
               updateGrid(view, filterVal);
               //LOAD MARKERS
               if (view.zoom > gridThreshold) {
-                asyncMarkers(view, filterVal, extent).then((res) => {
+                let inactive = 'false';
+                if (view.zoom > inactiveThreshold) {
+                  inactive = 'true';
+                }
+                asyncMarkers(view, filterVal, inactive, extent).then((res) => {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
                 });
@@ -819,6 +841,7 @@ function KeTTMap() {
             const markerExtent = window.markerExtent;
             const timePeriod = window.timePeriod;
             const extentClone = view.extent.clone();
+
             if (view.zoom > gridThreshold && !timePeriod) {
               setShowTimeChooser(true);
               setLoadingMarkers(false);
@@ -829,8 +852,19 @@ function KeTTMap() {
               }
               const isInside = window.markerExtent.contains(extentClone);
 
+              const showInactive = view.zoom > inactiveThreshold;
+
+              let inactiveReload = false;
+              if (showInactive !== inactiveStatus.current) {
+                inactiveStatus.current = showInactive;
+                inactiveReload = true;
+              } else {
+                inactiveReload = false;
+              }
+              let inactive = inactiveStatus.current ? 'true' : 'false';
+
               //LOAD MARKERS
-              if (!isInside || !markersLoadedRef.current) {
+              if (!isInside || !markersLoadedRef.current || inactiveReload) {
                 const expanded = view.extent.clone().expand(10);
                 window.markerExtent = expanded;
                 const { xmin, xmax, ymin, ymax } = expanded;
@@ -847,7 +881,7 @@ function KeTTMap() {
                   featured: featuredRef.current,
                   type: typeRef.current,
                 };
-                asyncMarkers(view, filters, extent).then((res) => {
+                asyncMarkers(view, filters, inactive, extent).then((res) => {
                   console.log('MARKER MAP RESPONCE', res);
                   generateMarkers(view, res);
                   markersLoadedRef.current = true;
@@ -1389,10 +1423,8 @@ function KeTTMap() {
         }
 
         function generateMarkers(view, markers) {
-          const allActive = markers.active.length ? markers.active.results : [];
-          const allInActive = markers.inactive.length
-            ? markers.inactive.results
-            : [];
+          const allActive = markers.active ? markers.active.results : [];
+          const allInActive = markers.inactive ? markers.inactive.results : [];
           //console.log('allActive', allActive);
           const activeGraphics = [];
           const inactiveGraphics = [];
@@ -1440,16 +1472,18 @@ function KeTTMap() {
               );
             }
           });
-          if (inactiveGraphics.length > 0) {
-            createInactiveMarkerLayer(view, inactiveGraphics);
-          } else {
-            console.log('No Inactive markers in this area');
-          }
-          if (activeGraphics.length > 0) {
-            createActiveMarkerLayer(view, activeGraphics);
-          } else {
-            console.log('No Active markers in this area');
-          }
+          // if (inactiveGraphics.length > 0) {
+          //   createInactiveMarkerLayer(view, inactiveGraphics);
+          // } else {
+          //   console.log('No Inactive markers in this area');
+          // }
+          createInactiveMarkerLayer(view, inactiveGraphics);
+          // if (activeGraphics.length > 0) {
+          //   createActiveMarkerLayer(view, activeGraphics);
+          // } else {
+          //   console.log('No Active markers in this area');
+          // }
+          createActiveMarkerLayer(view, activeGraphics);
         }
 
         //  Creates a client-side FeatureLayer from an array of graphics
@@ -1591,7 +1625,7 @@ function KeTTMap() {
               },
             ],
           };
-          const show = view.zoom > gridThreshold ? true : false;
+          const show = view.zoom > inactiveThreshold ? true : false;
           const layer = new FeatureLayer({
             id: 'marker_layer_inactive',
             opacity: 0.3,
@@ -1712,7 +1746,7 @@ function KeTTMap() {
           activeMarkerIdRef.current = markerid;
           activeMarkerLoctypeRef.current = loctype;
           activeMarkerTypeRef.current = type;
-          const newZoom = gridThreshold + 1;
+          const newZoom = gridThreshold + 2;
           const opts = {
             duration: 3000,
           };
@@ -1742,7 +1776,7 @@ function KeTTMap() {
               }
             );
             //LOAD MARKERS
-            asyncMarkers(view, filterVal, extent).then((res) => {
+            asyncMarkers(view, filterVal, 'true', extent).then((res) => {
               console.log('MARKER RESPONCE', res);
               generateMarkers(view, res);
             });
@@ -2146,8 +2180,8 @@ function KeTTMap() {
       })
       .catch((error) => console.log(error));
   };
-  const asyncMarkers = (view, filters, extent) => {
-    console.log('asyncMarkers', filters, extent);
+  const asyncMarkers = (view, filters, inactive, extent) => {
+    console.log('asyncMarkers', filters, inactive, extent);
     if (view.zoom > gridThreshold) {
       setLoadingMarkers(true);
     }
@@ -2163,7 +2197,7 @@ function KeTTMap() {
           ymax: ymax,
           spatialReference: { wkid: 3857 },
         },
-        inactive: 'true',
+        inactive,
         filters: {
           date_range: date_range,
           photos: photos,
