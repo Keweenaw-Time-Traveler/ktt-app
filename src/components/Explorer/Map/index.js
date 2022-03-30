@@ -888,11 +888,14 @@ function KeTTMap() {
                 });
               }
             }
-            if (view.zoom > gridThreshold) {
-              view.ui.add(opacitySlider, 'top-right');
-            } else if (view.zoom <= gridThreshold) {
-              view.ui.remove(opacitySlider);
-            }
+            //Below was in place to only show to opacity slide when at the marker level,
+            //but is commented out so that it will show always
+            //It has been left here for future reference is needed
+            // if (view.zoom > gridThreshold) {
+            //   view.ui.add(opacitySlider, 'top-right');
+            // } else if (view.zoom <= gridThreshold) {
+            //   view.ui.remove(opacitySlider);
+            // }
             //SHOW HIDE LAYERS
             const layers = view.map.layers;
             if (layers) {
