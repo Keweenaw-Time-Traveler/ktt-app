@@ -98,6 +98,11 @@
 .esri-ui-corner .esri-component {
   box-shadow: none;
 }
+.esri-ui-top-right {
+  padding: 10px 10px 0;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+}
 .main-map-picker,
 .details-map-picker {
   width: 250px;
@@ -130,6 +135,42 @@
       }
       span {
         display: none;
+      }
+    }
+  }
+}
+.main-map-picker {
+  width: 350px;
+  ul {
+    max-height: 320px;
+    border: 1px solid #ced4da;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* width */
+    &::-webkit-scrollbar {
+      position: relative;
+      width: 10px;
+    }
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: $color-kett-white;
+      border-right: solid 0 $color-kett-green-secondary;
+    }
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #484747;
+      border-right: solid 0 $color-kett-green-secondary;
+    }
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #484747;
+    }
+    li {
+      margin: 0;
+      padding: 5px 0 5px 10px;
+      text-align: left;
+      &:first-child {
+        padding-top: 10px;
       }
     }
   }
