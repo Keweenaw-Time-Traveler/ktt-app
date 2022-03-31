@@ -95,6 +95,9 @@
 .esri-expand__content {
   background: $color-kett-white;
 }
+.esri-view-height-small .esri-ui-corner .esri-component .esri-expand__content {
+  max-height: 580px;
+}
 .esri-ui-corner .esri-component {
   box-shadow: none;
 }
@@ -111,7 +114,7 @@
     margin: 0 0 10px 0;
   }
   p {
-    margin: 0 0 15px 0;
+    margin: 15px 0 3px 0;
   }
   ul {
     display: flex;
@@ -133,8 +136,10 @@
       &.active {
         color: $color-kett-green-primary;
       }
-      span {
-        display: none;
+      &.overlay {
+        span {
+          display: none;
+        }
       }
     }
   }

@@ -165,11 +165,6 @@ function KeTTMap() {
           });
 
         //Map UI
-        view.ui.move({
-          component: 'zoom',
-          position: 'top-right',
-          index: 0,
-        });
         const opacitySlider = new Slider({
           view,
           min: 0,
@@ -195,17 +190,11 @@ function KeTTMap() {
           expandTooltip: 'Map Overlays',
           group: 'top-right',
         });
-        const baseMapExpand = new Expand({
-          expandIconClass: 'esri-icon-basemap',
-          view: view,
-          content: basemapToggle,
-          expandTooltip: 'Basemap',
-          group: 'top-right',
+        view.ui.add([mapPickerExpand, opacitySlider], 'top-right');
+        view.ui.move({
+          component: 'zoom',
+          position: 'top-right',
         });
-        view.ui.add(
-          [mapPickerExpand, baseMapExpand, opacitySlider],
-          'top-right'
-        );
         view.ui.add('share-help', 'bottom-right');
         mapPickerExpand.when().then(function (picker) {
           mapPickerList().then((res) => {
@@ -244,29 +233,47 @@ function KeTTMap() {
               view.goTo(newExtent, { duration: 3000 });
               setShowTimeChooser(true);
             });
-            //Map Picker List Item Click Event
-            $('.page-content').on('click', '.main-map-picker li', function () {
-              const min = $(this).find('span.min').text();
-              const max = $(this).find('span.max').text();
-              const left = $(this).find('span.left').text();
-              const right = $(this).find('span.right').text();
-              const url = $(this).find('span.url').text();
-              const segmentId = $(`.segment[data-min=${min}]`).data('id');
-              dateChange(min, max, url);
-              createTileLayer({ url, zoom: false });
-              handleTimePeriod();
+            //Map Overlay Picker List Item Click Event
+            $('.page-content').on(
+              'click',
+              '.main-map-picker .overlay',
+              function () {
+                const min = $(this).find('span.min').text();
+                const max = $(this).find('span.max').text();
+                const left = $(this).find('span.left').text();
+                const right = $(this).find('span.right').text();
+                const url = $(this).find('span.url').text();
+                const segmentId = $(`.segment[data-min=${min}]`).data('id');
+                dateChange(min, max, url);
+                createTileLayer({ url, zoom: false });
+                handleTimePeriod();
+                //SET ACTIVE LIST ITEM
+                $(this).parent().find('li').removeClass('active');
+                $(this).addClass('active');
+                //UPDATE TIMELINE
+                dispatch(updateActiveSegment(`${segmentId}`));
+                dispatch(updateLeftPip(left));
+                dispatch(updateRightPip(right));
+                dispatch(updateDateRange(`${min}-${max}`));
+                dispatch(updateStartDate(`${min}`));
+                dispatch(updateEndDate(`${max}`));
+                dispatch(updateReset(true));
+                dispatch(getList({}));
+              }
+            );
+            //Basemap Picker List Item Click Event
+            $('body').on('click', '.main-map-picker .basemap', function () {
+              //console.log('MAP PICKER');
               //SET ACTIVE LIST ITEM
               $(this).parent().find('li').removeClass('active');
               $(this).addClass('active');
-              //UPDATE TIMELINE
-              dispatch(updateActiveSegment(`${segmentId}`));
-              dispatch(updateLeftPip(left));
-              dispatch(updateRightPip(right));
-              dispatch(updateDateRange(`${min}-${max}`));
-              dispatch(updateStartDate(`${min}`));
-              dispatch(updateEndDate(`${max}`));
-              dispatch(updateReset(true));
-              dispatch(getList({}));
+              //SET BASEMAP
+              const type = $(this).find('span').attr('class');
+              if (type === 'default')
+                return (view.map.basemap = modern_antique);
+              if (type === 'topo') return (view.map.basemap = 'topo-vector');
+              if (type === 'terrain') return (view.map.basemap = 'terrain');
+              if (type === 'satalite') return (view.map.basemap = 'satellite');
             });
             //"Choose a Time" Popup Change Event
             $('#time-chooser-select').on('change', function (e) {

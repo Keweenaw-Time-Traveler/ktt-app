@@ -24,7 +24,7 @@ function mapPickerList() {
 
       let list = '';
       $.each(segments, (index, segment) => {
-        const item = `<li>
+        const item = `<li class="overlay">
         ${segment.title}
         <span class="left">${segment.left}</span>
         <span class="right">${segment.right}</span>
@@ -40,6 +40,13 @@ function mapPickerList() {
           <ul>
             ${list}
           </ul>
+          <p>Choose a basemap</p>
+            <ul>
+              <li class="basemap"><span class="default">Default</span></li>
+              <li class="basemap"><span class="topo">Topo</span></li>
+              <li class="basemap"><span class="terrain">Terrain</span></li>
+              <li class="basemap"><span class="satalite">Satalite</span></li>
+            </ul>
           </div>`;
     })
     .catch((error) => console.log(error));
