@@ -120,10 +120,6 @@ export default function Filters() {
           </div> */}
           <div className="filter-toogle">
             <label htmlFor="hide" className="toggle-label">
-              <FontAwesomeIcon
-                icon={faMapMarkerTimes}
-                className="toggle-icon"
-              />
               Hide Markers
             </label>
             <ToggleSwitch

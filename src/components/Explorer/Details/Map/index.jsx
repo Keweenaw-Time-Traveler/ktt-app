@@ -275,34 +275,34 @@ export default function Map(props) {
             rangeLabels: true,
           },
         });
-        opacitySlider.on(['thumb-change', 'thumb-drag'], updateOpacity);
-        const basemapToggle = new BasemapToggle({
-          view,
-          nextBasemap: 'satellite',
-        });
-        const baseMapExpand = new Expand({
-          expandIconClass: 'esri-icon-basemap',
-          view: view,
-          content: basemapToggle,
-          expandTooltip: 'Basemap',
-          group: 'top-right',
-        });
-        const detailsMapPickerExpand = new Expand({
-          view,
-          expandIconClass: 'esri-icon-collection',
-          content: 'loading...',
-          expandTooltip: 'Map Overlays',
-          group: 'top-right',
-        });
-        view.ui.add(
-          [detailsMapPickerExpand, baseMapExpand, opacitySlider],
-          'top-right'
-        );
-        detailsMapPickerExpand.when().then(function (picker) {
-          detailsmMapPickerList().then((res) => {
-            picker.content = res;
-          });
-        });
+        // opacitySlider.on(['thumb-change', 'thumb-drag'], updateOpacity);
+        // const basemapToggle = new BasemapToggle({
+        //   view,
+        //   nextBasemap: 'satellite',
+        // });
+        // const baseMapExpand = new Expand({
+        //   expandIconClass: 'esri-icon-basemap',
+        //   view: view,
+        //   content: basemapToggle,
+        //   expandTooltip: 'Basemap',
+        //   group: 'top-right',
+        // });
+        // const detailsMapPickerExpand = new Expand({
+        //   view,
+        //   expandIconClass: 'esri-icon-collection',
+        //   content: 'loading...',
+        //   expandTooltip: 'Map Overlays',
+        //   group: 'top-right',
+        // });
+        // view.ui.add(
+        //   [detailsMapPickerExpand, baseMapExpand, opacitySlider],
+        //   'top-right'
+        // );
+        // detailsMapPickerExpand.when().then(function (picker) {
+        //   detailsmMapPickerList().then((res) => {
+        //     picker.content = res;
+        //   });
+        // });
 
         // Wait for View to be loaded
         view.when().then(() => {
@@ -364,7 +364,7 @@ export default function Map(props) {
             addSourceLayer(type, name, point);
             addRelatedLayer();
             gotoMarker(point);
-            updateMapPicker();
+            //updateMapPicker();
           });
 
           // Event - Related Content choose item
@@ -771,11 +771,11 @@ export default function Map(props) {
         }
 
         //Update Map Picker
-        function updateMapPicker() {
-          detailsmMapPickerList().then((res) => {
-            detailsMapPickerExpand.content = res;
-          });
-        }
+        // function updateMapPicker() {
+        //   detailsmMapPickerList().then((res) => {
+        //     detailsMapPickerExpand.content = res;
+        //   });
+        // }
       }
     );
   }, []);

@@ -384,7 +384,9 @@ function KeTTMap() {
               //CLEAR POPUP
               view.popup.close();
               //UPDATE GRID
-              updateGrid(view, filterVal);
+              if (type !== 'hide') {
+                updateGrid(view, filterVal);
+              }
               //LOAD MARKERS
               if (view.zoom > gridThreshold && type !== 'hide') {
                 let inactive = 'false';
@@ -396,8 +398,30 @@ function KeTTMap() {
                   generateMarkers(view, res);
                 });
               }
+              //Hide Markers
               if (type === 'hide') {
+                const layers = view.map.layers;
                 console.log('HIDE MARKERS');
+                if (layers) {
+                  const targets = [
+                    'marker_layer_inactive',
+                    'grid_layer_6',
+                    'grid_layer_1',
+                    'grid_layer_0.1',
+                    'grid_layer_0.05',
+                  ];
+                  layers.items.forEach((layer, index) => {
+                    if (targets.includes(layer.id)) {
+                      console.log('TARGET', layer);
+                      // if (checked) {
+                      //   layer.visible = false;
+                      // } else {
+
+                      //   layer.visible = true;
+                      // }
+                    }
+                  });
+                }
               }
             });
             //List Item Click Event

@@ -19,12 +19,19 @@
     padding: 9px 20px;
     background: #e5e5e5;
     color: $color-kett-black;
-    font-size: 30px;
-    font-size: 3rem;
-    line-height: 36;
-    line-height: 3.6rem;
+    border-bottom: solid thin $color-kett-white;
+    font-size: 22px;
+    font-size: 2.2rem;
+    line-height: 24;
+    line-height: 2.4rem;
     letter-spacing: 0.75px;
     font-weight: 300;
+    @media screen and (max-width: 1280px) {
+      font-size: 30px;
+      font-size: 3rem;
+      line-height: 36;
+      line-height: 3.6rem;
+    }
     span {
       position: relative;
       top: -2px;
@@ -82,6 +89,7 @@
         }
       }
       &.places {
+        border-left: solid thin $color-kett-white;
         color: $color-kett-places;
         &.active {
           background: $color-kett-places;
@@ -89,6 +97,7 @@
         }
       }
       &.stories {
+        border-left: solid thin $color-kett-white;
         color: $color-kett-stories;
         &.active {
           background: $color-kett-stories;
