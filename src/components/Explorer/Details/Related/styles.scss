@@ -17,8 +17,8 @@
     justify-content: space-between;
     width: 100%;
     padding: 9px 20px;
-    background: $color-kett-black;
-    color: $color-kett-white;
+    background: #e5e5e5;
+    color: $color-kett-black;
     font-size: 30px;
     font-size: 3rem;
     line-height: 36;
@@ -49,7 +49,7 @@
   }
   .detail-related-tabs {
     display: flex;
-    background: #74716b;
+    background: #e5e5e5;
     &.open {
       .tab {
         opacity: 0.3;
@@ -75,13 +75,25 @@
       color: $color-kett-white;
       cursor: pointer;
       &.people {
-        background: $color-kett-people;
+        color: $color-kett-people;
+        &.active {
+          background: $color-kett-people;
+          color: white;
+        }
       }
       &.places {
-        background: $color-kett-places;
+        color: $color-kett-places;
+        &.active {
+          background: $color-kett-places;
+          color: white;
+        }
       }
       &.stories {
-        background: $color-kett-stories;
+        color: $color-kett-stories;
+        &.active {
+          background: $color-kett-stories;
+          color: white;
+        }
       }
       &.active {
         opacity: 1;

@@ -9,7 +9,7 @@ import Tooltip from 'react-tooltip-lite';
 import './styles.scss';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDoubleLeft } from '@fortawesome/pro-solid-svg-icons';
+import { faTimes } from '@fortawesome/pro-light-svg-icons';
 //Components
 import StoryForm from './StoryForm';
 
@@ -25,7 +25,7 @@ const Submit = (props) => {
       <div className="submit-title">Share a Story</div>
       <div className="submit-close" onClick={handleCloseClick}>
         <Tooltip content="Cancel Story Submission" direction="right">
-          <FontAwesomeIcon icon={faChevronDoubleLeft} className="fa-icon" />
+          <FontAwesomeIcon icon={faTimes} className="fa-icon" />
         </Tooltip>
       </div>
       <div className="submit-instructions">

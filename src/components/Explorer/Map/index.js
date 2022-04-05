@@ -386,7 +386,7 @@ function KeTTMap() {
               //UPDATE GRID
               updateGrid(view, filterVal);
               //LOAD MARKERS
-              if (view.zoom > gridThreshold) {
+              if (view.zoom > gridThreshold && type !== 'hide') {
                 let inactive = 'false';
                 if (view.zoom > inactiveThreshold) {
                   inactive = 'true';
@@ -395,6 +395,9 @@ function KeTTMap() {
                   console.log('MARKER RESPONCE', res);
                   generateMarkers(view, res);
                 });
+              }
+              if (type === 'hide') {
+                console.log('HIDE MARKERS');
               }
             });
             //List Item Click Event
@@ -2317,8 +2320,9 @@ function KeTTMap() {
     safeString = safeString.replace('}', '&#125;');
     return safeString;
   };
-  const open = useSelector(selectShowDetails);
-  const wrapperClasses = open ? 'map-wrapper close' : 'map-wrapper';
+  // const open = useSelector(selectShowDetails);
+  // const wrapperClasses = open ? 'map-wrapper close' : 'map-wrapper';
+  const wrapperClasses = 'map-wrapper';
   return (
     <div className={wrapperClasses}>
       <div className="webmap map" ref={mapRef} />

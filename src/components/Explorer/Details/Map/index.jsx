@@ -443,10 +443,12 @@ export default function Map(props) {
                 });
               if (checked && markers.length) {
                 addRelated(type, markers);
+                $('.details-map-container').css('z-index', '1');
               } else {
                 view.popup.close();
                 removeRelated(markers);
                 //removeRelated('all');
+                $('.details-map-container').css('z-index', '-1');
               }
             }
           );
@@ -459,6 +461,7 @@ export default function Map(props) {
               // Clear map
               view.popup.close();
               removeRelated('all');
+              $('.details-map-container').css('z-index', '-1');
             }
           );
 
@@ -470,6 +473,7 @@ export default function Map(props) {
               // Clear map
               view.popup.close();
               removeRelated('all');
+              $('.details-map-container').css('z-index', '-1');
             }
           );
 

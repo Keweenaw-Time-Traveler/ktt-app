@@ -15,6 +15,7 @@ import {
   faBookOpen,
   faCamera,
   faStar,
+  faMapMarkerTimes,
 } from '@fortawesome/pro-solid-svg-icons';
 
 //Components
@@ -27,6 +28,7 @@ export default function Filters() {
   const [type, setType] = useState('everything');
   const [photos, setPhotos] = useState(false);
   const [featured, setFeatured] = useState(false);
+  const [hide, setHide] = useState(false);
 
   const handleRadioChange = (e) => {
     setType(e.target.value);
@@ -116,6 +118,22 @@ export default function Filters() {
               onChange={setFeatured}
             />
           </div> */}
+          <div className="filter-toogle">
+            <label htmlFor="hide" className="toggle-label">
+              <FontAwesomeIcon
+                icon={faMapMarkerTimes}
+                className="toggle-icon"
+              />
+              Hide Markers
+            </label>
+            <ToggleSwitch
+              id="hide"
+              small
+              disabled={false}
+              checked={hide}
+              onChange={setHide}
+            />
+          </div>
         </div>
       </div>
     </div>

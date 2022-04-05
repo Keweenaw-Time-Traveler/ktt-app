@@ -5,7 +5,10 @@ import $ from 'jquery';
 import { useDispatch } from 'react-redux';
 import { updateSearch } from '../../../../../../redux/reducers/filtersSlice';
 import { getDetails } from '../../../../../../redux/reducers/detailsSlice';
-import { toggleRelated } from '../../../../../../redux/reducers/relatedSlice';
+import {
+  toggleRelated,
+  toggleRelatedMap,
+} from '../../../../../../redux/reducers/relatedSlice';
 import {
   updateListItem,
   getList,
@@ -24,6 +27,7 @@ export default function Group(props) {
 
   const handleChange = (checked, id) => {
     setChecked(checked);
+    dispatch(toggleRelatedMap(checked));
     console.log(`TOOGLE ID: ${id}`);
   };
 

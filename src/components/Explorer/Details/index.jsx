@@ -17,7 +17,7 @@ import {
 import {
   getRelated,
   toggleRelated,
-  selectShowRelated,
+  selectMapRelated,
 } from '../../../redux/reducers/relatedSlice';
 import { updateListItem, toggleList } from '../../../redux/reducers/listSlice';
 //Tooptip
@@ -34,6 +34,7 @@ import {
   faDownload,
   faChevronDoubleLeft,
 } from '@fortawesome/pro-solid-svg-icons';
+import { faTimes } from '@fortawesome/pro-light-svg-icons';
 //Components
 import Loader from '../Map/Loader';
 import Source from './Source';
@@ -52,7 +53,7 @@ const Details = (props) => {
   const sources = useSelector(selectDetailsSources);
   const data = useSelector(selectDetailsData);
   const attachments = useSelector(selectDetailsAttachments);
-  const showRelated = useSelector(selectShowRelated);
+  const showMap = useSelector(selectMapRelated);
   const [selectedClient, setSelectedClient] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -129,7 +130,7 @@ const Details = (props) => {
           <h1>{name}</h1>
           <div className="details-close" onClick={handleCloseClick}>
             <Tooltip content="Close Details" direction="right">
-              <FontAwesomeIcon icon={faChevronDoubleLeft} className="fa-icon" />
+              <FontAwesomeIcon icon={faTimes} className="fa-icon" />
             </Tooltip>
           </div>
         </div>
@@ -176,7 +177,7 @@ const Details = (props) => {
         <Related />
         {status !== 'success' && <Loader />}
       </div>
-      <Map show={props.show} />
+      <Map show={showMap} />
       {isLightboxOpen && (
         <Lightbox
           mainSrc={images[photoIndex]}
