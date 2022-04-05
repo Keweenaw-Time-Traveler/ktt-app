@@ -365,6 +365,7 @@ export default function Map(props) {
             addRelatedLayer();
             gotoMarker(point);
             //updateMapPicker();
+            $('.details-map-container').css('z-index', '-1');
           });
 
           // Event - Related Content choose item
