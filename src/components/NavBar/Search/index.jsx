@@ -8,6 +8,7 @@ import {
   updateDateRange,
   updateStartDate,
   updateEndDate,
+  updateHide,
 } from '../../../redux/reducers/filtersSlice';
 import {
   getList,
@@ -59,6 +60,7 @@ export default function Search() {
       dispatch(updateStartDate(`${timeline.min}`));
       dispatch(updateEndDate(`${timeline.max}`));
       dispatch(updateReset(false));
+      dispatch(updateHide(false));
     } else {
       if (showList) {
         dispatch(toggleList('hide'));

@@ -1,8 +1,13 @@
 //React
 import React, { useState } from 'react';
 //Redux
-import { useDispatch } from 'react-redux';
-import { updateType, updatePhotos } from '../../../redux/reducers/filtersSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  updateType,
+  updatePhotos,
+  updateHide,
+  selectFiltersHide,
+} from '../../../redux/reducers/filtersSlice';
 import { getList } from '../../../redux/reducers/listSlice';
 //Styles
 import './styles.scss';
@@ -28,7 +33,8 @@ export default function Filters() {
   const [type, setType] = useState('everything');
   const [photos, setPhotos] = useState(false);
   const [featured, setFeatured] = useState(false);
-  const [hide, setHide] = useState(false);
+  //const [hide, setHide] = useState(false);
+  const hide = useSelector(selectFiltersHide);
 
   const handleRadioChange = (e) => {
     setType(e.target.value);
@@ -46,6 +52,8 @@ export default function Filters() {
       case 'featured':
         setFeatured(checked);
         break;
+      case 'hide':
+        dispatch(updateHide(checked));
       default:
         console.log('ERROR: ID is not valid');
     }
@@ -127,7 +135,7 @@ export default function Filters() {
               small
               disabled={false}
               checked={hide}
-              onChange={setHide}
+              onChange={handleChange}
             />
           </div>
         </div>

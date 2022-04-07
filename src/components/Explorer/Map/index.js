@@ -412,70 +412,7 @@ function KeTTMap() {
               }
               //Hide Markers
               if (type === 'hide') {
-                const layers = view.map.layers;
-                console.log('HIDE MARKERS');
-                if (layers) {
-                  const hideableLayers = [
-                    'marker_layer_inactive',
-                    'grid_layer_6',
-                    'grid_layer_1',
-                    'grid_layer_0.1',
-                    'grid_layer_0.05',
-                  ];
-                  layers.items.forEach((layer, index) => {
-                    if (checked) {
-                      console.log('HIDE LAYERS');
-                      hideMode.current = true;
-                      if (hideableLayers.includes(layer.id)) {
-                        layer.visible = false;
-                      }
-                    } else {
-                      console.log('TARGET', layer);
-                      hideMode.current = false;
-                      if (view.zoom <= gridZoom1) {
-                        if (layer.id === `grid_layer_${level_1}`) {
-                          console.log('SHOW', layer.id);
-                          layer.visible = true;
-                        }
-                      } else if (
-                        view.zoom > gridZoom1 &&
-                        view.zoom <= gridZoom2
-                      ) {
-                        if (layer.id === `grid_layer_${level_2}`) {
-                          console.log('SHOW', layer.id);
-                          layer.visible = true;
-                        }
-                      } else if (
-                        view.zoom > gridZoom2 &&
-                        view.zoom <= gridZoom3
-                      ) {
-                        if (layer.id === `grid_layer_${level_3}`) {
-                          console.log('SHOW', layer.id);
-                          layer.visible = true;
-                        }
-                      } else if (
-                        view.zoom > gridZoom3 &&
-                        view.zoom <= gridThreshold
-                      ) {
-                        if (layer.id === `grid_layer_${level_4}`) {
-                          console.log('SHOW', layer.id);
-                          layer.visible = true;
-                        }
-                      } else if (view.zoom > gridThreshold) {
-                        if (layer.id === 'marker_layer_inactive') {
-                          console.log('SHOW', layer.id);
-                          layer.visible = true;
-                        }
-                      }
-                      // if (checked) {
-                      //   layer.visible = false;
-                      // } else {
-
-                      //   layer.visible = true;
-                      // }
-                    }
-                  });
-                }
+                hideMarkers(checked);
               }
             });
             //List Item Click Event
@@ -693,6 +630,69 @@ function KeTTMap() {
               gotoMarker(point, itemId, recnumber, markerid, loctype, type);
             });
             //Helper Functions
+            function hideMarkers(checked) {
+              const layers = view.map.layers;
+              console.log('HIDE MARKERS', checked);
+              if (layers) {
+                const hideableLayers = [
+                  'marker_layer_inactive',
+                  'grid_layer_6',
+                  'grid_layer_1',
+                  'grid_layer_0.1',
+                  'grid_layer_0.05',
+                ];
+                layers.items.forEach((layer, index) => {
+                  if (checked) {
+                    console.log('HIDE MARKERS');
+                    hideMode.current = true;
+                    if (hideableLayers.includes(layer.id)) {
+                      layer.visible = false;
+                    }
+                  } else {
+                    console.log('SHOW MARKERS');
+                    hideMode.current = false;
+                    if (view.zoom <= gridZoom1) {
+                      if (layer.id === `grid_layer_${level_1}`) {
+                        console.log('SHOW', layer.id);
+                        layer.visible = true;
+                      }
+                    } else if (
+                      view.zoom > gridZoom1 &&
+                      view.zoom <= gridZoom2
+                    ) {
+                      if (layer.id === `grid_layer_${level_2}`) {
+                        console.log('SHOW', layer.id);
+                        layer.visible = true;
+                      }
+                    } else if (
+                      view.zoom > gridZoom2 &&
+                      view.zoom <= gridZoom3
+                    ) {
+                      if (layer.id === `grid_layer_${level_3}`) {
+                        console.log('SHOW', layer.id);
+                        layer.visible = true;
+                      }
+                    } else if (
+                      view.zoom > gridZoom3 &&
+                      view.zoom <= gridThreshold
+                    ) {
+                      if (layer.id === `grid_layer_${level_4}`) {
+                        console.log('SHOW', layer.id);
+                        layer.visible = true;
+                      }
+                    } else if (view.zoom > gridThreshold) {
+                      if (layer.id === 'marker_layer_inactive') {
+                        console.log('SHOW', layer.id);
+                        layer.visible = true;
+                      }
+                    }
+                    if (layer.id === 'tile_layer') {
+                      view.map.reorder(layer, 0);
+                    }
+                  }
+                });
+              }
+            }
             function resetMap() {
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
@@ -778,6 +778,10 @@ function KeTTMap() {
                 type: typeRef.current,
               };
               console.log('SEARCH CHANGE', filterVal);
+              //CLOSE TIME CHOOSER IF OPEN
+              setShowTimeChooser(false);
+              //RESET HIDE MARKERS
+              hideMarkers(false);
               //UPDATE TIMELINE
               resetTimeline();
               //CLOSE POPUP
@@ -1439,32 +1443,36 @@ function KeTTMap() {
             },
           };
           let show = false;
-          let zoom = false;
-          if (size === '6' && view.zoom <= gridZoom1) {
+          if (size === '6' && view.zoom <= gridZoom1 && !hideMode.current) {
             show = true;
-            zoom = true;
+            //zoom = true;
           } else if (
             size === '1' &&
             view.zoom > gridZoom1 &&
-            view.zoom <= gridZoom2
+            view.zoom <= gridZoom2 &&
+            !hideMode.current
           ) {
             show = true;
           } else if (
             size === '0.1' &&
             view.zoom > gridZoom2 &&
-            view.zoom <= gridZoom3
+            view.zoom <= gridZoom3 &&
+            !hideMode.current
           ) {
             show = true;
           } else if (
             size === '0.08' &&
             view.zoom > gridZoom3 &&
-            view.zoom <= gridThreshold
+            view.zoom <= gridThreshold &&
+            !hideMode.current
           ) {
             show = true;
           } else if (view.zoom > gridThreshold) {
             show = false;
+          } else {
+            show = false;
           }
-          console.log('SHOW', show);
+          //console.log('SHOW', show);
           const grid = new FeatureLayer({
             id: `grid_layer_${size}`,
             visible: show,
@@ -1785,6 +1793,7 @@ function KeTTMap() {
           addToView(tileLayer);
           updateOpacity();
           tileLayer.when().then(function (layer) {
+            view.map.reorder(layer, 0);
             if (zoom) {
               view.goTo(layer.fullExtent, { duration: 3000 });
             }

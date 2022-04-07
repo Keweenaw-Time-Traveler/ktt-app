@@ -35,6 +35,7 @@ export const filtersSlice = createSlice({
     type: 'everything',
     placeNameStatus: 'idle',
     placeName: 'Keweenaw',
+    hide: false,
   },
   reducers: {
     updateSearch: (state, { payload }) => {
@@ -54,6 +55,9 @@ export const filtersSlice = createSlice({
     },
     updatePhotos: (state, { payload }) => {
       state.photos = payload;
+    },
+    updateHide: (state, { payload }) => {
+      state.hide = payload;
     },
   },
   extraReducers: (builder) => {
@@ -83,8 +87,10 @@ export const {
   updateEndDate,
   updateType,
   updatePhotos,
+  updateHide,
 } = filtersSlice.actions;
 
 export const selectFiltersAll = (state) => state.filters;
+export const selectFiltersHide = (state) => state.filters.hide;
 
 export default filtersSlice.reducer;
