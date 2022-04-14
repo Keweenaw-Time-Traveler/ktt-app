@@ -9,15 +9,19 @@ $focus-color: $color-kett-gold;
   display: flex;
   margin-left: 20px;
   .toggle-label {
-    margin-right: 10px;
+    span {
+      @media screen and (max-width: 1280px) {
+        display: none;
+      }
+    }
   }
   .toggle-icon {
-    margin-right: 5px;
+    margin-right: 0;
   }
 }
 .toggle-switch {
   position: relative;
-  margin-right: 10px;
+  margin-right: 20px;
   width: 75px;
   display: inline-block;
   vertical-align: middle;

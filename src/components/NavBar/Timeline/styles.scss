@@ -4,6 +4,9 @@
   display: flex;
   padding: 0 25px;
   color: #fff;
+  @media screen and (max-width: 1280px) {
+    padding: 0 10px;
+  }
 }
 .label-min {
   padding-right: 15px;
@@ -55,14 +58,30 @@
   background: $color-kett-gold;
 }
 .timeline-reset {
-  margin-right: 25px;
-  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 10px;
+  margin: 0 25px 0 0px;
   color: $color-kett-white;
   background: $color-kett-grey-secondary;
   border: none;
-  text-transform: uppercase;
   cursor: pointer;
   &:hover {
     background: $color-kett-gold;
+  }
+  @media screen and (max-width: 1280px) {
+    margin: 0 10px 0 0px;
+  }
+  .fa-icon {
+    font-size: 12px;
+  }
+  span {
+    margin-left: 5px;
+    font-size: 16px;
+    line-height: 30px;
+    @media screen and (max-width: 1280px) {
+      display: none;
+    }
   }
 }

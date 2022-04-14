@@ -31,6 +31,7 @@ export const timelineSlice = createSlice({
     timelineStatus: 'idle',
     timelineRange: '',
     reset: false,
+    chooserValue: null,
   },
   reducers: {
     updateTimelineRange: (state, action) => {

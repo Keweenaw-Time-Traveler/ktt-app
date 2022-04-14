@@ -38,7 +38,7 @@ import {
 import './styles.scss';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/pro-solid-svg-icons';
+import { faSearch, faChevronLeft } from '@fortawesome/pro-solid-svg-icons';
 
 export default function Search() {
   const dispatch = useDispatch();
@@ -63,16 +63,16 @@ export default function Search() {
       dispatch(toggleDetails('hide'));
       dispatch(toggleRelated('hide'));
       //Reset Timeline
-      window.timePeriod = null;
-      dispatch(updateActiveSegment(null));
-      dispatch(updateLeftPip('0%'));
-      dispatch(updateRightPip('100%'));
-      dispatch(updateDateRange(`${timeline.min}-${timeline.max}`));
-      dispatch(updateTimelineRange(`${timeline.min}-${timeline.max}`));
-      dispatch(updateStartDate(`${timeline.min}`));
-      dispatch(updateEndDate(`${timeline.max}`));
-      dispatch(updateReset(false));
-      dispatch(updateHide(false));
+      // window.timePeriod = null;
+      // dispatch(updateActiveSegment(null));
+      // dispatch(updateLeftPip('0%'));
+      // dispatch(updateRightPip('100%'));
+      // dispatch(updateDateRange(`${timeline.min}-${timeline.max}`));
+      // dispatch(updateTimelineRange(`${timeline.min}-${timeline.max}`));
+      // dispatch(updateStartDate(`${timeline.min}`));
+      // dispatch(updateEndDate(`${timeline.max}`));
+      // dispatch(updateReset(false));
+      // dispatch(updateHide(false));
     } else {
       if (showList) {
         dispatch(toggleList('hide'));
@@ -91,7 +91,12 @@ export default function Search() {
     }
   };
 
-  const handleFocus = (e) => {
+  const handleBackClick = (e) => {
+    e.preventDefault();
+    setIsActive(!isActive);
+  };
+
+  const handleItemClick = (e) => {
     e.preventDefault();
     setIsActive(!isActive);
   };
@@ -103,10 +108,10 @@ export default function Search() {
 
   return (
     <div className="search">
-      {/* <div className="search-nav">
+      <div className="search-nav" onClick={handleBackClick}>
         <FontAwesomeIcon icon={faChevronLeft} className="fa-icon left" />
-        <FontAwesomeIcon icon={faChevronRight} className="fa-icon right" />
-      </div> */}
+        <span>Back</span>
+      </div>
       <div className="search-input">
         <input
           type="text"
@@ -116,7 +121,6 @@ export default function Search() {
           value={filters.search}
           onKeyDown={handleKeyDown}
           onChange={(e) => dispatch(updateSearch(e.target.value))}
-          onClick={handleFocus}
         />
         <div
           className="search-input-icon"
@@ -144,6 +148,7 @@ export default function Search() {
                 data-markerid={item.markerid}
                 data-mapyear={item.mapyear}
                 data-loctype={item.loctype}
+                onClick={handleItemClick}
               >
                 {item.historyname}
               </div>

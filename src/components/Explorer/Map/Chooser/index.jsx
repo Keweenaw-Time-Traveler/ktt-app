@@ -10,10 +10,12 @@ import {
 import { getList } from '../../../../redux/reducers/listSlice';
 import {
   selectSegments,
+  selectActiveSegment,
   updateActiveSegment,
   updateActiveUrl,
   updateLeftPip,
   updateRightPip,
+  updateReset,
 } from '../../../../redux/reducers/timelineSlice';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,6 +33,8 @@ export default function Chooser(props) {
   const [chooserStyles, setChooserStyles] = useState({ display: 'none' });
   //Get segment list
   const segments = useSelector(selectSegments);
+  //Get Chooser Value
+  const selectedSegment = useSelector(selectActiveSegment);
 
   useEffect(() => {
     const { show } = props;
@@ -65,6 +69,7 @@ export default function Chooser(props) {
     dispatch(updateStartDate(`${min}`));
     dispatch(updateEndDate(`${max}`));
     dispatch(getList({}));
+    dispatch(updateReset(true));
     props.update();
   };
 
@@ -77,7 +82,9 @@ export default function Chooser(props) {
         <FontAwesomeIcon icon={faHistory} size="4x" />
       </div>
       <select
+        key={`my_unique_select_key__${selectedSegment}`}
         defaultValue={'DEFAULT'}
+        value={selectedSegment}
         id="time-chooser-select"
         className="time-chooser-select esri-select"
         onChange={handleSelect}

@@ -36,11 +36,12 @@ button.menu-trigger span {
   font-size: 1.8rem;
   line-height: 22px;
   line-height: 2.2rem;
+  @media screen and (max-width: 1280px) {
+    display: none;
+  }
 }
 button.menu-trigger .fa-icon {
   font-size: 30px;
-}
-.menu-trigger:hover {
 }
 .menu-trigger img {
   border-radius: 90px;

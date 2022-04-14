@@ -25,6 +25,9 @@ import {
 } from '../../../redux/reducers/timelineSlice';
 //Styles
 import './styles.scss';
+//Font Awesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock } from '@fortawesome/pro-solid-svg-icons';
 //Tooptip
 import Tooltip from 'react-tooltip-lite';
 
@@ -118,9 +121,12 @@ export default function Timeline() {
         <div className="label-max">{timeline.max}</div>
       </div>
       {resetStatus && (
-        <button className="timeline-reset" onClick={handleResetClick}>
-          Reset
-        </button>
+        <Tooltip content="Reset timeline to show all" background="#e6a100">
+          <button className="timeline-reset" onClick={handleResetClick}>
+            <FontAwesomeIcon icon={faClock} className="fa-icon" />
+            <span>Reset</span>
+          </button>
+        </Tooltip>
       )}
     </>
   );

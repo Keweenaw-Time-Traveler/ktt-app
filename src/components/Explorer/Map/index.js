@@ -292,8 +292,9 @@ function KeTTMap() {
               const min = $selected.data('min');
               const max = $selected.data('max');
               const url = $selected.data('url');
+              const zoom = view.zoom < gridZoom1 ? true : false;
               dateChange(min, max, url);
-              createTileLayer({ url, zoom: true });
+              createTileLayer({ url, zoom });
             });
             //Timeline Segment Click Event
             $('.segment').on('click', function (e) {
@@ -412,7 +413,8 @@ function KeTTMap() {
               }
               //Hide Markers
               if (type === 'hide') {
-                hideMarkers(checked);
+                const hideChecked = !$(this).is(':checked');
+                hideMarkers(hideChecked);
               }
             });
             //List Item Click Event
@@ -800,10 +802,10 @@ function KeTTMap() {
               const searchValue = $('#search').val();
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
-              searchRef.current = `${searchValue}`;
-              dateRangeRef.current = `${min}-${max}`;
-              startDateRef.current = `${min}`;
-              endDateRef.current = `${max}`;
+              // searchRef.current = `${searchValue}`;
+              // dateRangeRef.current = `${min}-${max}`;
+              // startDateRef.current = `${min}`;
+              // endDateRef.current = `${max}`;
               const filterVal = {
                 search: `${searchValue}`,
                 date_range: `${min}-${max}`,
@@ -811,30 +813,52 @@ function KeTTMap() {
                 featured: featuredRef.current,
                 type: typeRef.current,
               };
+              const extentClone = view.extent.clone();
+              const extentExpanded = extentClone.expand(10);
+              const { xmin, xmax, ymin, ymax } = extentExpanded;
+              const extent = {
+                xmin: xmin,
+                xmax: xmax,
+                ymin: ymin,
+                ymax: ymax,
+              };
               console.log('SEARCH CHANGE', filterVal);
               //CLOSE TIME CHOOSER IF OPEN
               setShowTimeChooser(false);
               //RESET HIDE MARKERS
               hideMarkers(false);
               //UPDATE TIMELINE
-              resetTimeline();
+              //resetTimeline();
               //CLOSE POPUP
               view.popup.close();
               //CLOSE DETAILS
               dispatch(toggleDetails('hide'));
-              //HIDE TILES
-              toggleTiles('hide');
-              //RESET EXTENTS
-              const point = new Point({
-                x: -9847493.299600473,
-                y: 5961570.438394273,
-                spatialReference: { wkid: 3857 },
-              });
-              view
-                .goTo({ target: point, zoom: 10 }, { duration: 3000 })
-                .then(() => {
-                  updateGrid(view, filterVal);
+              //UPDATE GRID
+              updateGrid(view, filterVal);
+              //LOAD MARKERS
+              if (view.zoom > gridThreshold) {
+                let inactive = 'false';
+                if (view.zoom > inactiveThreshold) {
+                  inactive = 'true';
+                }
+                asyncMarkers(view, filterVal, inactive, extent).then((res) => {
+                  console.log('MARKER RESPONCE', res);
+                  generateMarkers(view, res);
                 });
+              }
+              //HIDE TILES
+              //toggleTiles('hide');
+              //RESET EXTENTS
+              // const point = new Point({
+              //   x: -9847493.299600473,
+              //   y: 5961570.438394273,
+              //   spatialReference: { wkid: 3857 },
+              // });
+              // view
+              //   .goTo({ target: point, zoom: 10 }, { duration: 3000 })
+              //   .then(() => {
+              //     updateGrid(view, filterVal);
+              //   });
             }
             function moveThroughTime(segmentId) {
               const $target = $(`.segment-${segmentId}`);

@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 //Src: https://letsbuildui.dev/articles/building-a-dropdown-menu-component-with-react-hooks
 import { useDetectOutsideClick } from '../hooks/useDetectOutsideClick';
 //Styles
-import './styles.css';
+import './styles.scss';
 //Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/pro-regular-svg-icons';

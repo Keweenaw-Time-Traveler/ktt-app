@@ -19,8 +19,7 @@ import {
   faBuilding,
   faBookOpen,
   faCamera,
-  faStar,
-  faMapMarkerTimes,
+  faMapMarkerAlt,
 } from '@fortawesome/pro-solid-svg-icons';
 
 //Components
@@ -103,7 +102,7 @@ export default function Filters() {
           <div className="filter-toogle">
             <label htmlFor="photos" className="toggle-label">
               <FontAwesomeIcon icon={faCamera} className="toggle-icon" />
-              Photos
+              <span>Photos</span>
             </label>
             <ToggleSwitch
               id="photos"
@@ -128,7 +127,8 @@ export default function Filters() {
           </div> */}
           <div className="filter-toogle">
             <label htmlFor="hide" className="toggle-label">
-              Hide Markers
+              <FontAwesomeIcon icon={faMapMarkerAlt} className="toggle-icon" />
+              <span>Markers</span>
             </label>
             <ToggleSwitch
               id="hide"

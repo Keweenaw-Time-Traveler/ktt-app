@@ -35,7 +35,7 @@ export const filtersSlice = createSlice({
     type: 'everything',
     placeNameStatus: 'idle',
     placeName: 'Keweenaw',
-    hide: false,
+    hide: true,
   },
   reducers: {
     updateSearch: (state, { payload }) => {
