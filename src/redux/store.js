@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import dataReducer from './reducers/dataSlice';
 import filtersReducer from './reducers/filtersSlice';
 import markersReducer from './reducers/markersSlice';
 import landingReducer from './reducers/landingSlice';
@@ -9,10 +8,10 @@ import submitReducer from './reducers/submitSlice';
 import relatedReducer from './reducers/relatedSlice';
 import mapReducer from './reducers/mapSlice';
 import timelineReducer from './reducers/timelineSlice';
+import historyReducer from './reducers/historySlice';
 
 export default configureStore({
   reducer: {
-    data: dataReducer,
     filters: filtersReducer,
     markers: markersReducer,
     landing: landingReducer,
@@ -22,5 +21,6 @@ export default configureStore({
     related: relatedReducer,
     map: mapReducer,
     timeline: timelineReducer,
+    history: historyReducer,
   },
 });

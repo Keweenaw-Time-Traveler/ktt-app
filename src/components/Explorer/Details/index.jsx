@@ -20,6 +20,7 @@ import {
   selectMapRelated,
 } from '../../../redux/reducers/relatedSlice';
 import { updateListItem, toggleList } from '../../../redux/reducers/listSlice';
+import { updateHistoryItems } from '../../../redux/reducers/historySlice';
 //Tooptip
 import Tooltip from 'react-tooltip-lite';
 //Styles
@@ -63,7 +64,21 @@ const Details = (props) => {
   useEffect(() => {
     if (status === 'success') {
       const index = sources.findIndex((obj) => obj.selected === 'true');
+      const source = sources.find((obj) => obj.selected === 'true');
       setSelectedClient(index);
+      dispatch(
+        updateHistoryItems({
+          id,
+          type,
+          x: source.x,
+          y: source.y,
+          markerid: source.markerid,
+          mapyear: source.mapyear,
+          recnumber: source.recnumber,
+          loctype: source.loctype,
+          historyname: source.historyname,
+        })
+      );
     }
   }, [status, sources]);
 

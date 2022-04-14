@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 //Hooks
 //Src: https://letsbuildui.dev/articles/building-a-dropdown-menu-component-with-react-hooks
-import { useDetectOutsideClick } from './useDetectOutsideClick';
+import { useDetectOutsideClick } from '../hooks/useDetectOutsideClick';
 //Styles
 import './styles.css';
 //Icons

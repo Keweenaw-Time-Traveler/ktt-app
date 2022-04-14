@@ -1,4 +1,6 @@
+@import '../../../colors.scss';
 .search {
+  position: relative;
   display: flex;
   justify-content: space-between;
 }
@@ -35,8 +37,50 @@
   align-items: center;
   width: 33px;
   height: 33px;
-  background: #e6a100;
+  background: $color-kett-gold;
 }
 .search-input-icon .fa-icon {
-  color: #fff;
+  color: $color-kett-white;
+}
+.history {
+  background: $color-kett-white;
+  border-radius: 8px;
+  position: absolute;
+  top: 45px;
+  left: 20px;
+  z-index: 100;
+  width: 296px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+.history-heading {
+  padding: 5px;
+  border-bottom: 1px solid $color-kett-off-white;
+}
+.history-list {
+  padding: 10px;
+  background: $color-kett-green-secondary;
+  color: $color-kett-white;
+}
+.history-list-item {
+  color: $color-kett-white;
+  cursor: pointer;
+  &:hover {
+    color: $color-kett-gold;
+  }
+  &.active {
+    color: $color-kett-gold;
+  }
+}
+.history-clear {
+  padding: 5px;
+  border-top: 1px solid $color-kett-off-white;
 }

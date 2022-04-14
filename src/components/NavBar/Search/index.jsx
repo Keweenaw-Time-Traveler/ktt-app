@@ -1,5 +1,8 @@
 //React
-import React from 'react';
+import React, { useRef } from 'react';
+//Hooks
+//Src: https://letsbuildui.dev/articles/building-a-dropdown-menu-component-with-react-hooks
+import { useDetectOutsideClick } from '../hooks/useDetectOutsideClick';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -26,6 +29,11 @@ import {
 } from '../../../redux/reducers/timelineSlice';
 import { toggleDetails } from '../../../redux/reducers/detailsSlice';
 import { toggleRelated } from '../../../redux/reducers/relatedSlice';
+import {
+  selectHistoryActive,
+  selectHistoryItems,
+  clearHistoryItems,
+} from '../../../redux/reducers/historySlice';
 //Styles
 import './styles.scss';
 //Font Awesome
@@ -37,6 +45,10 @@ export default function Search() {
   const filters = useSelector(selectFiltersAll);
   const timeline = useSelector(selectTimeline);
   const showList = useSelector(selectShowList);
+  const historyStatus = useSelector(selectHistoryActive);
+  const historyList = useSelector(selectHistoryItems);
+  const historyRef = useRef(null);
+  const [isActive, setIsActive] = useDetectOutsideClick(historyRef, false);
 
   const search = () => {
     const searchDOM = document.getElementById('search');
@@ -79,6 +91,16 @@ export default function Search() {
     }
   };
 
+  const handleFocus = (e) => {
+    e.preventDefault();
+    setIsActive(!isActive);
+  };
+
+  const handleHistoryClearClick = (e) => {
+    e.preventDefault();
+    dispatch(clearHistoryItems({}));
+  };
+
   return (
     <div className="search">
       {/* <div className="search-nav">
@@ -94,6 +116,7 @@ export default function Search() {
           value={filters.search}
           onKeyDown={handleKeyDown}
           onChange={(e) => dispatch(updateSearch(e.target.value))}
+          onClick={handleFocus}
         />
         <div
           className="search-input-icon"
@@ -103,6 +126,34 @@ export default function Search() {
           <FontAwesomeIcon icon={faSearch} className="fa-icon" />
         </div>
       </div>
+      <nav
+        ref={historyRef}
+        className={`history ${isActive ? 'active' : 'inactive'}`}
+      >
+        <div className="history-heading">Viewed Records History</div>
+        <div className="history-list">
+          {historyStatus &&
+            historyList.map((item) => (
+              <div
+                className="history-list-item"
+                data-id={item.id}
+                data-type={item.type}
+                data-x={item.x}
+                data-y={item.y}
+                data-recnumber={item.recnumber}
+                data-markerid={item.markerid}
+                data-mapyear={item.mapyear}
+                data-loctype={item.loctype}
+              >
+                {item.historyname}
+              </div>
+            ))}
+          {!historyStatus && <div className="history-empty">History Empty</div>}
+        </div>
+        <div className="history-clear" onClick={handleHistoryClearClick}>
+          Clear All
+        </div>
+      </nav>
     </div>
   );
 }

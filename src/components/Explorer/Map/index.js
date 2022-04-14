@@ -608,6 +608,40 @@ function KeTTMap() {
             $('.page-content').on('click', '.map-popup-data li', function () {
               $(this).addClass('active').siblings().removeClass('active');
             });
+            //History List Click Event
+            $('.search').on('click', '.history-list-item', function () {
+              const id = $(this).data('id');
+              const type = $(this).data('type');
+              const itemId = $(this).data('id');
+              const markerX = $(this).data('x');
+              const markerY = $(this).data('y');
+              const recnumber = $(this).data('recnumber');
+              const markerid = $(this).data('markerid');
+              const loctype = $(this).data('loctype');
+              const mapyear = $(this).data('mapyear');
+              const point = new Point({
+                x: markerX,
+                y: markerY,
+                spatialReference: { wkid: 3857 },
+              });
+              console.log('HISTORY LIST CLICK', {
+                id,
+                recnumber,
+                loctype,
+              });
+              if (id && recnumber) {
+                dispatch(updateListItem({ recnumber, loctype }));
+                dispatch(toggleList('hide'));
+                dispatch(getDetails({ id, recnumber, loctype }));
+                dispatch(toggleDetails('show'));
+                dispatch(toggleSubmit('hide'));
+                window.timePeriod = null;
+                updateTimeline(mapyear);
+                gotoMarker(point, itemId, recnumber, markerid, loctype, type);
+              } else {
+                console.log('Sorry, id or recumber is missing');
+              }
+            });
             //Full Details - source change
             //TODO: combine similar
             $('.page-content').on('change', '#details-source', function () {

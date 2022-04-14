@@ -65,6 +65,7 @@ export const detailsSlice = createSlice({
           loctype: source.loctype,
           mapyear: source.map_year,
           selected: source.selected,
+          historyname: source.historyname,
         };
       });
       state.details = action.payload;
