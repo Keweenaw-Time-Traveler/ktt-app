@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const localStorage = JSON.parse(window.localStorage.getItem('history'));
+const localStorage = JSON.parse(window.localStorage.getItem('kett_history'));
 const isActive = localStorage ? true : false;
 
 export const historySlice = createSlice({
@@ -18,7 +18,7 @@ export const historySlice = createSlice({
       if (notEmpty) {
         state.historyItems.unshift(payload);
         window.localStorage.setItem(
-          'history',
+          'kett_history',
           JSON.stringify(state.historyItems)
         );
       }
@@ -26,7 +26,7 @@ export const historySlice = createSlice({
     clearHistoryItems: (state) => {
       state.historyActive = false;
       state.historyItems = [];
-      window.localStorage.removeItem('history');
+      window.localStorage.removeItem('kett_history');
     },
   },
 });
