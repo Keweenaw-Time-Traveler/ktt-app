@@ -137,8 +137,9 @@ export default function Search() {
         <div className="history-heading">Viewed Records History</div>
         <div className="history-list">
           {historyStatus &&
-            historyList.map((item) => (
+            historyList.map((item, index) => (
               <div
+                key={`item-${index}`}
                 className="history-list-item"
                 data-id={item.id}
                 data-type={item.type}
@@ -155,8 +156,10 @@ export default function Search() {
             ))}
           {!historyStatus && <div className="history-empty">History Empty</div>}
         </div>
-        <div className="history-clear" onClick={handleHistoryClearClick}>
-          Clear All
+        <div className="history-footer">
+          <div className="history-clear" onClick={handleHistoryClearClick}>
+            Clear All
+          </div>
         </div>
       </nav>
     </div>

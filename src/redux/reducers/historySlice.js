@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const localStorage = JSON.parse(window.localStorage.getItem('history'));
+const isActive = localStorage ? true : false;
+
 export const historySlice = createSlice({
   name: 'history',
   initialState: {
-    historyActive: false,
-    historyItems: [],
+    historyActive: isActive,
+    historyItems: isActive ? localStorage : [],
   },
   reducers: {
     updateHistoryItems: (state, { payload }) => {
@@ -14,11 +17,16 @@ export const historySlice = createSlice({
       state.historyActive = notEmpty;
       if (notEmpty) {
         state.historyItems.unshift(payload);
+        window.localStorage.setItem(
+          'history',
+          JSON.stringify(state.historyItems)
+        );
       }
     },
     clearHistoryItems: (state) => {
       state.historyActive = false;
       state.historyItems = [];
+      window.localStorage.removeItem('history');
     },
   },
 });

@@ -57,7 +57,7 @@
   background: $color-kett-white;
   border-radius: 8px;
   position: absolute;
-  top: 45px;
+  top: 40px;
   left: 10px;
   z-index: 100;
   width: 340px;
@@ -73,8 +73,10 @@
   }
 }
 .history-heading {
-  padding: 5px;
-  border-bottom: 1px solid $color-kett-off-white;
+  min-height: 47px;
+  padding: 10px 20px;
+  color: $color-kett-white;
+  background: $color-kett-grey-secondary;
 }
 .history-list {
   padding: 10px;
@@ -91,7 +93,27 @@
     color: $color-kett-gold;
   }
 }
+.history-footer {
+  display: flex;
+  justify-content: center;
+  min-height: 47px;
+  padding: 10px 20px;
+  background: $color-kett-grey-secondary;
+}
 .history-clear {
-  padding: 5px;
-  border-top: 1px solid $color-kett-off-white;
+  padding: 2px 9px;
+  margin: 0;
+  background: #fff;
+  color: #000;
+  border-radius: 15px;
+  font-size: 14px;
+  font-size: 1.4rem;
+  line-height: 23px;
+  line-height: 2.3rem;
+  letter-spacing: 0.35px;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+  &:hover {
+    background: $color-kett-gold;
+  }
 }
