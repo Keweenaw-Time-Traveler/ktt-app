@@ -9,6 +9,7 @@ import {
   updateDateRange,
   updateStartDate,
   updateEndDate,
+  updateSearch,
 } from '../../../redux/reducers/filtersSlice';
 import {
   updateTimelineRange,
@@ -534,8 +535,15 @@ function KeTTMap() {
             //Marker Popup List Click Event
             $('.page-content').on(
               'click',
-              '.map-popup-data .data li',
+              '.map-popup.marker .data li',
               function () {
+                const title = $(this)
+                  .clone()
+                  .children()
+                  .remove()
+                  .end()
+                  .text()
+                  .trim();
                 const id = $(this).find('span.id').text();
                 const recnumber = $(this).find('span.recnumber').text();
                 const loctype = $(this).find('span.loctype').text();
@@ -550,6 +558,8 @@ function KeTTMap() {
                   dispatch(getDetails({ id, recnumber, loctype }));
                   dispatch(toggleDetails('show'));
                   dispatch(toggleSubmit('hide'));
+                  dispatch(updateSearch(title));
+                  dispatch(getList({}));
                 } else {
                   console.log('Sorry, id or recumber is missing');
                 }
@@ -591,6 +601,13 @@ function KeTTMap() {
             //Map Popup - Full Details click Event
             $('.page-content').on('click', '.full-details', function () {
               const $active = $(this).closest('.map-popup');
+              const title = $active
+                .find('li.active')
+                .clone()
+                .children()
+                .remove()
+                .end()
+                .text();
               const id = $active.find('li.active span.id').text();
               const recnumber = $active.find('li.active span.recnumber').text();
               const loctype = $active.find('li.active span.loctype').text();
@@ -604,6 +621,8 @@ function KeTTMap() {
                 dispatch(getDetails({ id, recnumber, loctype }));
                 dispatch(toggleDetails('show'));
                 dispatch(toggleSubmit('hide'));
+                dispatch(updateSearch(title));
+                dispatch(getList({}));
               }
             });
             //Map Popup - click new list item
@@ -611,7 +630,14 @@ function KeTTMap() {
               $(this).addClass('active').siblings().removeClass('active');
             });
             //History List Click Event
-            $('.search').on('click', '.history-list-item', function () {
+            $('body').on('click', '.history-list-item', function () {
+              const title = $(this)
+                .clone()
+                .children()
+                .remove()
+                .end()
+                .text()
+                .trim();
               const id = $(this).data('id');
               const type = $(this).data('type');
               const itemId = $(this).data('id');
@@ -627,6 +653,7 @@ function KeTTMap() {
                 spatialReference: { wkid: 3857 },
               });
               console.log('HISTORY LIST CLICK', {
+                title,
                 id,
                 recnumber,
                 loctype,
@@ -640,6 +667,8 @@ function KeTTMap() {
                 window.timePeriod = null;
                 updateTimeline(mapyear);
                 gotoMarker(point, itemId, recnumber, markerid, loctype, type);
+                dispatch(updateSearch(title));
+                dispatch(getList({ title }));
               } else {
                 console.log('Sorry, id or recumber is missing');
               }

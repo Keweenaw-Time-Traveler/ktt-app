@@ -6,7 +6,9 @@ export const getList = createAsyncThunk(
   'list/getList',
   async (arg, { dispatch, getState }) => {
     const stateBefore = getState();
-    const search = stateBefore.filters.search;
+    const { title } = arg;
+    console.log('GETLIST TITLE', title);
+    const search = title ? title : stateBefore.filters.search;
     const filters = {
       date_range: stateBefore.filters.dateRange,
       photos: stateBefore.filters.photos,
@@ -15,6 +17,7 @@ export const getList = createAsyncThunk(
     };
     console.log('LIST SEARCH VALUE', search);
     console.log('LIST FILTER VALUES', filters);
+    if (search === '') return null;
     return axios
       .post('https://geospatialresearch.mtu.edu/list.php', {
         search,
@@ -93,10 +96,14 @@ export const listSlice = createSlice({
     builder.addCase(getList.fulfilled, (state, action) => {
       // Add list to the state array
       // Update status
-      const { results, errormessage } = action.payload;
-      state.entities = results;
-      state.errormessage = errormessage;
-      state.listStatus = 'success';
+      console.log('THUNK PAYLOAD', action.payload);
+      if (action.payload) {
+        const { results, errormessage } = action.payload;
+        console.log('THUNK RESULTS', results);
+        state.entities = results;
+        state.errormessage = errormessage;
+        state.listStatus = 'success';
+      }
     });
   },
 });

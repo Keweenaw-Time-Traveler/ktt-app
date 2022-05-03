@@ -1,5 +1,6 @@
 //React
 import React, { useRef } from 'react';
+import $ from 'jquery';
 //Hooks
 //Src: https://letsbuildui.dev/articles/building-a-dropdown-menu-component-with-react-hooks
 import { useDetectOutsideClick } from '../hooks/useDetectOutsideClick';
