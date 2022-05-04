@@ -326,6 +326,10 @@ function KeTTMap() {
                 mainSearch();
               }
             });
+            $('body').on('click', '#search-clear', function (e) {
+              e.preventDefault();
+              mainSearch('clear');
+            });
             //Filters:Radio Buttons Click Event
             $('.radio-button-input').on('click', function () {
               const type = $(this).val();
@@ -827,8 +831,8 @@ function KeTTMap() {
                   updateGrid(view, filterVal);
                 });
             }
-            function mainSearch() {
-              const searchValue = $('#search').val();
+            function mainSearch(clear) {
+              const searchValue = clear ? '' : $('#search').val();
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
               // searchRef.current = `${searchValue}`;

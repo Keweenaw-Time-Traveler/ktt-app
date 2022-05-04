@@ -39,7 +39,11 @@ import {
 import './styles.scss';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faChevronLeft } from '@fortawesome/pro-solid-svg-icons';
+import {
+  faSearch,
+  faChevronLeft,
+  faWindowClose,
+} from '@fortawesome/pro-solid-svg-icons';
 
 export default function Search() {
   const dispatch = useDispatch();
@@ -51,10 +55,11 @@ export default function Search() {
   const historyRef = useRef(null);
   const [isActive, setIsActive] = useDetectOutsideClick(historyRef, false);
 
-  const search = () => {
+  const search = (clear) => {
     const searchDOM = document.getElementById('search');
     const searchValue = searchDOM.value;
     //console.log('SEARCH VALUE', searchValue);
+    if (clear) return dispatch(toggleList('hide'));
     if (searchValue !== '') {
       if (!showList) {
         dispatch(toggleList('show'));
@@ -84,6 +89,13 @@ export default function Search() {
   const handleSearchClick = (e) => {
     e.preventDefault();
     search();
+  };
+
+  const handleSearchClear = (e) => {
+    e.preventDefault();
+    //search('clear');
+    dispatch(updateSearch(''));
+    search(true);
   };
 
   const handleKeyDown = (e) => {
@@ -123,6 +135,15 @@ export default function Search() {
           onKeyDown={handleKeyDown}
           onChange={(e) => dispatch(updateSearch(e.target.value))}
         />
+        {filters.search && (
+          <div
+            className="search-clear-icon"
+            id="search-clear"
+            onClick={handleSearchClear}
+          >
+            <FontAwesomeIcon icon={faWindowClose} className="fa-icon" />
+          </div>
+        )}
         <div
           className="search-input-icon"
           id="search-icon"
