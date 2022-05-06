@@ -12,7 +12,6 @@ import {
   updateDateRange,
   updateStartDate,
   updateEndDate,
-  updateHide,
 } from '../../../redux/reducers/filtersSlice';
 import {
   getList,
@@ -69,16 +68,15 @@ export default function Search() {
       dispatch(toggleDetails('hide'));
       dispatch(toggleRelated('hide'));
       //Reset Timeline
-      // window.timePeriod = null;
-      // dispatch(updateActiveSegment(null));
-      // dispatch(updateLeftPip('0%'));
-      // dispatch(updateRightPip('100%'));
-      // dispatch(updateDateRange(`${timeline.min}-${timeline.max}`));
-      // dispatch(updateTimelineRange(`${timeline.min}-${timeline.max}`));
-      // dispatch(updateStartDate(`${timeline.min}`));
-      // dispatch(updateEndDate(`${timeline.max}`));
-      // dispatch(updateReset(false));
-      // dispatch(updateHide(false));
+      window.timePeriod = null;
+      dispatch(updateActiveSegment(null));
+      dispatch(updateLeftPip('0%'));
+      dispatch(updateRightPip('100%'));
+      dispatch(updateDateRange(`${timeline.min}-${timeline.max}`));
+      dispatch(updateTimelineRange(`${timeline.min}-${timeline.max}`));
+      dispatch(updateStartDate(`${timeline.min}`));
+      dispatch(updateEndDate(`${timeline.max}`));
+      dispatch(updateReset(false));
     } else {
       if (showList) {
         dispatch(toggleList('hide'));

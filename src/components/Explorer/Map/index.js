@@ -10,6 +10,7 @@ import {
   updateStartDate,
   updateEndDate,
   updateSearch,
+  updateHide,
 } from '../../../redux/reducers/filtersSlice';
 import {
   updateTimelineRange,
@@ -77,7 +78,7 @@ function KeTTMap() {
   const gridZoom2 = 13;
   const gridZoom3 = 16;
   const gridThreshold = 17;
-  const inactiveThreshold = 19;
+  const inactiveThreshold = 17;
 
   //Sets the different grid sizes
   const level_1 = '6';
@@ -287,7 +288,7 @@ function KeTTMap() {
               if (type === 'satalite') return (view.map.basemap = 'satellite');
             });
             //"Choose a Time" Popup Change Event
-            $('#time-chooser-select').on('change', function (e) {
+            $('body').on('change', '#time-chooser-select', function (e) {
               e.preventDefault();
               const $selected = $(this).find(':selected');
               const min = $selected.data('min');
@@ -704,6 +705,7 @@ function KeTTMap() {
               console.log('HIDE MARKERS', checked);
               if (layers) {
                 const hideableLayers = [
+                  'marker_layer_active',
                   'marker_layer_inactive',
                   'grid_layer_6',
                   'grid_layer_1',
@@ -750,6 +752,10 @@ function KeTTMap() {
                         layer.visible = true;
                       }
                     } else if (view.zoom > gridThreshold) {
+                      if (layer.id === 'marker_layer_active') {
+                        console.log('SHOW', layer.id);
+                        layer.visible = true;
+                      }
                       if (layer.id === 'marker_layer_inactive') {
                         console.log('SHOW', layer.id);
                         layer.visible = true;
@@ -835,10 +841,10 @@ function KeTTMap() {
               const searchValue = clear ? '' : $('#search').val();
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
-              // searchRef.current = `${searchValue}`;
-              // dateRangeRef.current = `${min}-${max}`;
-              // startDateRef.current = `${min}`;
-              // endDateRef.current = `${max}`;
+              searchRef.current = `${searchValue}`;
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
               const filterVal = {
                 search: `${searchValue}`,
                 date_range: `${min}-${max}`,
@@ -860,8 +866,13 @@ function KeTTMap() {
               setShowTimeChooser(false);
               //RESET HIDE MARKERS
               hideMarkers(false);
+              const hideChecked = !$(
+                '.toggle-switch-checkbox[data-type="hide"]'
+              ).is(':checked');
+              console.log('hideChecked', hideChecked);
+              dispatch(updateHide(true));
               //UPDATE TIMELINE
-              //resetTimeline();
+              resetTimeline();
               //CLOSE POPUP
               view.popup.close();
               //CLOSE DETAILS
@@ -880,7 +891,7 @@ function KeTTMap() {
                 });
               }
               //HIDE TILES
-              //toggleTiles('hide');
+              toggleTiles('hide');
               //RESET EXTENTS
               // const point = new Point({
               //   x: -9847493.299600473,
@@ -1227,8 +1238,10 @@ function KeTTMap() {
                     }
                   }
                   if (layer.id === 'marker_layer_active') {
-                    console.log('SHOW', layer.id);
-                    layer.visible = true;
+                    if (!hideMode.current) {
+                      console.log('SHOW', layer.id);
+                      layer.visible = true;
+                    }
                   }
                 }
               });
@@ -1875,12 +1888,13 @@ function KeTTMap() {
 
         function createTileLayer(options) {
           const { url, zoom } = options;
-          console.log('TITLE SETTINGS', url, zoom);
+          console.log('TILE SETTINGS', url, zoom);
           const tileLayer = new TileLayer({
             id: 'tile_layer',
             url,
             visible: true,
           });
+          console.log('TILE LAYER', tileLayer);
           addToView(tileLayer);
           updateOpacity();
           tileLayer.when().then(function (layer) {
