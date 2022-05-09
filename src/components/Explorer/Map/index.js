@@ -841,10 +841,10 @@ function KeTTMap() {
               const searchValue = clear ? '' : $('#search').val();
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
-              searchRef.current = `${searchValue}`;
-              dateRangeRef.current = `${min}-${max}`;
-              startDateRef.current = `${min}`;
-              endDateRef.current = `${max}`;
+              // searchRef.current = `${searchValue}`;
+              // dateRangeRef.current = `${min}-${max}`;
+              // startDateRef.current = `${min}`;
+              // endDateRef.current = `${max}`;
               const filterVal = {
                 search: `${searchValue}`,
                 date_range: `${min}-${max}`,
@@ -872,7 +872,7 @@ function KeTTMap() {
               console.log('hideChecked', hideChecked);
               dispatch(updateHide(true));
               //UPDATE TIMELINE
-              resetTimeline();
+              //resetTimeline();
               //CLOSE POPUP
               view.popup.close();
               //CLOSE DETAILS
@@ -891,7 +891,7 @@ function KeTTMap() {
                 });
               }
               //HIDE TILES
-              toggleTiles('hide');
+              //toggleTiles('hide');
               //RESET EXTENTS
               // const point = new Point({
               //   x: -9847493.299600473,

@@ -8,7 +8,7 @@ export const getList = createAsyncThunk(
     const stateBefore = getState();
     const search = stateBefore.filters.search;
     const filters = {
-      date_range: stateBefore.filters.dateRange,
+      date_range: '1850-2021',
       photos: stateBefore.filters.photos,
       featured: 'false',
       type: stateBefore.filters.type,
