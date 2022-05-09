@@ -32,6 +32,7 @@ const List = (props) => {
     if (listStatus === 'idle') {
       dispatch(getList({}));
     }
+    //dispatch(getList({}));
   }, [listStatus, listOpen, dispatch]);
 
   return (

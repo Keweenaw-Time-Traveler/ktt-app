@@ -33,7 +33,8 @@ import {
   faShareAlt,
   faPrint,
   faDownload,
-  faChevronDoubleLeft,
+  faBooks,
+  faCommentsAlt,
 } from '@fortawesome/pro-solid-svg-icons';
 import { faTimes } from '@fortawesome/pro-light-svg-icons';
 //Components
@@ -176,18 +177,21 @@ const Details = (props) => {
         </div>
         <div className="detail-actions">
           <button className="share-related-story">Share Related Story</button>
-          <button className="action-icon like">
-            <FontAwesomeIcon icon={faHeart} className="fa-icon" />
-          </button>
-          <button className="action-icon share">
-            <FontAwesomeIcon icon={faShareAlt} className="fa-icon" />
-          </button>
-          <button className="action-icon print">
-            <FontAwesomeIcon icon={faPrint} className="fa-icon" />
-          </button>
-          <button className="action-icon download">
-            <FontAwesomeIcon icon={faDownload} className="fa-icon" />
-          </button>
+          <Tooltip content="Data Resources" direction="up">
+            <button className="action-icon like">
+              <FontAwesomeIcon icon={faBooks} className="fa-icon" />
+            </button>
+          </Tooltip>
+          <Tooltip content="Ask an Archivist" direction="up">
+            <button className="action-icon print">
+              <FontAwesomeIcon icon={faCommentsAlt} className="fa-icon" />
+            </button>
+          </Tooltip>
+          <Tooltip content="Share Record" direction="up">
+            <button className="action-icon share">
+              <FontAwesomeIcon icon={faShareAlt} className="fa-icon" />
+            </button>
+          </Tooltip>
         </div>
         <Related />
         {status !== 'success' && <Loader />}

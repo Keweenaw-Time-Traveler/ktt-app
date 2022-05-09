@@ -841,7 +841,7 @@ function KeTTMap() {
               const searchValue = clear ? '' : $('#search').val();
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
-              // searchRef.current = `${searchValue}`;
+              searchRef.current = `${searchValue}`;
               // dateRangeRef.current = `${min}-${max}`;
               // startDateRef.current = `${min}`;
               // endDateRef.current = `${max}`;
@@ -1933,6 +1933,7 @@ function KeTTMap() {
 
         //Updates the timeline if has not been previously set
         function updateTimeline(mapyear) {
+          //console.log('updateTimeline', !window.timePeriod, mapyear);
           $('#date-range .segment').each(function () {
             const id = $(this).data('id');
             const url = $(this).data('url');
@@ -1940,27 +1941,27 @@ function KeTTMap() {
             const right = $(this).data('right');
             const min = $(this).data('min');
             const max = $(this).data('max');
-            if (!window.timePeriod) {
-              if (mapyear >= min && mapyear <= max) {
-                dateRangeRef.current = `${min}-${max}`;
-                startDateRef.current = `${min}`;
-                endDateRef.current = `${max}`;
-                tileUrlRef.current = url;
-                dispatch(updateTimelineRange(`${min}-${max}`));
-                dispatch(updateActiveSegment(`${id}`));
-                dispatch(updateActiveUrl(url));
-                dispatch(updateLeftPip(left));
-                dispatch(updateRightPip(right));
-                dispatch(updateDateRange(`${min}-${max}`));
-                dispatch(updateStartDate(`${min}`));
-                dispatch(updateEndDate(`${max}`));
-                createTileLayer({ url, zoom: false });
-                handleTimePeriod();
-                dispatch(updateReset(true));
-                dispatch(getList({}));
-                console.log('TIMELINE UPDATE', `${min}-${max}`, url);
-              }
+            //if (!window.timePeriod) {
+            if (mapyear >= min && mapyear <= max) {
+              dateRangeRef.current = `${min}-${max}`;
+              startDateRef.current = `${min}`;
+              endDateRef.current = `${max}`;
+              tileUrlRef.current = url;
+              dispatch(updateTimelineRange(`${min}-${max}`));
+              dispatch(updateActiveSegment(`${id}`));
+              dispatch(updateActiveUrl(url));
+              dispatch(updateLeftPip(left));
+              dispatch(updateRightPip(right));
+              dispatch(updateDateRange(`${min}-${max}`));
+              dispatch(updateStartDate(`${min}`));
+              dispatch(updateEndDate(`${max}`));
+              createTileLayer({ url, zoom: false });
+              handleTimePeriod();
+              dispatch(updateReset(true));
+              //dispatch(getList({}));
+              console.log('TIMELINE UPDATE', `${min}-${max}`, url);
             }
+            //}
           });
         }
 
