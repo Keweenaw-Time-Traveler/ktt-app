@@ -22,6 +22,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faQuestion } from '@fortawesome/pro-solid-svg-icons';
 //Tooptip
 import Tooltip from 'react-tooltip-lite';
+//Utilities
+import { getUrlVariable } from '../../../util/getUrlVariable';
 
 export default function Search(props) {
   const dispatch = useDispatch();
@@ -31,6 +33,9 @@ export default function Search(props) {
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
+    //Check if there is a param in the url and skip to map if there is
+    const searchParam = getUrlVariable('title');
+    if (searchParam) return search(true);
     //This will fade in Map using CSS
     setTimeout(() => {
       setShowMap(true);
@@ -38,11 +43,13 @@ export default function Search(props) {
     }, 1000);
   }, []);
 
-  const search = () => {
+  const search = (hideList) => {
     dispatch(updateLandingView({ show: false, remove: true }));
-    dispatch(toggleList('show'));
     dispatch(updateMapView(true));
     dispatch(turnOnToolTips(false));
+    if (!hideList) {
+      dispatch(toggleList('show'));
+    }
   };
 
   const handleSearchClick = (e) => {

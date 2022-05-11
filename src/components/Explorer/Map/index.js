@@ -36,7 +36,9 @@ import Loader from './Loader';
 import Chooser from './Chooser';
 import ModalVideo from 'react-modal-video';
 //Modules
-import { mapPickerList, mapPickerCount } from './modules/mapPicker';
+import { mapPickerList } from './modules/mapPicker';
+//Utilities
+import { getUrlVariable } from '../../../util/getUrlVariable';
 //ArchGIS
 import { loadModules } from 'esri-loader';
 //Styles
@@ -230,7 +232,57 @@ function KeTTMap() {
               featured: 'false',
               type: 'everything',
             };
+
+            // Get any parameters in the URL
+            // http://localhost:3000/?id=F18C3368-DB7B-4ADC-A3DB-58E3E2B086D1&recnumber=14225680CENSUS1930&loctype=Home&title=Fred%20J%20Lightfoot,%2037,%20Home&mapyear=1930&x=-9860782.7233&y=5961296.5271&markerid=-9860782.7233|5961296.5271&type=people
+            const paramId = getUrlVariable('id');
+            const paramRecnumber = getUrlVariable('recnumber');
+            const paramLoctype = getUrlVariable('loctype');
+            const paramTitle = getUrlVariable('title');
+            const paramTitleDecoded = decodeURI(paramTitle);
+            const paramMapyear = getUrlVariable('mapyear');
+            const paramX = getUrlVariable('x');
+            const paramY = getUrlVariable('y');
+            const paramPoint = new Point({
+              x: paramX,
+              y: paramY,
+              spatialReference: { wkid: 3857 },
+            });
+            const paramMarkerId = getUrlVariable('markerid');
+            const paramType = getUrlVariable('type');
+
+            if (
+              paramId &&
+              paramRecnumber &&
+              paramLoctype &&
+              paramTitle &&
+              paramX &&
+              paramY &&
+              paramMarkerId &&
+              paramType
+            ) {
+              handleTimePeriod();
+
+              loadDetails(
+                paramId,
+                paramRecnumber,
+                paramLoctype,
+                paramTitleDecoded
+              );
+              updateTimeline(paramMapyear);
+              gotoMarker(
+                paramPoint,
+                paramId,
+                paramRecnumber,
+                paramMarkerId,
+                paramLoctype,
+                paramType
+              );
+              dispatch(toggleList('hide'));
+            }
+
             updateGrid(view, startingFilters);
+
             //Landing Page Explore Button
             $('body').on('click', '.intro-options-explore', function (e) {
               console.log('EXPLORE BUTTON');
@@ -424,42 +476,12 @@ function KeTTMap() {
               }
             });
             //List Item Click Event
-            //TODO: combine similar
             $('.page-content').on('click', '.list-results-item', function () {
-              const type = $(this).data('type');
-              const itemId = $(this).data('id');
-              const markerX = $(this).data('x');
-              const markerY = $(this).data('y');
-              const recnumber = $(this).data('recnumber');
-              const markerid = $(this).data('markerid');
-              const loctype = $(this).data('loctype');
-              const mapyear = $(this).data('mapyear');
-              const point = new Point({
-                x: markerX,
-                y: markerY,
-                spatialReference: { wkid: 3857 },
-              });
-              updateTimeline(mapyear);
-              gotoMarker(point, itemId, recnumber, markerid, loctype, type);
+              listClick($(this));
             });
             //Related Content List Item Click
-            //TODO: combine similar
             $('.page-content').on('click', '.related-data-item', function () {
-              const type = $(this).data('type');
-              const itemId = $(this).data('id');
-              const markerX = $(this).data('x');
-              const markerY = $(this).data('y');
-              const recnumber = $(this).data('recnumber');
-              const markerid = $(this).data('markerid');
-              const loctype = $(this).data('loctype');
-              const mapyear = $(this).data('mapyear');
-              const point = new Point({
-                x: markerX,
-                y: markerY,
-                spatialReference: { wkid: 3857 },
-              });
-              updateTimeline(mapyear);
-              gotoMarker(point, itemId, recnumber, markerid, loctype, type);
+              listClick($(this));
               // Update map in background
               const searchValue = $(this).text();
               const min = $('#date-range .label-min').text();
@@ -558,13 +580,7 @@ function KeTTMap() {
                   loctype,
                 });
                 if (id && recnumber) {
-                  dispatch(updateListItem({ recnumber, loctype }));
-                  dispatch(toggleList('hide'));
-                  dispatch(getDetails({ id, recnumber, loctype }));
-                  dispatch(toggleDetails('show'));
-                  dispatch(toggleSubmit('hide'));
-                  dispatch(updateSearch(title));
-                  dispatch(getList({}));
+                  loadDetails(id, recnumber, loctype, title);
                 } else {
                   console.log('Sorry, id or recumber is missing');
                 }
@@ -679,27 +695,37 @@ function KeTTMap() {
               }
             });
             //Full Details - source change
-            //TODO: combine similar
             $('.page-content').on('change', '#details-source', function () {
-              const type = $(this).find(':selected').data('type');
-              const itemId = $(this).find(':selected').data('id');
-              const markerX = $(this).find(':selected').data('x');
-              const markerY = $(this).find(':selected').data('y');
-              const recnumber = $(this).find(':selected').data('recnumber');
-              const markerid = $(this).find(':selected').data('markerid');
-              const loctype = $(this).find(':selected').data('loctype');
-              const mapyear = $(this).find(':selected').data('mapyear');
+              listClick($(this));
+            });
+            //Helper Functions
+            function loadDetails(id, recnumber, loctype, title) {
+              dispatch(updateListItem({ recnumber, loctype }));
+              dispatch(toggleList('hide'));
+              dispatch(getDetails({ id, recnumber, loctype }));
+              dispatch(toggleDetails('show'));
+              dispatch(toggleSubmit('hide'));
+              dispatch(updateSearch(title));
+              dispatch(getList({}));
+            }
+            function listClick(item) {
+              console.log('LIST CLICK', item);
+              const type = item.data('type');
+              const itemId = item.data('id');
+              const markerX = item.data('x');
+              const markerY = item.data('y');
+              const recnumber = item.data('recnumber');
+              const markerid = item.data('markerid');
+              const loctype = item.data('loctype');
+              const mapyear = item.data('mapyear');
               const point = new Point({
                 x: markerX,
                 y: markerY,
                 spatialReference: { wkid: 3857 },
               });
-              console.log('SOURCE CHANGE', mapyear);
-              window.timePeriod = null;
               updateTimeline(mapyear);
               gotoMarker(point, itemId, recnumber, markerid, loctype, type);
-            });
-            //Helper Functions
+            }
             function hideMarkers(checked) {
               const layers = view.map.layers;
               console.log('HIDE MARKERS', checked);

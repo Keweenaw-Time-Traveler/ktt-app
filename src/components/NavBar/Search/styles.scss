@@ -90,9 +90,31 @@
   background: $color-kett-grey-secondary;
 }
 .history-list {
+  max-height: 300px;
   padding: 10px;
   background: $color-kett-green-secondary;
   color: $color-kett-white;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* width */
+  &::-webkit-scrollbar {
+    position: relative;
+    width: 10px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #c8c7c7;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #484747;
+    border-right: solid 0 $color-kett-green-secondary;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #484747;
+  }
 }
 .history-list-item {
   color: $color-kett-white;
