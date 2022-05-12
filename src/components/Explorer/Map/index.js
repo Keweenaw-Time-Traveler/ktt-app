@@ -34,7 +34,6 @@ import { toggleSubmit } from '../../../redux/reducers/submitSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
-import ModalVideo from 'react-modal-video';
 //Modules
 import { mapPickerList } from './modules/mapPicker';
 //Utilities
@@ -43,7 +42,6 @@ import { getUrlVariable } from '../../../util/getUrlVariable';
 import { loadModules } from 'esri-loader';
 //Styles
 import './styles.scss';
-import 'react-modal-video/css/modal-video.css';
 //Images
 import everythingMarkerImage from './images/marker_everything.png';
 import peopleMarkerImage from './images/marker_person.png';
@@ -57,7 +55,6 @@ function KeTTMap() {
   const dispatch = useDispatch();
   const [loadingMarkers, setLoadingMarkers] = useState(false);
   const [showTimeChooser, setShowTimeChooser] = useState(false);
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
   const mapRef = useRef();
   const searchRef = useRef('');
   const dateRangeRef = useRef('1850-2021');
@@ -174,9 +171,7 @@ function KeTTMap() {
         $('#explorer-help')
           .delay(2000)
           .css('opacity', '1')
-          .on('click', function () {
-            setIsVideoOpen(true);
-          });
+          .on('click', function () {});
 
         //Map UI
         const opacitySlider = new Slider({
@@ -2584,13 +2579,6 @@ function KeTTMap() {
       </div>
       <Chooser show={showTimeChooser} update={handleTimePeriod} />
       {loadingMarkers && <Loader />}
-      <ModalVideo
-        channel="vimeo"
-        autoplay
-        isOpen={isVideoOpen}
-        videoId="677400038"
-        onClose={() => setIsVideoOpen(false)}
-      />
     </div>
   );
 }
