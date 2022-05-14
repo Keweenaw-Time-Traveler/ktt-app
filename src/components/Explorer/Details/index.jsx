@@ -45,6 +45,7 @@ import Map from './Map';
 import Related from './Related';
 import Masonry from 'react-masonry-css';
 import Lightbox from 'react-image-lightbox';
+import Share from './Share';
 
 const Details = (props) => {
   const dispatch = useDispatch();
@@ -192,6 +193,7 @@ const Details = (props) => {
               <FontAwesomeIcon icon={faShareAlt} className="fa-icon" />
             </button>
           </Tooltip>
+          <Share />
         </div>
         <Related />
         {status !== 'success' && <Loader />}
