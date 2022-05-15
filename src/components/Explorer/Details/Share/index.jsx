@@ -70,7 +70,7 @@ export default function Share(props) {
   const [copied, setCopied] = useState(false);
   // id, recnumber, loctype, title, mapyear, x, y, markerid, type
   const details = useSelector(selectHistoryMostRecent);
-  const encodedTitle = !details ? '' : encodeURIComponent(details.historyname);
+  const encodedTitle = !details ? '' : encodeURI(details.historyname);
   const protocol = window.location.protocol;
   const hostName = window.location.hostname;
   const port = window.location.port ? `:${window.location.port}` : '';

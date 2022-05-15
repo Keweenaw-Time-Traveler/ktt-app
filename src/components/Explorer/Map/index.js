@@ -258,7 +258,7 @@ function KeTTMap() {
               paramType
             ) {
               handleTimePeriod();
-
+              searchRef.current = paramTitleDecoded;
               loadDetails(
                 paramId,
                 paramRecnumber,
