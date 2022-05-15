@@ -78,7 +78,7 @@ function KeTTMap() {
   const gridZoom3 = 16;
   const gridThreshold = 17;
   const inactiveThreshold = 17;
-  const asyncMarkersPadding = 5;
+  const asyncMarkersPadding = 3;
 
   //Sets the different grid sizes
   const level_1 = '6';
@@ -375,8 +375,8 @@ function KeTTMap() {
                 mainSearch();
               }
             });
-            $('body').on('click', '#search-clear', function (e) {
-              e.preventDefault();
+            $('body').on('click', '#search-clear', function () {
+              console.log('SEARCH FOO');
               mainSearch('clear');
             });
             //Filters:Radio Buttons Click Event
@@ -692,7 +692,7 @@ function KeTTMap() {
             });
             //Full Details - source change
             $('.page-content').on('change', '#details-source', function () {
-              listClick($(this));
+              listClick($(this).find(':selected'));
             });
             //Helper Functions
             function loadDetails(id, recnumber, loctype, title) {
@@ -705,7 +705,6 @@ function KeTTMap() {
               dispatch(getList({}));
             }
             function listClick(item) {
-              console.log('LIST CLICK', item);
               const type = item.data('type');
               const itemId = item.data('id');
               const markerX = item.data('x');
@@ -719,6 +718,7 @@ function KeTTMap() {
                 y: markerY,
                 spatialReference: { wkid: 3857 },
               });
+              console.log('LIST CLICK', { type, itemId });
               updateTimeline(mapyear);
               gotoMarker(point, itemId, recnumber, markerid, loctype, type);
             }
@@ -861,6 +861,9 @@ function KeTTMap() {
             }
             function mainSearch(clear) {
               const searchValue = clear ? '' : $('#search').val();
+              if (clear) {
+                markersLoadedRef.current = false;
+              }
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
               searchRef.current = `${searchValue}`;
@@ -1305,25 +1308,25 @@ function KeTTMap() {
 
         function updateGrid(view, filters) {
           //GRID LEVEL 1
-          asyncGrid(filters, '6').then((res) => {
+          asyncGrid(view, filters, '6').then((res) => {
             console.log('GRID LEVEL 1 RESPONCE', res);
             //generateGridInactive(res.inactive);
             generateGrid(view, res.active, filters.type, '6', '28');
           });
           //GRID LEVEL 2
-          asyncGrid(filters, '1').then((res) => {
+          asyncGrid(view, filters, '1').then((res) => {
             console.log('GRID LEVEL 2 RESPONCE', res);
             //generateGridInactive(res.inactive);
             generateGrid(view, res.active, filters.type, '1', '4');
           });
           //GRID LEVEL 3
-          asyncGrid(filters, '0.1').then((res) => {
+          asyncGrid(view, filters, '0.1').then((res) => {
             console.log('GRID LEVEL 3 RESPONCE', res);
             //generateGridInactive(res.inactive);
             generateGrid(view, res.active, filters.type, '0.1', '0.4');
           });
           //GRID LEVEL 4
-          asyncGrid(filters, '0.05').then((res) => {
+          asyncGrid(view, filters, '0.05').then((res) => {
             console.log('GRID LEVEL 4 RESPONCE', res);
             //generateGridInactive(res.inactive);
             generateGrid(view, res.active, filters.type, '0.05', '0.2');
@@ -2408,7 +2411,7 @@ function KeTTMap() {
       })
       .catch((error) => console.log(error));
   };
-  const asyncGrid = (filters, size) => {
+  const asyncGrid = (view, filters, size) => {
     setLoadingMarkers(true);
     const { search, date_range, photos, featured, type } = filters;
     const payload = {
@@ -2425,7 +2428,9 @@ function KeTTMap() {
     return axios
       .post('http://geospatialresearch.mtu.edu/grid.php', payload)
       .then((res) => {
-        setLoadingMarkers(false);
+        if (view.zoom <= gridThreshold) {
+          setLoadingMarkers(false);
+        }
         return res.data;
       })
       .catch((error) => console.log(error));
@@ -2462,7 +2467,9 @@ function KeTTMap() {
         },
       })
       .then((res) => {
-        setLoadingMarkers(false);
+        if (view.zoom > gridThreshold) {
+          setLoadingMarkers(false);
+        }
         return res.data;
       })
       .catch((error) => console.log(error));

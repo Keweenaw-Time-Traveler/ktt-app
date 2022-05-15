@@ -71,10 +71,13 @@ export default function Share(props) {
   // id, recnumber, loctype, title, mapyear, x, y, markerid, type
   const details = useSelector(selectHistoryMostRecent);
   const encodedTitle = !details ? '' : encodeURIComponent(details.historyname);
+  const protocol = window.location.protocol;
+  const hostName = window.location.hostname;
+  const port = window.location.port ? `:${window.location.port}` : '';
   const shareQuote = !details ? '' : `Share ${details.historyname}`;
   const shareUrl = !details
     ? ''
-    : `http://localhost:3000/?id=${details.id}&recnumber=${details.recnumber}&loctype=${details.loctype}&title=${encodedTitle}&mapyear=${details.mapyear}&x=${details.x}&y=${details.y}&markerid=${details.markerid}&type=${details.type}`;
+    : `${protocol}//${hostName}${port}?id=${details.id}&recnumber=${details.recnumber}&loctype=${details.loctype}&title=${encodedTitle}&mapyear=${details.mapyear}&x=${details.x}&y=${details.y}&markerid=${details.markerid}&type=${details.type}`;
 
   useEffect(() => {
     setValue(shareUrl);

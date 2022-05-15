@@ -39,6 +39,12 @@
   &:hover {
     color: $color-kett-grey-primary;
   }
+  &.active {
+    visibility: visible;
+  }
+  &.inactive {
+    visibility: hidden;
+  }
 }
 .search-input {
   display: flex;

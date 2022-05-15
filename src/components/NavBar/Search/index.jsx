@@ -133,15 +133,15 @@ export default function Search() {
           onKeyDown={handleKeyDown}
           onChange={(e) => dispatch(updateSearch(e.target.value))}
         />
-        {filters.search && (
-          <div
-            className="search-clear-icon"
-            id="search-clear"
-            onClick={handleSearchClear}
-          >
-            <FontAwesomeIcon icon={faWindowClose} className="fa-icon" />
-          </div>
-        )}
+        <div
+          className={`search-clear-icon ${
+            filters.search ? 'active' : 'inactive'
+          }`}
+          id="search-clear"
+          onClick={handleSearchClear}
+        >
+          <FontAwesomeIcon icon={faWindowClose} className="fa-icon" />
+        </div>
         <div
           className="search-input-icon"
           id="search-icon"
