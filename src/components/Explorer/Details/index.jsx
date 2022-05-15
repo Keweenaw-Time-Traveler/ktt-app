@@ -128,9 +128,12 @@ const Details = (props) => {
   }
 
   function handleThumbClick(index) {
-    console.log('THUMB CLICK', index);
     setPhotoIndex(index);
     setIsLightboxOpen(true);
+  }
+
+  function handleUrlOpen(url) {
+    window.open(url, '_blank');
   }
 
   function closeDetails() {
@@ -179,21 +182,32 @@ const Details = (props) => {
         <div className="detail-actions">
           <button className="share-related-story">Share Related Story</button>
           <Tooltip content="Data Resources" direction="up">
-            <button className="action-icon like">
+            <button
+              className="action-icon data"
+              onClick={() =>
+                handleUrlOpen(
+                  'https://www.keweenawhistory.com/about-the-data.html'
+                )
+              }
+            >
               <FontAwesomeIcon icon={faBooks} className="fa-icon" />
             </button>
           </Tooltip>
           <Tooltip content="Ask an Archivist" direction="up">
-            <button className="action-icon print">
+            <button
+              className="action-icon ask"
+              onClick={() =>
+                handleUrlOpen(
+                  'https://www.keweenawhistory.com/ask-an-archivist.html'
+                )
+              }
+            >
               <FontAwesomeIcon icon={faCommentsAlt} className="fa-icon" />
             </button>
           </Tooltip>
           <Tooltip content="Share Record" direction="up">
-            <button className="action-icon share">
-              <FontAwesomeIcon icon={faShareAlt} className="fa-icon" />
-            </button>
+            <Share />
           </Tooltip>
-          <Share />
         </div>
         <Related />
         {status !== 'success' && <Loader />}

@@ -35,5 +35,6 @@ export const { updateHistoryItems, clearHistoryItems } = historySlice.actions;
 
 export const selectHistoryActive = (state) => state.history.historyActive;
 export const selectHistoryItems = (state) => state.history.historyItems;
+export const selectHistoryMostRecent = (state) => state.history.historyItems[0];
 
 export default historySlice.reducer;

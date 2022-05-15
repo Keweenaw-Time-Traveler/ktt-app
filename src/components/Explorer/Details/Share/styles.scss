@@ -1,0 +1,47 @@
+@import '../../../../colors.scss';
+.share-link-textarea {
+  width: 400px;
+  height: 150px;
+}
+.share-link-message {
+}
+.MuiTypography-root {
+  font-size: 1.8rem !important;
+  font-family: 'Lato', sans-serif !important;
+}
+.MuiDialogTitle-root {
+  font-size: 2.4rem !important;
+  font-family: 'Lato', sans-serif !important;
+}
+.MuiDialogActions-root {
+  justify-content: flex-start !important;
+}
+.share-link-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  min-width: 35px;
+  padding: 0 10px;
+  margin: 0 0 0 5px;
+  color: $color-kett-white;
+  background: $color-kett-grey-secondary;
+  border: none;
+  cursor: pointer;
+  font-size: 1.6rem;
+  font-family: 'Lato', sans-serif !important;
+  &:hover {
+    background: $color-kett-gold;
+  }
+  .fa-icon {
+    font-size: 18px;
+  }
+  span {
+    margin-left: 5px;
+    font-size: 16px;
+    line-height: 30px;
+    @media screen and (max-width: 1280px) {
+      display: none;
+    }
+  }
+}
