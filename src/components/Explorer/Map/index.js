@@ -78,6 +78,7 @@ function KeTTMap() {
   const gridZoom3 = 16;
   const gridThreshold = 17;
   const inactiveThreshold = 17;
+  const asyncMarkersPadding = 5;
 
   //Sets the different grid sizes
   const level_1 = '6';
@@ -493,7 +494,7 @@ function KeTTMap() {
                 type: typeRef.current,
               };
               const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
+              const extentExpanded = extentClone.expand(asyncMarkersPadding);
               const { xmin, xmax, ymin, ymax } = extentExpanded;
               const extent = {
                 xmin: xmin,
@@ -874,7 +875,7 @@ function KeTTMap() {
                 type: typeRef.current,
               };
               const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
+              const extentExpanded = extentClone.expand(asyncMarkersPadding);
               const { xmin, xmax, ymin, ymax } = extentExpanded;
               const extent = {
                 xmin: xmin,
@@ -944,7 +945,7 @@ function KeTTMap() {
                 type: typeRef.current,
               };
               const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
+              const extentExpanded = extentClone.expand(asyncMarkersPadding);
               const { xmin, xmax, ymin, ymax } = extentExpanded;
               const extent = {
                 xmin: xmin,
@@ -1000,7 +1001,7 @@ function KeTTMap() {
                 type: typeRef.current,
               };
               const extentClone = view.extent.clone();
-              const extentExpanded = extentClone.expand(10);
+              const extentExpanded = extentClone.expand(asyncMarkersPadding);
               const { xmin, xmax, ymin, ymax } = extentExpanded;
               const extent = {
                 xmin: xmin,
@@ -1063,7 +1064,7 @@ function KeTTMap() {
             } else if (view.zoom > gridThreshold) {
               if (!markerExtent) {
                 console.log('WINDOW', markerExtent);
-                window.markerExtent = extentClone.expand(10);
+                window.markerExtent = extentClone.expand(asyncMarkersPadding);
               }
               const isInside = window.markerExtent.contains(extentClone);
 
@@ -1080,7 +1081,9 @@ function KeTTMap() {
 
               //LOAD MARKERS
               if (!isInside || !markersLoadedRef.current || inactiveReload) {
-                const expanded = view.extent.clone().expand(10);
+                const expanded = view.extent
+                  .clone()
+                  .expand(asyncMarkersPadding);
                 window.markerExtent = expanded;
                 const { xmin, xmax, ymin, ymax } = expanded;
                 const extent = {
@@ -2428,7 +2431,13 @@ function KeTTMap() {
       .catch((error) => console.log(error));
   };
   const asyncMarkers = (view, filters, inactive, extent) => {
-    console.log('asyncMarkers', filters, inactive, extent);
+    console.log(
+      'asyncMarkers',
+      filters,
+      inactive,
+      extent,
+      `Area padding: ${asyncMarkersPadding}`
+    );
     if (view.zoom > gridThreshold) {
       setLoadingMarkers(true);
     }
