@@ -44,6 +44,7 @@ const StoryForm = (props) => {
           story: '',
           file1: null,
           file2: null,
+          file3: null,
         }}
         validationSchema={SignupSchema}
         onSubmit={async (values) => {

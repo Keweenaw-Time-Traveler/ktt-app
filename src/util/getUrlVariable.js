@@ -7,7 +7,7 @@ function getUrlVariable(variable) {
     var pair = vars[i].split('=');
     //console.log(pair);
     if (pair[0] == variable) {
-      return pair[1];
+      return decodeURIComponent(pair[1]);
     }
   }
   return false;
