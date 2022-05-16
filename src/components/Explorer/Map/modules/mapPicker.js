@@ -45,7 +45,7 @@ function mapPickerList() {
               <li class="basemap"><span class="default">Default</span></li>
               <li class="basemap"><span class="topo">Topo</span></li>
               <li class="basemap"><span class="terrain">Terrain</span></li>
-              <li class="basemap"><span class="satalite">Satalite</span></li>
+              <li class="basemap"><span class="satalite">Satellite</span></li>
             </ul>
           </div>`;
     })
