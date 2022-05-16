@@ -291,7 +291,6 @@ function KeTTMap() {
                 }
               });
               view.goTo(newExtent, { duration: 3000 });
-              setShowTimeChooser(true);
             });
             //Map Overlay Picker List Item Click Event
             $('.page-content').on(
@@ -336,15 +335,16 @@ function KeTTMap() {
               if (type === 'satalite') return (view.map.basemap = 'satellite');
             });
             //"Choose a Time" Popup Change Event
-            $('body').on('change', '#time-chooser-select', function (e) {
+            $('#time-chooser-select').on('change', function (e) {
               e.preventDefault();
               const $selected = $(this).find(':selected');
               const min = $selected.data('min');
               const max = $selected.data('max');
               const url = $selected.data('url');
-              const zoom = view.zoom < gridZoom1 ? true : false;
+              //const zoom = view.zoom < gridZoom1 ? true : false;
+              console.log('TIME CHOOSER', { min, max, url });
               dateChange(min, max, url);
-              createTileLayer({ url, zoom });
+              createTileLayer({ url });
             });
             //Timeline Segment Click Event
             $('.segment').on('click', function (e) {
@@ -579,6 +579,35 @@ function KeTTMap() {
                   loadDetails(id, recnumber, loctype, title);
                 } else {
                   console.log('Sorry, id or recumber is missing');
+                }
+                //LOAD MARKERS
+                const filterVal = {
+                  search: title,
+                  date_range: dateRangeRef.current,
+                  photos: photosRef.current,
+                  featured: featuredRef.current,
+                  type: typeRef.current,
+                };
+                const extentClone = view.extent.clone();
+                const extentExpanded = extentClone.expand(asyncMarkersPadding);
+                const { xmin, xmax, ymin, ymax } = extentExpanded;
+                const extent = {
+                  xmin: xmin,
+                  xmax: xmax,
+                  ymin: ymin,
+                  ymax: ymax,
+                };
+                if (view.zoom > gridThreshold) {
+                  let inactive = 'false';
+                  if (view.zoom > inactiveThreshold) {
+                    inactive = 'true';
+                  }
+                  asyncMarkers(view, filterVal, inactive, extent).then(
+                    (res) => {
+                      console.log('MARKER RESPONCE', res);
+                      generateMarkers(view, res);
+                    }
+                  );
                 }
               }
             );
@@ -2029,10 +2058,10 @@ function KeTTMap() {
               }
             );
             //LOAD MARKERS
-            asyncMarkers(view, filterVal, 'true', extent).then((res) => {
-              console.log('MARKER RESPONCE', res);
-              generateMarkers(view, res);
-            });
+            // asyncMarkers(view, filterVal, 'true', extent).then((res) => {
+            //   console.log('MARKER RESPONCE', res);
+            //   generateMarkers(view, res);
+            // });
           });
         }
       }
@@ -2412,7 +2441,9 @@ function KeTTMap() {
       .catch((error) => console.log(error));
   };
   const asyncGrid = (view, filters, size) => {
-    setLoadingMarkers(true);
+    if (view.zoom <= gridThreshold) {
+      setLoadingMarkers(true);
+    }
     const { search, date_range, photos, featured, type } = filters;
     const payload = {
       search: search,
@@ -2468,6 +2499,7 @@ function KeTTMap() {
       })
       .then((res) => {
         if (view.zoom > gridThreshold) {
+          markersLoadedRef.current = false;
           setLoadingMarkers(false);
         }
         return res.data;
