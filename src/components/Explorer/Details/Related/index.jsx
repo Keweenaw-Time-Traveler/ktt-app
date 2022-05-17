@@ -7,12 +7,14 @@ import { selectDetailsId } from '../../../../redux/reducers/detailsSlice';
 import {
   getRelated,
   toggleRelated,
+  setActiveTab,
   selectShowRelated,
   selectRelatedStatus,
   selectRelatedTotal,
   selectRelatedPeople,
   selectRelatedPlaces,
   selectRelatedStories,
+  selectActiveTab,
 } from '../../../../redux/reducers/relatedSlice';
 //Components
 import Data from './Data';
@@ -37,7 +39,7 @@ export default function Related() {
   const people = useSelector(selectRelatedPeople);
   const places = useSelector(selectRelatedPlaces);
   const stories = useSelector(selectRelatedStories);
-  const [activeTab, setActiveTab] = useState('');
+  const activeTab = useSelector(selectActiveTab);
 
   useEffect(() => {
     let intervalGetCenter = setInterval(() => {
@@ -68,13 +70,13 @@ export default function Related() {
   const handleHeadingClick = () => {
     if (show) {
       dispatch(toggleRelated('hide'));
+      dispatch(setActiveTab(''));
       $('.detail-related-content').outerHeight(0);
-      setActiveTab('');
     }
   };
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab);
+    dispatch(setActiveTab(tab));
     if (!show) {
       dispatch(toggleRelated('show'));
       $('.detail-related-content').height(containerHeight());

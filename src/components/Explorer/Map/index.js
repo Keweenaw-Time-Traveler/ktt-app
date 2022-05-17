@@ -30,6 +30,10 @@ import {
   toggleDetails,
   selectShowDetails,
 } from '../../../redux/reducers/detailsSlice';
+import {
+  toggleRelated,
+  setActiveTab,
+} from '../../../redux/reducers/relatedSlice';
 import { toggleSubmit } from '../../../redux/reducers/submitSlice';
 //Components
 import Loader from './Loader';
@@ -233,7 +237,8 @@ function KeTTMap() {
             // http://localhost:3000/?id=F18C3368-DB7B-4ADC-A3DB-58E3E2B086D1&recnumber=14225680CENSUS1930&loctype=Home&title=Fred%20J%20Lightfoot,%2037,%20Home&mapyear=1930&x=-9860782.7233&y=5961296.5271&markerid=-9860782.7233|5961296.5271&type=people
             const paramId = getUrlVariable('id');
             const paramRecnumber = getUrlVariable('recnumber');
-            const paramLoctype = getUrlVariable('loctype');
+            const paramLoctypeRaw = getUrlVariable('loctype');
+            const paramLoctype = paramLoctypeRaw ? paramLoctypeRaw : '';
             const paramTitle = getUrlVariable('title');
             const paramTitleDecoded = decodeURI(paramTitle);
             const paramMapyear = getUrlVariable('mapyear');
@@ -246,11 +251,9 @@ function KeTTMap() {
             });
             const paramMarkerId = getUrlVariable('markerid');
             const paramType = getUrlVariable('type');
-
             if (
               paramId &&
               paramRecnumber &&
-              paramLoctype &&
               paramTitle &&
               paramX &&
               paramY &&
@@ -662,13 +665,9 @@ function KeTTMap() {
                 `{id: ${id}, recnumber: ${recnumber}, loctype: ${loctype}`
               );
               if (id && recnumber) {
-                dispatch(updateListItem({ recnumber, loctype }));
-                dispatch(toggleList('hide'));
-                dispatch(getDetails({ id, recnumber, loctype }));
-                dispatch(toggleDetails('show'));
-                dispatch(toggleSubmit('hide'));
-                dispatch(updateSearch(title));
-                dispatch(getList({}));
+                loadDetails(id, recnumber, loctype, title);
+              } else {
+                console.log('Sorry, id or recumber is missing');
               }
             });
             //Map Popup - click new list item
@@ -730,6 +729,9 @@ function KeTTMap() {
               dispatch(getDetails({ id, recnumber, loctype }));
               dispatch(toggleDetails('show'));
               dispatch(toggleSubmit('hide'));
+              dispatch(toggleRelated('hide'));
+              dispatch(setActiveTab(''));
+              $('.detail-related-content').outerHeight(0);
               dispatch(updateSearch(title));
               dispatch(getList({}));
             }

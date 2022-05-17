@@ -32,6 +32,7 @@ export const relatedSlice = createSlice({
     places: [],
     stories: [],
     mapRelated: true,
+    activeTab: '',
   },
   reducers: {
     toggleRelated: (state, { payload }) => {
@@ -42,6 +43,9 @@ export const relatedSlice = createSlice({
     },
     toggleRelatedMap: (state, { payload }) => {
       state.mapRelated = payload;
+    },
+    setActiveTab: (state, { payload }) => {
+      state.activeTab = payload;
     },
   },
   extraReducers: (builder) => {
@@ -63,7 +67,8 @@ export const relatedSlice = createSlice({
   },
 });
 
-export const { toggleRelated, toggleRelatedMap } = relatedSlice.actions;
+export const { toggleRelated, toggleRelatedMap, setActiveTab } =
+  relatedSlice.actions;
 export const selectShowRelated = (state) => state.related.showRelated;
 export const selectRemoveRelated = (state) => state.related.removeRelated;
 export const selectRelatedStatus = (state) => state.related.relatedStatus;
@@ -72,5 +77,6 @@ export const selectRelatedPeople = (state) => state.related.people;
 export const selectRelatedPlaces = (state) => state.related.places;
 export const selectRelatedStories = (state) => state.related.stories;
 export const selectMapRelated = (state) => state.related.mapRelated;
+export const selectActiveTab = (state) => state.related.activeTab;
 
 export default relatedSlice.reducer;
