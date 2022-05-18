@@ -13,11 +13,13 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 //Redux
 import { useSelector } from 'react-redux';
 import { selectHistoryMostRecent } from '../../../../redux/reducers/historySlice';
+//Components
+import BasicTabs from './Tabs';
 //Styles
 import './styles.scss';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShareAlt } from '@fortawesome/pro-solid-svg-icons';
+import { faQuestion } from '@fortawesome/pro-solid-svg-icons';
 import {
   faFacebookSquare,
   faTwitterSquare,
@@ -93,11 +95,17 @@ export default function Share(props) {
   return (
     <div>
       <button
-        className="action-icon share"
+        id="explorer-help"
+        className="explorer-help"
         variant="outlined"
         onClick={handleClickOpen}
       >
-        <FontAwesomeIcon icon={faShareAlt} className="fa-icon" />
+        <FontAwesomeIcon icon={faQuestion} className="fa-icon" />
+        <span>
+          I need
+          <br />
+          help
+        </span>
       </button>
       <BootstrapDialog
         onClose={handleClose}
@@ -108,46 +116,9 @@ export default function Share(props) {
           id="customized-dialog-title"
           onClose={handleClose}
         >
-          Share this piece of history!
+          Help Videos
         </BootstrapDialogTitle>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Copy this URL and send it to your friends
-          </Typography>
-          <Typography gutterBottom>
-            <textarea
-              value={value}
-              disabled={true}
-              className="share-link-textarea"
-              onChange={(e) => {
-                setValue(e.target.value);
-                setCopied(false);
-              }}
-            />
-            {copied && (
-              <div className="share-link-message">The link has been copied</div>
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <CopyToClipboard
-            options={{ debug: props.debug, message: '' }}
-            text={value}
-            onCopy={() => setCopied(true)}
-          >
-            <button className="share-link-button">Copy Link</button>
-          </CopyToClipboard>
-          <FacebookShareButton url={shareUrl} quote={shareQuote}>
-            <button className="share-link-button">
-              <FontAwesomeIcon icon={faFacebookSquare} className="fa-icon" />
-            </button>
-          </FacebookShareButton>
-          <TwitterShareButton url={shareUrl} quote={shareQuote}>
-            <button className="share-link-button">
-              <FontAwesomeIcon icon={faTwitterSquare} className="fa-icon" />
-            </button>
-          </TwitterShareButton>
-        </DialogActions>
+        <BasicTabs />
       </BootstrapDialog>
     </div>
   );

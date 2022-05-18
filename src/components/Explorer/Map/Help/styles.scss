@@ -1,0 +1,44 @@
+@import '../../../../colors.scss';
+.explorer-help {
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 90px;
+  margin: 0 20px 20px 0;
+  border-radius: 50%;
+  background: $color-kett-green-3;
+  color: $color-kett-white;
+  transition-property: all;
+  transition-timing-function: ease-out;
+  transition-duration: 0.5s;
+  border: none;
+  .fa-icon {
+    font-size: 20px;
+  }
+  span {
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 20;
+    line-height: 2rem;
+    letter-spacing: 0.4px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+.MuiButtonBase-root {
+  font-size: 1.3rem !important;
+  font-family: 'Lato', sans-serif !important;
+  font-weight: 300;
+  &.Mui-selected {
+    color: $color-kett-green-primary !important;
+  }
+}
+.MuiTabs-indicator {
+  background: $color-kett-green-primary !important;
+}

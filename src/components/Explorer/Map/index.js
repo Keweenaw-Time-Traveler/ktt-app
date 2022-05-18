@@ -38,6 +38,7 @@ import { toggleSubmit } from '../../../redux/reducers/submitSlice';
 //Components
 import Loader from './Loader';
 import Chooser from './Chooser';
+import Help from './Help';
 //Modules
 import { mapPickerList } from './modules/mapPicker';
 //Utilities
@@ -1342,25 +1343,33 @@ function KeTTMap() {
           asyncGrid(view, filters, '6').then((res) => {
             console.log('GRID LEVEL 1 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(view, res.active, filters.type, '6', '28');
+            if (res.active) {
+              generateGrid(view, res.active, filters.type, '6', '28');
+            }
           });
           //GRID LEVEL 2
           asyncGrid(view, filters, '1').then((res) => {
             console.log('GRID LEVEL 2 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(view, res.active, filters.type, '1', '4');
+            if (res.active) {
+              generateGrid(view, res.active, filters.type, '1', '4');
+            }
           });
           //GRID LEVEL 3
           asyncGrid(view, filters, '0.1').then((res) => {
             console.log('GRID LEVEL 3 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(view, res.active, filters.type, '0.1', '0.4');
+            if (res.active) {
+              generateGrid(view, res.active, filters.type, '0.1', '0.4');
+            }
           });
           //GRID LEVEL 4
           asyncGrid(view, filters, '0.05').then((res) => {
             console.log('GRID LEVEL 4 RESPONCE', res);
             //generateGridInactive(res.inactive);
-            generateGrid(view, res.active, filters.type, '0.05', '0.2');
+            if (res.active) {
+              generateGrid(view, res.active, filters.type, '0.05', '0.2');
+            }
           });
         }
 
@@ -2603,8 +2612,7 @@ function KeTTMap() {
     safeString = safeString.replace('}', '&#125;');
     return safeString;
   };
-  // const open = useSelector(selectShowDetails);
-  // const wrapperClasses = open ? 'map-wrapper close' : 'map-wrapper';
+
   const wrapperClasses = 'map-wrapper';
   return (
     <div className={wrapperClasses}>
@@ -2618,14 +2626,7 @@ function KeTTMap() {
             story
           </span>
         </div>
-        <div id="explorer-help" className="explorer-help">
-          <FontAwesomeIcon icon={faQuestion} className="fa-icon" />
-          <span>
-            I need
-            <br />
-            help
-          </span>
-        </div>
+        <Help />
       </div>
       <Chooser show={showTimeChooser} update={handleTimePeriod} />
       {loadingMarkers && <Loader />}
