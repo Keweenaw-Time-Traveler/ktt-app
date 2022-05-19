@@ -22,7 +22,6 @@ import {
   faFacebookSquare,
   faTwitterSquare,
 } from '@fortawesome/free-brands-svg-icons';
-//React Share: https://www.npmjs.com/package/react-share
 import { FacebookShareButton, TwitterShareButton } from 'react-share';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -80,7 +79,7 @@ export default function Share(props) {
 
   useEffect(() => {
     setValue(shareUrl);
-  }, [details]);
+  }, [details, shareUrl]);
 
   const handleClickOpen = () => {
     setOpen(true);

@@ -3,16 +3,8 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
-//Copy to clipboard: https://github.com/nkbt/react-copy-to-clipboard
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-//Redux
-import { useSelector } from 'react-redux';
-import { selectHistoryMostRecent } from '../../../../redux/reducers/historySlice';
 //Components
 import BasicTabs from './Tabs';
 //Styles
@@ -20,12 +12,6 @@ import './styles.scss';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestion } from '@fortawesome/pro-solid-svg-icons';
-import {
-  faFacebookSquare,
-  faTwitterSquare,
-} from '@fortawesome/free-brands-svg-icons';
-//React Share: https://www.npmjs.com/package/react-share
-import { FacebookShareButton, TwitterShareButton } from 'react-share';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -67,29 +53,12 @@ BootstrapDialogTitle.propTypes = {
 
 export default function Share(props) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = useState('');
-  const [copied, setCopied] = useState(false);
-  // id, recnumber, loctype, title, mapyear, x, y, markerid, type
-  const details = useSelector(selectHistoryMostRecent);
-  const encodedTitle = !details ? '' : encodeURI(details.historyname);
-  const protocol = window.location.protocol;
-  const hostName = window.location.hostname;
-  const port = window.location.port ? `:${window.location.port}` : '';
-  const shareQuote = !details ? '' : `Share ${details.historyname}`;
-  const shareUrl = !details
-    ? ''
-    : `${protocol}//${hostName}${port}?id=${details.id}&recnumber=${details.recnumber}&loctype=${details.loctype}&title=${encodedTitle}&mapyear=${details.mapyear}&x=${details.x}&y=${details.y}&markerid=${details.markerid}&type=${details.type}`;
-
-  useEffect(() => {
-    setValue(shareUrl);
-  }, [details]);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
-    setCopied(false);
   };
 
   return (
