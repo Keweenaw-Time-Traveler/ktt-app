@@ -11,7 +11,6 @@ export const historySlice = createSlice({
   },
   reducers: {
     updateHistoryItems: (state, { payload }) => {
-      console.log('PAYLOAD', payload);
       const notEmpty =
         Object.keys(payload).length !== 0 && payload.constructor === Object;
       state.historyActive = notEmpty;

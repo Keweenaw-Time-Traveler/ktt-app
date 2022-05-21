@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   updateLandingView,
-  selectShowToolTips,
   turnOnToolTips,
 } from '../../../redux/reducers/landingSlice';
 import {
@@ -13,24 +12,22 @@ import {
 } from '../../../redux/reducers/filtersSlice';
 import { updateMapView } from '../../../redux/reducers/mapSlice';
 import { toggleList } from '../../../redux/reducers/listSlice';
+//Components
+import Help from '../../Explorer/Map/Help';
 //Styles
 import './styles.scss';
 //Images
 import miniMap from '../images/mini_map.jpg';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faQuestion } from '@fortawesome/pro-solid-svg-icons';
-//Tooptip
-import Tooltip from 'react-tooltip-lite';
+import { faSearch } from '@fortawesome/pro-solid-svg-icons';
 //Utilities
 import { getUrlVariable } from '../../../util/getUrlVariable';
 
 export default function Search(props) {
   const dispatch = useDispatch();
-  const showToolTips = useSelector(selectShowToolTips);
   const filters = useSelector(selectFiltersAll);
   const [showMap, setShowMap] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     //Check if there is a param in the url and skip to map if there is
@@ -39,7 +36,6 @@ export default function Search(props) {
     //This will fade in Map using CSS
     setTimeout(() => {
       setShowMap(true);
-      setTimeout(() => setShowHelp(true), 1000);
     }, 1000);
   }, []);
 
@@ -69,85 +65,45 @@ export default function Search(props) {
     dispatch(updateMapView(true));
   };
 
-  const handleHelpClick = (e) => {
-    const toggle = showToolTips ? false : true;
-    dispatch(turnOnToolTips(toggle));
-  };
-
   return (
     <div className={`intro-options ${props.show ? 'show' : 'hide'}`}>
       <div className="intro-options-main">
-        <Tooltip
-          content="Start your search of our historical data and maps here"
-          isOpen={showToolTips}
-        >
-          <div className="intro-options-search">
-            <div className="intro-options-search-input">
-              <input
-                type="text"
-                id="search-landing"
-                name="search"
-                placeholder="Search People, Places and Stories"
-                value={filters.search}
-                onKeyDown={handleKeyDown}
-                onChange={(e) => dispatch(updateSearch(e.target.value))}
-              />
-              <div
-                id="intro-options-search-icon"
-                className="intro-options-search-icon"
-                onClick={handleSearchClick}
-              >
-                <FontAwesomeIcon icon={faSearch} className="fa-icon" />
-              </div>
+        <div className="intro-options-search">
+          <div className="intro-options-search-input">
+            <input
+              type="text"
+              id="search-landing"
+              name="search"
+              placeholder="Search People, Places and Stories"
+              value={filters.search}
+              onKeyDown={handleKeyDown}
+              onChange={(e) => dispatch(updateSearch(e.target.value))}
+            />
+            <div
+              id="intro-options-search-icon"
+              className="intro-options-search-icon"
+              onClick={handleSearchClick}
+            >
+              <FontAwesomeIcon icon={faSearch} className="fa-icon" />
             </div>
           </div>
-        </Tooltip>
-        <Tooltip
-          content="Don't feel like searching? Exploring the map sounds like the option for you!"
-          direction="down"
-          isOpen={showToolTips}
+        </div>
+        <div
+          className="intro-options-button intro-options-explore"
+          onClick={handleExploreClick}
         >
-          <div
-            className="intro-options-button intro-options-explore"
-            onClick={handleExploreClick}
-          >
-            <button>
-              Explore
-              <br />
-              the map
-            </button>
-          </div>
-        </Tooltip>
-        {/* <Tooltip
-          content="Featured stories is a great way to get started!"
-          isOpen={showToolTips}
-        >
-          <div className="intro-options-button intro-options-stories">
-            <button>Featured stories</button>
-          </div>
-        </Tooltip> */}
+          <button>
+            Explore
+            <br />
+            the map
+          </button>
+        </div>
       </div>
 
       <div className={`intro-options-mini-map ${showMap ? 'show' : 'hide'}`}>
-        <Tooltip
-          content="The Keweenaw is located in the Upper Peninsula of Michigan"
-          distance={30}
-          isOpen={showToolTips}
-        >
-          <img src={miniMap} alt="Map key" />
-        </Tooltip>
+        <img src={miniMap} alt="Map key" />
       </div>
-      <div
-        className={`intro-options-help ${showHelp ? 'show' : 'hide'}`}
-        onClick={handleHelpClick}
-      >
-        <FontAwesomeIcon icon={faQuestion} className="fa-icon" />
-        <span>
-          I need
-          <br />
-          help
-        </span>
-      </div>
+      <Help />
     </div>
   );
 }

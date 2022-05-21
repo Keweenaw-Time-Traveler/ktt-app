@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Api } from '../../config/data';
+
+const { RELATED_CONTENT } = Api;
 
 // First, create the thunk
 export const getRelated = createAsyncThunk(
@@ -8,7 +11,7 @@ export const getRelated = createAsyncThunk(
     const { id, mapyear, markerid } = related;
     console.log('RELATED REQUEST', id, mapyear, markerid);
     return axios
-      .post('https://geospatialresearch.mtu.edu/related_content.php', {
+      .post(RELATED_CONTENT, {
         id: id,
         mapyear: mapyear,
         markerid: markerid,

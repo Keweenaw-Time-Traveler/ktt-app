@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Api } from '../../config/data';
+
+const { LIST } = Api;
 
 // First, create the thunk
 export const getList = createAsyncThunk(
@@ -16,7 +19,7 @@ export const getList = createAsyncThunk(
     console.log('LIST SEARCH VALUE', search);
     console.log('LIST FILTER VALUES', filters);
     return axios
-      .post('https://geospatialresearch.mtu.edu/list.php', {
+      .post(LIST, {
         search,
         geometry: null,
         filters,

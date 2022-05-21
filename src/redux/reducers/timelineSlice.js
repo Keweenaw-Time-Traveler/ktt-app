@@ -1,12 +1,15 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Api } from '../../config/data';
+
+const { DATE_PICKER } = Api;
 
 // Thunks
 export const getTimeline = createAsyncThunk(
   'timeline/getTimeline',
   async (arg, { dispatch, getState }) => {
     return axios
-      .post('https://geospatialresearch.mtu.edu/date_picker.php')
+      .post(DATE_PICKER)
       .then((res) => {
         return res.data;
       })

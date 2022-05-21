@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { VideoUrls } from '../../../../../config/data';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,7 +64,7 @@ export default function BasicTabs() {
         <iframe
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/zFh1m3IgR7Q"
+          src={VideoUrls.SEARCH_FILTERS}
           title="YouTube video player"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -74,7 +75,7 @@ export default function BasicTabs() {
         <iframe
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/JBteRhaDLqk"
+          src={VideoUrls.SEARCH_DETAILS}
           title="YouTube video player"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -85,7 +86,7 @@ export default function BasicTabs() {
         <iframe
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/q7LC3ohgWO4"
+          src={VideoUrls.EXPLORE}
           title="YouTube video player"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -96,7 +97,7 @@ export default function BasicTabs() {
         <iframe
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/zpufcXaKWHo"
+          src={VideoUrls.CONTROLS}
           title="YouTube video player"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

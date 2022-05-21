@@ -109,44 +109,11 @@
     bottom: -230px;
   }
 }
-.intro-options-help {
+.landing .explorer-help {
+  opacity: 1;
   position: absolute;
-  bottom: 50px;
-  right: -110px;
-  width: 90px;
-  height: 90px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  background: $color-kett-green-3;
-  color: $color-kett-white;
-  transition-property: all;
-  transition-timing-function: ease-out;
-  transition-duration: 0.5s;
-
-  .fa-icon {
-    font-size: 20px;
-  }
-
-  span {
-    font-size: 16px;
-    font-size: 1.6rem;
-    line-height: 20;
-    line-height: 2rem;
-    letter-spacing: 0.4px;
-    font-weight: 400;
-    cursor: pointer;
-  }
-
-  &.show {
-    right: 35px;
-  }
-
-  &.hide {
-    right: -110px;
-  }
+  bottom: 30px;
+  right: 15px;
 
   &:hover {
     transform: translateX(-4px);

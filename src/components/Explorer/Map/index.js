@@ -2,8 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import $ from 'jquery';
+//Config
+import { Api } from '../../../config/data';
 //Redux
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   getPlaceName,
   updateDateRange,
@@ -28,7 +30,6 @@ import {
 import {
   getDetails,
   toggleDetails,
-  selectShowDetails,
 } from '../../../redux/reducers/detailsSlice';
 import {
   toggleRelated,
@@ -54,7 +55,7 @@ import placeMarkerImage from './images/marker_place.png';
 import storyMarkerImage from './images/marker_story.png';
 //Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faQuestion } from '@fortawesome/pro-solid-svg-icons';
+import { faPencil } from '@fortawesome/pro-solid-svg-icons';
 //Functional Component
 function KeTTMap() {
   const dispatch = useDispatch();
@@ -76,6 +77,9 @@ function KeTTMap() {
   const markersLoadedRef = useRef(false);
   const inactiveStatus = useRef(false);
   const hideMode = useRef(false);
+
+  //API Paths
+  const { GRID, GRID_CELL, MARKERS, MARKER_INFO } = Api;
 
   //Sets the zoom level where the map transitions from Grid to Markers
   const gridZoom1 = 10;
@@ -235,6 +239,7 @@ function KeTTMap() {
             };
 
             // Get any parameters in the URL
+            // Example URL
             // http://localhost:3000/?id=F18C3368-DB7B-4ADC-A3DB-58E3E2B086D1&recnumber=14225680CENSUS1930&loctype=Home&title=Fred%20J%20Lightfoot,%2037,%20Home&mapyear=1930&x=-9860782.7233&y=5961296.5271&markerid=-9860782.7233|5961296.5271&type=people
             const paramId = getUrlVariable('id');
             const paramRecnumber = getUrlVariable('recnumber');
@@ -2095,7 +2100,7 @@ function KeTTMap() {
     };
     console.log('GRID CLICK INFO', filters);
     return axios
-      .post('http://geospatialresearch.mtu.edu/grid_cell.php', filters)
+      .post(GRID_CELL, filters)
       .then((res) => {
         console.log('POPUP DATA', res.data);
         const source = res.data.active;
@@ -2207,7 +2212,7 @@ function KeTTMap() {
     };
     console.log('LIST CLICK MARKER INFO', filters);
     return axios
-      .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
+      .post(MARKER_INFO, filters)
       .then((res) => {
         const active = res.data.active;
         const title = active.title ? active.title : 'Record Location';
@@ -2321,7 +2326,7 @@ function KeTTMap() {
     };
     console.log('MARKER CLICK MARKER INFO', filters);
     return axios
-      .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
+      .post(MARKER_INFO, filters)
       .then((res) => {
         console.log('MARKER CLICK POPUP DATA', res.data);
         // const source =
@@ -2442,7 +2447,7 @@ function KeTTMap() {
       },
     };
     return axios
-      .post('http://geospatialresearch.mtu.edu/marker_info.php', filters)
+      .post(MARKER_INFO, filters)
       .then((res) => {
         const sourceTitle = res.data.active.title;
         console.log('POPUP TITLE', sourceTitle);
@@ -2468,7 +2473,7 @@ function KeTTMap() {
     };
     console.log('asyncGrid', payload);
     return axios
-      .post('http://geospatialresearch.mtu.edu/grid.php', payload)
+      .post(GRID, payload)
       .then((res) => {
         if (view.zoom <= gridThreshold) {
           setLoadingMarkers(false);
@@ -2491,7 +2496,7 @@ function KeTTMap() {
     const { search, date_range, photos, featured, type } = filters;
     const { xmin, xmax, ymin, ymax } = extent;
     return axios
-      .post('http://geospatialresearch.mtu.edu/markers.php', {
+      .post(MARKERS, {
         search: search,
         geometry: {
           xmin: xmin,

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 export const markersSlice = createSlice({
   name: 'markers',
@@ -64,39 +63,6 @@ export const markersSlice = createSlice({
     },
   },
 });
-
-//const { updateMarkers, setHasLoaded } = markersSlice.actions;
-
-export function loadMarkersAsync(filters) {
-  console.log('ASYNC');
-  const { search, date_range, photos, featured, type } = filters;
-  return function (dispatch, getState) {
-    //dispatch(setHasLoaded(false));
-    const extent = getState().markers.extent;
-    axios
-      .post('https://geospatialresearch.mtu.edu/markers.php', {
-        search: search,
-        geometry: {
-          xmin: extent.xmin,
-          ymin: extent.ymin,
-          xmax: extent.xmax,
-          ymax: extent.ymax,
-          spatialReference: { wkid: 3857 },
-        },
-        filters: {
-          date_range: date_range,
-          photos: photos,
-          featured: featured,
-          type: type,
-        },
-      })
-      .then((res) => {
-        //dispatch(updateMarkers(res.data));
-        //return res.data;
-      })
-      .catch((error) => console.log(error));
-  };
-}
 
 export const { updateList, updateListMessage } = markersSlice.actions;
 export const selectLength = (state) => state.markers.length;

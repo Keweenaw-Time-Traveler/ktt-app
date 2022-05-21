@@ -1,9 +1,12 @@
 import $ from 'jquery';
 import axios from 'axios';
+import { Api } from '../../../../../config/data';
+
+const { MAP_PICKER } = Api;
 
 function detailsmMapPickerList() {
   return axios
-    .post('http://geospatialresearch.mtu.edu/map_picker.php')
+    .post(MAP_PICKER)
     .then((res) => {
       const segmentData = res.data.maps;
       const segments = [];

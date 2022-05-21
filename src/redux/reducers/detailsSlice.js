@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Api } from '../../config/data';
+
+const { FULL_DETAILS } = Api;
 
 // First, create the thunk
 export const getDetails = createAsyncThunk(
@@ -8,7 +11,7 @@ export const getDetails = createAsyncThunk(
     //console.log('GET DETAILS THUNK', details);
     const { id, recnumber, loctype } = details;
     return axios
-      .post('https://geospatialresearch.mtu.edu/full_details.php', {
+      .post(FULL_DETAILS, {
         personid: id,
         recnumber: recnumber,
         loctype: loctype,

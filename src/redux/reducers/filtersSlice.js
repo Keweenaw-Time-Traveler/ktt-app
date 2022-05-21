@@ -1,21 +1,21 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Api } from '../../config/data';
+
+const { PLACE_NAME } = Api;
 
 // Thunks
 export const getPlaceName = createAsyncThunk(
   'filters/getPlaceName',
   async (geometry, { dispatch, getState }) => {
     return axios
-      .get(
-        'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/cchsdi_placenames/FeatureServer/0/query',
-        {
-          params: {
-            geometry,
-            returnGeometry: false,
-            f: 'pjson',
-          },
-        }
-      )
+      .get(PLACE_NAME, {
+        params: {
+          geometry,
+          returnGeometry: false,
+          f: 'pjson',
+        },
+      })
       .then((res) => {
         return res.data;
       })
