@@ -175,7 +175,7 @@ function KeTTMap() {
           .delay(2000)
           .css('opacity', '1')
           .on('click', function () {
-            dispatch(toggleSubmit('show'));
+            dispatch(toggleSubmit({visibility: 'show', id: null}));
           });
         //Get Help
         $('#explorer-help')

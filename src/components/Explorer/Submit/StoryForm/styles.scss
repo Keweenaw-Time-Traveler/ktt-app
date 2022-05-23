@@ -1,5 +1,11 @@
 @import '../../../../colors.scss';
 .story-form {
+  &.hide {
+    display: none;
+  }
+  &.show {
+    display: block;
+  }
   label {
     display: block;
     width: 100%;

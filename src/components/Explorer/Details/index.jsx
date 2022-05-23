@@ -19,6 +19,7 @@ import {
   toggleRelated,
   selectMapRelated,
 } from '../../../redux/reducers/relatedSlice';
+import { toggleSubmit } from '../../../redux/reducers/submitSlice';
 import { updateListItem, toggleList } from '../../../redux/reducers/listSlice';
 import { updateHistoryItems } from '../../../redux/reducers/historySlice';
 //Tooptip
@@ -99,6 +100,13 @@ const Details = (props) => {
   $('.navbar-middle').on('click', '.timeline-reset', function () {
     closeDetails();
   });
+  
+  $('#share-related')
+      .delay(2000)
+      .css('opacity', '1')
+      .on('click', function () {
+        dispatch(toggleSubmit({visibility: 'show', id: $(this).data('id')}));
+      });
 
   function handleSourceChange(event) {
     dispatch(toggleRelated('hide'));
@@ -180,7 +188,7 @@ const Details = (props) => {
           </Masonry>
         </div>
         <div className="detail-actions">
-          <button className="share-related-story">Share Related Story</button>
+          <button id="share-related" className="share-related-story" data-id={id}>Share Related Story</button>
           <Tooltip content="Data Resources" direction="up">
             <button
               className="action-icon data"

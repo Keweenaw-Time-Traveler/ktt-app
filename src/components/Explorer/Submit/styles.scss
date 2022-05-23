@@ -47,6 +47,12 @@
 }
 .submit-instructions {
   margin: 0 0 20px 0;
+  &.hide {
+    display: none;
+  }
+  &.show {
+    display: block;
+  }
 }
 .submit-close {
   position: absolute;

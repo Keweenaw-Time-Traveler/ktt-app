@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 //Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleSubmit } from '../../../redux/reducers/submitSlice';
+import { selectSubmitRelated, toggleSubmit } from '../../../redux/reducers/submitSlice';
 //Tooptip
 import Tooltip from 'react-tooltip-lite';
 //Styles
@@ -15,6 +15,7 @@ import StoryForm from './StoryForm';
 
 const Submit = (props) => {
   const dispatch = useDispatch();
+  const id = useSelector(selectSubmitRelated);
 
   function handleCloseClick() {
     dispatch(toggleSubmit('hide'));
@@ -28,10 +29,10 @@ const Submit = (props) => {
           <FontAwesomeIcon icon={faTimes} className="fa-icon" />
         </Tooltip>
       </div>
-      <div className="submit-instructions">
+      <div className={`submit-instructions ${id ? 'hide' : 'show'}`}>
         Click a point on the map to locate your story.
       </div>
-      <StoryForm />
+      <StoryForm related={id} show={id ? 'show' : 'hide'} />
     </div>
   );
 };
