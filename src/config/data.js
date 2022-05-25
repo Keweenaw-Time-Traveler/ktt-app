@@ -9,7 +9,7 @@ const Api = {
   RELATED_CONTENT: 'https://geospatialresearch.mtu.edu/related_content.php',
   DATE_PICKER: 'https://geospatialresearch.mtu.edu/date_picker.php',
   PLACE_NAME: 'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/cchsdi_placenames/FeatureServer/0/query',
-  STORY_SUBMIT: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/CCHSDI_StoryPoints_watts/FeatureServer/0'
+  STORY_SUBMIT: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0'
 };
 const VideoUrls = {
   SEARCH_FILTERS: 'https://youtu.be/RbSeH4kWHnc',

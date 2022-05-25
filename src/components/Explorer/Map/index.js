@@ -184,12 +184,10 @@ function KeTTMap() {
         $('body').on('ktt:add-story', '#story-form', function() {
           $('#story-form').hide();
           $('#submitted').show();
-          console.log('form has been processed take data that should now be setting on form object and submit it then do some clean up');
           let submission = $(this).data('record');
           console.log(submission);
-          const min = $('#date-range .label-min').text();
-          const max = $('#date-range .label-max').text();
-          submission.attributes.mapyear = `${min}-${max}`;
+          const year = $('#date-range').data('mapyear') ? $('#date-range').data('mapyear') : 1949;
+          submission.attributes.mapyear = year;
           
           const point = new Graphic({
             geometry: {
@@ -205,31 +203,43 @@ function KeTTMap() {
           
           //console.log(pt);
           
-          let storyPointLayer = new FeatureLayer(Api.STORY_SUBMIT, {definitionExpression: "flag is null"});
+          let storyPointLayer = new FeatureLayer({
+            url: Api.STORY_SUBMIT, 
+            definitionExpression: "flag is null"
+          });
 
-          storyPointLayer.applyEdits([point], null, null, function (results) {
-            if (results.length == 1) {
+          storyPointLayer.applyEdits({
+            addFeatures: [point]
+          }).then(function(results) {
+            if (results.addFeatureResults.length == 1) {
               // Update object ID to the permanent one
-              pt.graphic.attributes.objectid = results[0].objectId;
-              pt.graphic.attributes.globalid = results[0].globalId;
+              pt.graphic.attributes.objectid = results.addFeatureResults[0].objectId;
+              pt.graphic.attributes.globalid = results.addFeatureResults[0].globalId;
 
               // Add attachments
               attachmentifyPoint(pt);
               // Upload all of the images as attachments
               var files = submission.files
 
-              for (let i = 0; i <= files.length; i++) { // Go through all 3 upload files
+              for (let i = 0; i < files.length; i++) { // Go through all 3 upload files
                 pt.addAttachment(files[i], function (response) {
                 });
               }
                  
               $('#submitted .loader-markers').hide();
               $('#submit-success').show();
+            } else {
+              $('#submitted .loader-markers').hide();
+              $('#submit-fail .msg').text('We encountered an error trying to save your submission. Please contact us and we\'ll look into the problem. Thank you!');
+              $('#submit-fail').show();
+              console.log('failure adding submission', results);
             }
-          }, function (err) {
+          }).catch(function (err) {
             $('#submitted .loader-markers').hide();
-            $('#submit-fail').text(err).show();
-          });
+            $('#submit-fail .msg').text(err);
+            $('#submit-fail').show();
+            console.log("Error adding submission", err);
+          });;
         });
         //Get Help
         $('#explorer-help')

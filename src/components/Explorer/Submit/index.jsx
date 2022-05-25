@@ -36,12 +36,13 @@ const Submit = (props) => {
       <StoryForm related={id} show={id ? 'show' : 'hide'} />
       <div id="submitted" className="submit-msg">
         <Loader />
-        <div id="submit-success" class="success">
+        <div id="submit-success" className="success">
           <h2>Your story has been submitted!</h2>
           <p>Your submittion should appear on the site in a few moments, thank you for contributing to history!</p>
         </div>
-        <div id="submit-fail" class="fail">
-        
+        <div id="submit-fail" className="fail">
+          <h2>Error Submitting your story</h2>
+          <p className="msg"></p>
         </div>
       </div>
     </div>

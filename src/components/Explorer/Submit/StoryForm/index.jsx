@@ -43,7 +43,7 @@ const StoryForm = (props) => {
             }),
     story: Yup.string()
       .min(2, 'Too Short!')
-      .max(500, 'Too Long!')
+      .max(3000, 'Too Long!')
       .required('Story text is required'),
     file1: Yup.mixed(),
     file2: Yup.mixed(),
@@ -63,7 +63,7 @@ const StoryForm = (props) => {
         dateEstimated: parsedDate.accuracyLevel,
         userdate: event.time,
         mapyear: null,
-        relatedId: props.related
+        related_entity: props.related
       },
       files: [
         event.file1,
