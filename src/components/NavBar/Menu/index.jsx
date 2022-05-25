@@ -33,37 +33,32 @@ export default function Menu() {
         >
           <ul>
             <li>
-              <a href="https://www.keweenawhistory.com/" target="_blank">
-                Home
-              </a>
-            </li>
-            <li>
-              <NavLink exact to="/">
-                Explorer
-              </NavLink>
-            </li>
-            <li>
-              <a
-                href="http://geospatialresearch.mtu.edu/kett/index.html?task=color"
-                target="_blank"
-              >
-                Transcribe the Map
+              <a href="https://www.keweenawhistory.com/about-the-project.html" target="_blank">
+                About the project
               </a>
             </li>
             <li>
               <a
-                href="https://www.keweenawhistory.com/upcoming-events.html"
+                href="https://www.keweenawhistory.com/about-the-data.html"
                 target="_blank"
               >
-                Upcoming Events
+                About the data
               </a>
             </li>
             <li>
               <a
-                href="https://www.keweenawhistory.com/contact-us.html"
+                href="https://www.keweenawhistory.com/project-news"
                 target="_blank"
               >
-                Contact Us
+                Project news
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.keweenawhistory.com/meet-the-team.html"
+                target="_blank"
+              >
+                Meet the team
               </a>
             </li>
             {/* <li>

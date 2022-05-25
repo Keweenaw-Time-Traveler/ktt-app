@@ -77,6 +77,7 @@ function KeTTMap() {
   const markersLoadedRef = useRef(false);
   const inactiveStatus = useRef(false);
   const hideMode = useRef(false);
+  const sharingStory = useRef(false);
 
   //API Paths
   const { GRID, GRID_CELL, MARKERS, MARKER_INFO } = Api;
@@ -175,8 +176,61 @@ function KeTTMap() {
           .delay(2000)
           .css('opacity', '1')
           .on('click', function () {
+            sharingStory.current = true;
+            $('#story-form').show();
             dispatch(toggleSubmit({visibility: 'show', id: null}));
           });
+        //submit a story to db
+        $('body').on('ktt:add-story', '#story-form', function() {
+          $('#story-form').hide();
+          $('#submitted').show();
+          console.log('form has been processed take data that should now be setting on form object and submit it then do some clean up');
+          let submission = $(this).data('record');
+          console.log(submission);
+          const min = $('#date-range .label-min').text();
+          const max = $('#date-range .label-max').text();
+          submission.attributes.mapyear = `${min}-${max}`;
+          
+          const point = new Graphic({
+            geometry: {
+              type: "point",
+              longitude: submission.geo.lon,
+              latitude: submission.geo.lat
+            },
+            attributes: submission.attributes
+          });
+
+          // Make the point look like what attachmentify and selectPoint expect
+          const pt = {graphic: point}
+          
+          //console.log(pt);
+          
+          let storyPointLayer = new FeatureLayer(Api.STORY_SUBMIT, {definitionExpression: "flag is null"});
+
+          storyPointLayer.applyEdits([point], null, null, function (results) {
+            if (results.length == 1) {
+              // Update object ID to the permanent one
+              pt.graphic.attributes.objectid = results[0].objectId;
+              pt.graphic.attributes.globalid = results[0].globalId;
+
+              // Add attachments
+              attachmentifyPoint(pt);
+              // Upload all of the images as attachments
+              var files = submission.files
+
+              for (let i = 0; i <= files.length; i++) { // Go through all 3 upload files
+                pt.addAttachment(files[i], function (response) {
+                });
+              }
+                 
+              $('#submitted .loader-markers').hide();
+              $('#submit-success').show();
+            }
+          }, function (err) {
+            $('#submitted .loader-markers').hide();
+            $('#submit-fail').text(err).show();
+          });
+        });
         //Get Help
         $('#explorer-help')
           .delay(2000)
@@ -1072,6 +1126,12 @@ function KeTTMap() {
           });
 
         view.on('click', function (event) {
+          if(sharingStory.current) { //sharing story, capture geo location for story
+            $('#story-form').data('geo', {lat: event.mapPoint.latitude, lon: event.mapPoint.longitude})
+            sharingStory.current = false;
+            $('#story-instructions').removeClass('show').addClass('hide');
+            $('#story-form').addClass('show').removeClass('hide');
+          }
           //console.log(event.mapPoint);
           view.hitTest(event).then(function (response) {
             let graphic = response.results[0].graphic;
@@ -2083,6 +2143,53 @@ function KeTTMap() {
       }
     );
   }, [dispatch]);
+  
+  /****************************************************************
+   * Adds attachment-related utility functions to a point
+   ***************************************************************/
+  function attachmentifyPoint(pt) {
+      if ('attachmentified' in pt && pt.attachmentified) {
+          return;
+      }
+      pt.attachmentified = true;
+      pt.featureURL = Api.STORY_SUBMIT + '/' + pt.graphic.attributes.objectid + '/';
+      pt.attachURL = pt.featureURL + 'attachments';
+      // Gets a list of attachments associated with the point
+      pt.getAttachments = function (onRetrieve) {
+          if ('attachments' in pt && pt.attachments != null) {
+              onRetrieve(pt.attachments);
+          } else {
+              pt.updateAttachments(onRetrieve);
+          }
+      };
+      // Forces an update of the attachments, even if they were already cached
+      pt.updateAttachments = function (onRetrieve) {
+          const attachListURL = pt.attachURL + '?f=json';
+          $.getJSON(attachListURL).then(function (resp) {
+              pt.attachments = resp['attachmentInfos'];
+              onRetrieve(pt.attachments);
+          });
+      }
+      pt.addAttachment = function (file, onAdded, filename) {
+          pt.featureURL = Api.STORY_SUBMIT + '/' + pt.graphic.attributes.objectid + '/';
+          pt.attachURL = pt.featureURL + 'attachments';
+          var formData = new FormData();
+          formData.append("f", "json");
+          if (filename != null) {
+              formData.append("attachment", file, filename);
+          } else {
+              formData.append("attachment", file);
+          }
+          var request = new XMLHttpRequest();
+          request.onreadystatechange = function () {
+              if (request.readyState == 4 && request.status == 200) {
+                  pt.updateAttachments(onAdded);
+              }
+          };
+          request.open("POST", pt.featureURL + 'addAttachment');
+          request.send(formData);
+      };
+  }
 
   //POPUP - When grid item is clicked
   const asyncGridPopUp = (target) => {

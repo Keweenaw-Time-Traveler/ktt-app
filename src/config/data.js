@@ -8,13 +8,13 @@ const Api = {
   FULL_DETAILS: 'https://geospatialresearch.mtu.edu/full_details.php',
   RELATED_CONTENT: 'https://geospatialresearch.mtu.edu/related_content.php',
   DATE_PICKER: 'https://geospatialresearch.mtu.edu/date_picker.php',
-  PLACE_NAME:
-    'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/cchsdi_placenames/FeatureServer/0/query',
+  PLACE_NAME: 'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/cchsdi_placenames/FeatureServer/0/query',
+  STORY_SUBMIT: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/CCHSDI_StoryPoints_watts/FeatureServer/0'
 };
 const VideoUrls = {
-  SEARCH_FILTERS: 'https://www.youtube.com/embed/zFh1m3IgR7Q',
-  SEARCH_DETAILS: 'https://www.youtube.com/embed/JBteRhaDLqk',
-  EXPLORE: 'https://www.youtube.com/embed/q7LC3ohgWO4',
-  CONTROLS: 'https://www.youtube.com/embed/zpufcXaKWHo',
+  SEARCH_FILTERS: 'https://youtu.be/RbSeH4kWHnc',
+  SEARCH_DETAILS: 'https://youtu.be/B2VmTPoVpQU',
+  EXPLORE: 'https://youtu.be/aVJa22NF1-g',
+  CONTROLS: 'https://youtu.be/ZP6lmPCoXtw',
 };
 export { Api, VideoUrls };

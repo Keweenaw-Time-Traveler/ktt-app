@@ -33,6 +33,9 @@
     background: #484747;
   }
 }
+.submit-msg, .submit-msg.success, .submit-msg.fail {
+  display: none;
+}
 .submit-title {
   position: relative;
   padding: 0 40px 0 0;

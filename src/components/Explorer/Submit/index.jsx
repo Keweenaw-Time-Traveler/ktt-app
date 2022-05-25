@@ -11,6 +11,7 @@ import './styles.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/pro-light-svg-icons';
 //Components
+import Loader from '../Map/Loader';
 import StoryForm from './StoryForm';
 
 const Submit = (props) => {
@@ -29,10 +30,20 @@ const Submit = (props) => {
           <FontAwesomeIcon icon={faTimes} className="fa-icon" />
         </Tooltip>
       </div>
-      <div className={`submit-instructions ${id ? 'hide' : 'show'}`}>
+      <div id="story-instructions" className={`submit-instructions ${id ? 'hide' : 'show'}`}>
         Click a point on the map to locate your story.
       </div>
       <StoryForm related={id} show={id ? 'show' : 'hide'} />
+      <div id="submitted" className="submit-msg">
+        <Loader />
+        <div id="submit-success" class="success">
+          <h2>Your story has been submitted!</h2>
+          <p>Your submittion should appear on the site in a few moments, thank you for contributing to history!</p>
+        </div>
+        <div id="submit-fail" class="fail">
+        
+        </div>
+      </div>
     </div>
   );
 };

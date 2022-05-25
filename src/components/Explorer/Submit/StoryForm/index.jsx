@@ -11,12 +11,6 @@ const StoryForm = (props) => {
     file2: false,
     file3: false,
   });
-  const mapRef = useRef();
-  
-  if(!props.related) { //sharing general story, get geo locations
-    
-    console.log(mapRef);
-  }
   
   const handleClear = (id) => {
     setFileStatus({ ...fileStatus, [id]: false });
@@ -57,9 +51,28 @@ const StoryForm = (props) => {
     signature: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!')
   });
   const submitStory = async (event) => {
-    console.log('submit handler clicked');
-    console.log('from props the id is: ' + props.related);
-    console.log(JSON.stringify(event, null, 2));
+    let parsedDate = parseDateEntry(event.time);
+    let record = {
+      geo: $('#story-form').data('geo'),
+      attributes: {
+        title: event.title,
+        name: event.signature,
+        description: event.story,
+        beginDate: parsedDate.beginDate.getTime(),
+        endDate: parsedDate.endDate.getTime(),
+        dateEstimated: parsedDate.accuracyLevel,
+        userdate: event.time,
+        mapyear: null,
+        relatedId: props.related
+      },
+      files: [
+        event.file1,
+        event.file2,
+        event.file3,
+      ]
+    };
+    
+    $('#story-form').data('record',record).trigger('ktt:add-story');
   }
   
   const parseDateEntry = (dateEntry) => {
@@ -166,7 +179,7 @@ const StoryForm = (props) => {
       >
         {({ errors, values, handleSubmit, setFieldValue }) => {
           return (
-            <Form className={`story-form ${props.show}`}>
+            <Form id="story-form" className={`story-form ${props.show}`}>
               <div className="story-form-group">
                 <label htmlFor="title">Story Title</label>
                 <Field id="title" name="title" placeholder="Something short" />

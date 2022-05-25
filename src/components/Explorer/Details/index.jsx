@@ -105,6 +105,7 @@ const Details = (props) => {
       .delay(2000)
       .css('opacity', '1')
       .on('click', function () {
+        $('#story-form').show();
         dispatch(toggleSubmit({visibility: 'show', id: $(this).data('id')}));
       });
 
