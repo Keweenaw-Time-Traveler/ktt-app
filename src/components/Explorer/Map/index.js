@@ -189,14 +189,27 @@ function KeTTMap() {
           const year = $('#date-range').data('mapyear') ? $('#date-range').data('mapyear') : 1949;
           submission.attributes.mapyear = year;
           
-          const point = new Graphic({
-            geometry: {
-              type: "point",
-              longitude: submission.geo.lon,
-              latitude: submission.geo.lat
-            },
-            attributes: submission.attributes
-          });
+          let point = null;
+          if(submission.geo) {
+            point = new Graphic({
+              geometry: {
+                type: "point",
+                longitude: submission.geo.lon,
+                latitude: submission.geo.lat
+              },
+              attributes: submission.attributes
+            });
+          } else {
+            point = new Graphic({
+              geometry: {
+                type: "point",
+                x: submission.related.x,
+                y: submission.related.y,
+                spatialReference: { wkid: 3857 },
+              },
+              attributes: submission.attributes
+            });
+          }
 
           // Make the point look like what attachmentify and selectPoint expect
           const pt = {graphic: point}

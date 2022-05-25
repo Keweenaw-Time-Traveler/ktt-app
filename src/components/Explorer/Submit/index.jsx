@@ -38,7 +38,7 @@ const Submit = (props) => {
         <Loader />
         <div id="submit-success" className="success">
           <h2>Your story has been submitted!</h2>
-          <p>Your submittion should appear on the site in a few moments, thank you for contributing to history!</p>
+          <p>Your submittion should appear on the site in a few moments, thank you for contributing to history!<br /> Try searching for your story to see it on the map!</p>
         </div>
         <div id="submit-fail" className="fail">
           <h2>Error Submitting your story</h2>

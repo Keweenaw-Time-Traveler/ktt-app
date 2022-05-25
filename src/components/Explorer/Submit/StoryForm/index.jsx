@@ -48,12 +48,13 @@ const StoryForm = (props) => {
     file1: Yup.mixed(),
     file2: Yup.mixed(),
     file3: Yup.mixed(),
-    signature: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!')
+    signature: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').nullable()
   });
   const submitStory = async (event) => {
-    let parsedDate = parseDateEntry(event.time);
-    let record = {
+    const parsedDate = parseDateEntry(event.time);
+    const record = {
       geo: $('#story-form').data('geo'),
+      related: $('#root').data('share-realted-xy'),
       attributes: {
         title: event.title,
         name: event.signature,
@@ -170,6 +171,7 @@ const StoryForm = (props) => {
           title: '',
           time: '',
           story: '',
+          signature: null,
           file1: null,
           file2: null,
           file3: null,

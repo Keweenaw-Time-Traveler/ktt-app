@@ -123,6 +123,7 @@ const Details = (props) => {
     console.log('UPDATE DETAILS', { id, recnumber, loctype });
     dispatch(getDetails({ id, recnumber, loctype }));
     console.log('UPDATE RELATED', { id, mapyear, markerid });
+    $('#root').data('share-realted-xy', {x: $(event.target).find(':selected').data('x'), y: $(event.target).find(':selected').data('y')});
     dispatch(
       getRelated({
         id: `${id}`,

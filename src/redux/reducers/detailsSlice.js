@@ -1,4 +1,5 @@
 import axios from 'axios';
+import $ from 'jquery';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Api } from '../../config/data';
 
@@ -56,6 +57,7 @@ export const detailsSlice = createSlice({
       state.name = action.payload.title;
       state.id = action.payload.id;
       state.type = action.payload.type;
+      $('#root').data('share-realted-xy', {x: action.payload.sources[0].x, y: action.payload.sources[0].y});
       state.sources = action.payload.sources.map((source, index) => {
         return {
           value: index,
