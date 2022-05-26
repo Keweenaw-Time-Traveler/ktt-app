@@ -6,6 +6,13 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import * as serviceWorker from './serviceWorker';
 
+// replace console.* to disable log on production
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {}
+  console.error = () => {}
+  console.debug = () => {}
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

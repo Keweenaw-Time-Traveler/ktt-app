@@ -12,9 +12,9 @@ const Api = {
   STORY_SUBMIT: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0'
 };
 const VideoUrls = {
-  SEARCH_FILTERS: 'https://youtu.be/RbSeH4kWHnc',
-  SEARCH_DETAILS: 'https://youtu.be/B2VmTPoVpQU',
-  EXPLORE: 'https://youtu.be/aVJa22NF1-g',
-  CONTROLS: 'https://youtu.be/ZP6lmPCoXtw',
+  SEARCH_FILTERS: 'https://www.youtube.com/embed/RbSeH4kWHnc',
+  SEARCH_DETAILS: 'https://www.youtube.com/embed/B2VmTPoVpQU',
+  EXPLORE: 'https://www.youtube.com/embed/aVJa22NF1-g',
+  CONTROLS: 'https://www.youtube.com/embed/ZP6lmPCoXtw',
 };
 export { Api, VideoUrls };
