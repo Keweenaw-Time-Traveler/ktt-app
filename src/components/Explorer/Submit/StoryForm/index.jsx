@@ -63,7 +63,7 @@ const StoryForm = (props) => {
         endDate: parsedDate.endDate.getTime(),
         dateEstimated: parsedDate.accuracyLevel,
         userdate: event.time,
-        mapyear: null,
+        mapyear: $('#root').data('share-realted-xy') ? $('#root').data('related-map-year') : parsedDate.beginDate.getFullYear(),
         related_entity: props.related
       },
       files: [

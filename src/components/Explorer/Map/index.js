@@ -185,10 +185,6 @@ function KeTTMap() {
           $('#story-form').hide();
           $('#submitted').show();
           let submission = $(this).data('record');
-          console.log(submission);
-          const year = $('#date-range').data('mapyear') ? $('#date-range').data('mapyear') : 1949;
-          submission.attributes.mapyear = year;
-          
           let point = null;
           if(submission.geo) {
             point = new Graphic({

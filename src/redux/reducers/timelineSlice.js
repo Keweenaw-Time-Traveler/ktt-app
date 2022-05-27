@@ -1,5 +1,4 @@
 import axios from 'axios';
-import $ from 'jquery';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Api } from '../../config/data';
 
@@ -63,8 +62,6 @@ export const timelineSlice = createSlice({
       state.timelineStatus = 'idle';
     });
     builder.addCase(getTimeline.fulfilled, (state, action) => {
-      //stash map year on timeline
-      $('#date-range').data('mapyear', action.map_year);
       //Process the segments data
       const min = action.payload.min;
       const max = action.payload.max;

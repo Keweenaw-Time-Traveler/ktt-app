@@ -58,6 +58,7 @@ export const detailsSlice = createSlice({
       state.id = action.payload.id;
       state.type = action.payload.type;
       $('#root').data('share-realted-xy', {x: action.payload.sources[0].x, y: action.payload.sources[0].y});
+      $('#root').data('related-map-year', action.payload.map_year);
       state.sources = action.payload.sources.map((source, index) => {
         return {
           value: index,
