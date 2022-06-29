@@ -47,6 +47,7 @@ import Related from './Related';
 import Masonry from 'react-masonry-css';
 import Lightbox from 'react-image-lightbox';
 import Share from './Share';
+import Flag from './Flag';
 
 const Details = (props) => {
   const dispatch = useDispatch();
@@ -191,6 +192,9 @@ const Details = (props) => {
         </div>
         <div className="detail-actions">
           <button id="share-related" className="share-related-story" data-id={id}>Share Related Story</button>
+          <Tooltip className={type == 'story' ? 'show' : 'hide'} content="Flag this story for innappropriate or incorrect data" direction="up">
+            <Flag />
+          </Tooltip>
           <Tooltip content="Data Resources" direction="up">
             <button
               className="action-icon data"
