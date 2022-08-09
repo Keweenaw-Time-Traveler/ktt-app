@@ -126,37 +126,58 @@
     background: #484747;
   }
 }
-.detail-photos {
-  margin: 20px 0 0 0;
-  .my-masonry-grid_column {
-    > div {
-      display: block;
-      position: relative;
+
+.lightbox-overlay div {
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.detail-photos .my-masonry-grid_column {
+  padding: 20px 0;
+  margin-left: 30px;
+
+  .image-thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .img-overlay-icon {
+      position: absolute;
+      width: 2.5rem;
+      width: 25px;
+      height: 2.5rem;
+      height: 25px;
+      background: url(./images/search-plus-light.svg) no-repeat center;
+      background-size: cover;
+      filter: drop-shadow(3px 5px 1.5px rgba(0, 0, 0, 0.75));
       cursor: pointer;
-      &::before {
-        content: '';
-        position: absolute;
-        top: calc(50% - 15px);
-        left: calc(50% - 15px);
-        width: 30px;
-        height: 30px;
-        background: rgba(0, 0, 0, 0.5);
-      }
-      &::after {
-        content: '';
-        position: absolute;
-        top: calc(50% - 7px);
-        left: calc(50% - 7px);
-        width: 14px;
-        height: 14px;
-        background: url(./images/search-plus-light.svg) no-repeat center;
-        background-size: cover;
-      }
-      &:hover {
-        &::before {
-          background: rgba(0, 0, 0, 1);
-        }
-      }
+    }
+
+    > img {
+      width: 100%;
+      cursor: pointer;
+    }
+  }
+  .video-thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .vid-overlay-icon {
+      position: absolute;
+      width: 2.5rem;
+      width: 25px;
+      height: 2.5rem;
+      height: 25px;
+      background: url(./images/video-play-icon.svg) no-repeat center;
+      background-size: cover;
+      filter: drop-shadow(3px 3px 1.5px rgba(0, 0, 0, 0.75));
+      cursor: pointer;
+    }
+
+    > video {
+      width: 100%;
+      cursor: pointer;
     }
   }
 }
@@ -166,14 +187,15 @@
   display: flex;
   margin-left: -30px; /* gutter size offset */
   width: auto;
+  align-items: center;
 }
-.my-masonry-grid_column {
+.my-masonry-grid-photo_column, .my-masonry-grid-video_column {
   padding-left: 30px; /* gutter size */
   background-clip: padding-box;
 }
 
 /* Style your items */
-.my-masonry-grid_column > div {
+.my-masonry-grid-photo_column, .my-masonry-grid-video_column > div {
   /* change div to reference your elements you put in <Masonry> */
   background: grey;
   margin-bottom: 30px;
