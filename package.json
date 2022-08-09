@@ -75,5 +75,6 @@
     "babel-loader": "^8.1.0",
     "react-is": "^16.13.1",
     "react-test-renderer": "^16.13.1"
-  }
+  },
+  "packageManager": "yarn@2.4.1"
 }
