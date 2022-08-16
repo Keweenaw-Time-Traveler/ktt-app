@@ -5,14 +5,14 @@ import $ from 'jquery';
 //Config
 import { Api } from '../../../config/data';
 //Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getPlaceName,
+  selectFiltersHide,
   updateDateRange,
   updateStartDate,
   updateEndDate,
   updateSearch,
-  updateHide,
 } from '../../../redux/reducers/filtersSlice';
 import {
   updateTimelineRange,
@@ -95,6 +95,9 @@ function KeTTMap() {
   const level_2 = '1';
   const level_3 = '0.1';
   const level_4 = '0.05';
+
+  // For maintaining markers hide state across re-renders
+  var toggleValue = document.getElementsByName('hide-toggle');
 
   useEffect(() => {
     loadModules(
@@ -832,74 +835,74 @@ function KeTTMap() {
               updateTimeline(mapyear);
               gotoMarker(point, itemId, recnumber, markerid, loctype, type);
             }
-            function hideMarkers(checked) {
-              const layers = view.map.layers;
-              console.log('HIDE MARKERS', checked);
-              if (layers) {
-                const hideableLayers = [
-                  'marker_layer_active',
-                  'marker_layer_inactive',
-                  'grid_layer_6',
-                  'grid_layer_1',
-                  'grid_layer_0.1',
-                  'grid_layer_0.05',
-                ];
-                layers.items.forEach((layer, index) => {
-                  if (checked) {
-                    console.log('HIDE MARKERS');
-                    hideMode.current = true;
-                    if (hideableLayers.includes(layer.id)) {
-                      layer.visible = false;
-                    }
-                  } else {
-                    console.log('SHOW MARKERS');
-                    hideMode.current = false;
-                    if (view.zoom <= gridZoom1) {
-                      if (layer.id === `grid_layer_${level_1}`) {
-                        console.log('SHOW', layer.id);
-                        layer.visible = true;
-                      }
-                    } else if (
-                      view.zoom > gridZoom1 &&
-                      view.zoom <= gridZoom2
-                    ) {
-                      if (layer.id === `grid_layer_${level_2}`) {
-                        console.log('SHOW', layer.id);
-                        layer.visible = true;
-                      }
-                    } else if (
-                      view.zoom > gridZoom2 &&
-                      view.zoom <= gridZoom3
-                    ) {
-                      if (layer.id === `grid_layer_${level_3}`) {
-                        console.log('SHOW', layer.id);
-                        layer.visible = true;
-                      }
-                    } else if (
-                      view.zoom > gridZoom3 &&
-                      view.zoom <= gridThreshold
-                    ) {
-                      if (layer.id === `grid_layer_${level_4}`) {
-                        console.log('SHOW', layer.id);
-                        layer.visible = true;
-                      }
-                    } else if (view.zoom > gridThreshold) {
-                      if (layer.id === 'marker_layer_active') {
-                        console.log('SHOW', layer.id);
-                        layer.visible = true;
-                      }
-                      if (layer.id === 'marker_layer_inactive') {
-                        console.log('SHOW', layer.id);
-                        layer.visible = true;
-                      }
-                    }
-                    if (layer.id === 'tile_layer') {
-                      view.map.reorder(layer, 0);
-                    }
-                  }
-                });
-              }
-            }
+            // function hideMarkers(checked) {
+            //   const layers = view.map.layers;
+            //   console.log('HIDE MARKERS', checked);
+            //   if (layers) {
+            //     const hideableLayers = [
+            //       'marker_layer_active',
+            //       'marker_layer_inactive',
+            //       'grid_layer_6',
+            //       'grid_layer_1',
+            //       'grid_layer_0.1',
+            //       'grid_layer_0.05',
+            //     ];
+            //     layers.items.forEach((layer, index) => {
+            //       if (checked) {
+            //         console.log('HIDE MARKERS');
+            //         hideMode.current = true;
+            //         if (hideableLayers.includes(layer.id)) {
+            //           layer.visible = false;
+            //         }
+            //       } else {
+            //         console.log('SHOW MARKERS');
+            //         hideMode.current = false;
+            //         if (view.zoom <= gridZoom1) {
+            //           if (layer.id === `grid_layer_${level_1}`) {
+            //             console.log('SHOW', layer.id);
+            //             layer.visible = true;
+            //           }
+            //         } else if (
+            //           view.zoom > gridZoom1 &&
+            //           view.zoom <= gridZoom2
+            //         ) {
+            //           if (layer.id === `grid_layer_${level_2}`) {
+            //             console.log('SHOW', layer.id);
+            //             layer.visible = true;
+            //           }
+            //         } else if (
+            //           view.zoom > gridZoom2 &&
+            //           view.zoom <= gridZoom3
+            //         ) {
+            //           if (layer.id === `grid_layer_${level_3}`) {
+            //             console.log('SHOW', layer.id);
+            //             layer.visible = true;
+            //           }
+            //         } else if (
+            //           view.zoom > gridZoom3 &&
+            //           view.zoom <= gridThreshold
+            //         ) {
+            //           if (layer.id === `grid_layer_${level_4}`) {
+            //             console.log('SHOW', layer.id);
+            //             layer.visible = true;
+            //           }
+            //         } else if (view.zoom > gridThreshold) {
+            //           if (layer.id === 'marker_layer_active') {
+            //             console.log('SHOW', layer.id);
+            //             layer.visible = true;
+            //           }
+            //           if (layer.id === 'marker_layer_inactive') {
+            //             console.log('SHOW', layer.id);
+            //             layer.visible = true;
+            //           }
+            //         }
+            //         if (layer.id === 'tile_layer') {
+            //           view.map.reorder(layer, 0);
+            //         }
+            //       }
+            //     });
+            //   }
+            // }
             function resetMap() {
               const min = $('#date-range .label-min').text();
               const max = $('#date-range .label-max').text();
@@ -1000,12 +1003,12 @@ function KeTTMap() {
               //CLOSE TIME CHOOSER IF OPEN
               setShowTimeChooser(false);
               //RESET HIDE MARKERS
-              hideMarkers(false);
+              // hideMarkers(false);
               const hideChecked = !$(
                 '.toggle-switch-checkbox[data-type="hide"]'
               ).is(':checked');
               console.log('hideChecked', hideChecked);
-              dispatch(updateHide(true));
+              // dispatch(updateHide(true));
               //UPDATE TIMELINE
               //resetTimeline();
               //CLOSE POPUP
@@ -1856,6 +1859,79 @@ function KeTTMap() {
           //   console.log('No Active markers in this area');
           // }
           createActiveMarkerLayer(view, activeGraphics);
+
+          if (!toggleValue[0].checked) {
+            hideMarkers(true);
+          }
+        }
+
+        function hideMarkers(checked) {
+          const layers = view.map.layers;
+          console.log('HIDE MARKERS', checked);
+          if (layers) {
+            const hideableLayers = [
+              'marker_layer_active',
+              'marker_layer_inactive',
+              'grid_layer_6',
+              'grid_layer_1',
+              'grid_layer_0.1',
+              'grid_layer_0.05',
+            ];
+            layers.items.forEach((layer, index) => {
+              if (checked) {
+                console.log('HIDE MARKERS');
+                hideMode.current = true;
+                if (hideableLayers.includes(layer.id)) {
+                  layer.visible = false;
+                }
+              } else {
+                console.log('SHOW MARKERS');
+                hideMode.current = false;
+                if (view.zoom <= gridZoom1) {
+                  if (layer.id === `grid_layer_${level_1}`) {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
+                } else if (
+                  view.zoom > gridZoom1 &&
+                  view.zoom <= gridZoom2
+                ) {
+                  if (layer.id === `grid_layer_${level_2}`) {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
+                } else if (
+                  view.zoom > gridZoom2 &&
+                  view.zoom <= gridZoom3
+                ) {
+                  if (layer.id === `grid_layer_${level_3}`) {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
+                } else if (
+                  view.zoom > gridZoom3 &&
+                  view.zoom <= gridThreshold
+                ) {
+                  if (layer.id === `grid_layer_${level_4}`) {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
+                } else if (view.zoom > gridThreshold) {
+                  if (layer.id === 'marker_layer_active') {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
+                  if (layer.id === 'marker_layer_inactive') {
+                    console.log('SHOW', layer.id);
+                    layer.visible = true;
+                  }
+                }
+                if (layer.id === 'tile_layer') {
+                  view.map.reorder(layer, 0);
+                }
+              }
+            });
+          }
         }
 
         //  Creates a client-side FeatureLayer from an array of graphics
@@ -2026,7 +2102,7 @@ function KeTTMap() {
                 type: 'string',
               },
             ],
-            geometryType: 'point',
+            geometryType: 'point', 
             renderer: markerRenderer,
             popupTemplate: {
               title: asyncMarkerTitle,
@@ -2745,6 +2821,7 @@ function KeTTMap() {
   };
 
   const wrapperClasses = 'map-wrapper';
+
   return (
     <div className={wrapperClasses}>
       <div className="webmap map" ref={mapRef} />

@@ -132,6 +132,7 @@ export default function Filters() {
             </label>
             <ToggleSwitch
               id="hide"
+              name="hide-toggle"
               small
               disabled={false}
               checked={hide}

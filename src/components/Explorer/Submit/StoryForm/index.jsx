@@ -234,6 +234,7 @@ const StoryForm = (props) => {
                       id="file1"
                       name="file1"
                       type="file"
+                      accept=".gif, .jpg, .jpeg, .png, .mp3, .mp4, .wav"
                       onChange={(event) => {
                         const toogle = fileStatus.file1 ? false : true;
                         setFileStatus({ ...fileStatus, file1: toogle });
@@ -258,6 +259,7 @@ const StoryForm = (props) => {
                       id="file2"
                       name="file2"
                       type="file"
+                      accept=".gif, .jpg, .jpeg, .png, .mp3, .mp4, .wav"
                       onChange={(event) => {
                         const toogle = fileStatus.file2 ? false : true;
                         setFileStatus({ ...fileStatus, file2: toogle });
@@ -282,6 +284,7 @@ const StoryForm = (props) => {
                       id="file3"
                       name="file3"
                       type="file"
+                      accept=".gif, .jpg, .jpeg, .png, .mp3, .mp4, .wav"
                       onChange={(event) => {
                         const toogle = fileStatus.file3 ? false : true;
                         setFileStatus({ ...fileStatus, file3: toogle });
