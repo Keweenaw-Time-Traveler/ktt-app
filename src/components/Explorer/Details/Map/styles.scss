@@ -15,9 +15,11 @@
     width: 100%;
   }
   &.show {
+    display: block;
     z-index: 1;
   }
   &.hide {
+    display: none;
     z-index: -1;
   }
 }
