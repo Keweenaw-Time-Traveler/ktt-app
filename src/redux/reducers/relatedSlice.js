@@ -34,7 +34,7 @@ export const relatedSlice = createSlice({
     people: [],
     places: [],
     stories: [],
-    mapRelated: true,
+    mapRelated: false,
     activeTab: '',
   },
   reducers: {
