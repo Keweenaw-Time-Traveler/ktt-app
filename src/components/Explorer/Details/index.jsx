@@ -135,6 +135,13 @@ const Details = (props) => {
         dispatch(toggleSubmit({visibility: 'show', id: $(this).data('id')}));
       });
 
+  // Close lightbox if clicking outside the image/video frame
+  $(document).on('click', function (e) {
+    if ($(e.target).is('.lightbox-overlay div:first')) {
+      setIsLightboxOpen(false);
+    }
+  });
+
   function handleSourceChange(event) {
     dispatch(toggleRelated('hide'));
     $('.detail-related-content').outerHeight(0);
@@ -268,6 +275,7 @@ const Details = (props) => {
         // />
         <div className="lightbox-overlay">
           <Lightbox
+            className="lightbox"
             data={media}
             showResouceCount={true}
             startIndex={photoIndex}

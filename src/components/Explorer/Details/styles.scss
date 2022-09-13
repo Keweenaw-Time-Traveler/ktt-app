@@ -130,6 +130,10 @@
 .lightbox-overlay div {
   z-index: 999;
   background-color: rgba(0, 0, 0, 0.5) !important;
+
+  iframe {
+    
+  }
 }
 
 .detail-photos .my-masonry-grid_column {
