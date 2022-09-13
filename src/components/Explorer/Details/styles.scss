@@ -131,8 +131,9 @@
   z-index: 999;
   background-color: rgba(0, 0, 0, 0.5) !important;
 
-  iframe {
-    
+  iframe, img {
+    max-width: 75% !important;
+    max-height: 75% !important;
   }
 }
 
