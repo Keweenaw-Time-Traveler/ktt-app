@@ -28,13 +28,13 @@ const List = (props) => {
   const errormessage = useSelector(selectErrorMessage);
   const listOpen = useSelector(selectShowList);
 
-  // useEffect(() => {
-  //   if (listStatus === 'idle') {
-  //     console.log('GETLIST: /Explorer/List/index.jsx');
-  //     dispatch(getList({}));
-  //   }
-  //   //dispatch(getList({}));
-  // }, [listStatus, listOpen, dispatch]);
+  useEffect(() => {
+    if (listStatus === 'idle') {
+      console.log('GETLIST: /Explorer/List/index.jsx');
+      dispatch(getList({}));
+    }
+    //dispatch(getList({}));
+  }, [listStatus, listOpen, dispatch]);
 
   return (
     <div className={`list-wrapper ${props.show ? 'show' : 'hide'}`}>
