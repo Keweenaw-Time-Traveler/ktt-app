@@ -69,6 +69,7 @@ export default function Chooser(props) {
     dispatch(updateStartDate(`${min}`));
     dispatch(updateEndDate(`${max}`));
     dispatch(getList({}));
+    console.log('GETLIST: /Explorer/Map/Chooser/index.jsx');
     dispatch(updateReset(true));
     props.update();
   };

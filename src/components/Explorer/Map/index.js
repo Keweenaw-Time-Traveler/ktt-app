@@ -178,77 +178,84 @@ function KeTTMap() {
           .on('click', function () {
             sharingStory.current = true;
             $('#story-form').show();
-            dispatch(toggleSubmit({visibility: 'show', id: null}));
+            dispatch(toggleSubmit({ visibility: 'show', id: null }));
           });
         //submit a story to db
-        $('body').on('ktt:add-story', '#story-form', function() {
+        $('body').on('ktt:add-story', '#story-form', function () {
           $('#story-form').hide();
           $('#submitted').show();
           let submission = $(this).data('record');
           let point = null;
-          if(submission.geo) {
+          if (submission.geo) {
             point = new Graphic({
               geometry: {
-                type: "point",
+                type: 'point',
                 longitude: submission.geo.lon,
-                latitude: submission.geo.lat
+                latitude: submission.geo.lat,
               },
-              attributes: submission.attributes
+              attributes: submission.attributes,
             });
           } else {
             point = new Graphic({
               geometry: {
-                type: "point",
+                type: 'point',
                 x: submission.related.x,
                 y: submission.related.y,
                 spatialReference: { wkid: 3857 },
               },
-              attributes: submission.attributes
+              attributes: submission.attributes,
             });
           }
 
           // Make the point look like what attachmentify and selectPoint expect
-          const pt = {graphic: point}
-          
+          const pt = { graphic: point };
+
           //console.log(pt);
-          
+
           let storyPointLayer = new FeatureLayer({
-            url: Api.STORY_SUBMIT, 
-            definitionExpression: "flag is null"
+            url: Api.STORY_SUBMIT,
+            definitionExpression: 'flag is null',
           });
 
-          storyPointLayer.applyEdits({
-            addFeatures: [point]
-          }).then(function(results) {
-            if (results.addFeatureResults.length == 1) {
-              // Update object ID to the permanent one
-              pt.graphic.attributes.objectid = results.addFeatureResults[0].objectId;
-              pt.graphic.attributes.globalid = results.addFeatureResults[0].globalId;
+          storyPointLayer
+            .applyEdits({
+              addFeatures: [point],
+            })
+            .then(function (results) {
+              if (results.addFeatureResults.length == 1) {
+                // Update object ID to the permanent one
+                pt.graphic.attributes.objectid =
+                  results.addFeatureResults[0].objectId;
+                pt.graphic.attributes.globalid =
+                  results.addFeatureResults[0].globalId;
 
-              // Add attachments
-              attachmentifyPoint(pt);
-              // Upload all of the images as attachments
-              var files = submission.files
+                // Add attachments
+                attachmentifyPoint(pt);
+                // Upload all of the images as attachments
+                var files = submission.files;
 
-              for (let i = 0; i < files.length; i++) { // Go through all 3 upload files
-                pt.addAttachment(files[i], function (response) {
-                });
+                for (let i = 0; i < files.length; i++) {
+                  // Go through all 3 upload files
+                  pt.addAttachment(files[i], function (response) {});
+                }
+
+                $('#submitted .loader-markers').hide();
+                $('#submit-success').show();
+              } else {
+                $('#submitted .loader-markers').hide();
+                $('#submit-fail .msg').text(
+                  "We encountered an error trying to save your submission. Please contact us and we'll look into the problem. Thank you!"
+                );
+                $('#submit-fail').show();
+                console.log('failure adding submission', results);
               }
-                 
+            })
+            .catch(function (err) {
               $('#submitted .loader-markers').hide();
-              $('#submit-success').show();
-            } else {
-              $('#submitted .loader-markers').hide();
-              $('#submit-fail .msg').text('We encountered an error trying to save your submission. Please contact us and we\'ll look into the problem. Thank you!');
+              $('#submit-fail .msg').text(err);
               $('#submit-fail').show();
-              console.log('failure adding submission', results);
-            }
-          }).catch(function (err) {
-            $('#submitted .loader-markers').hide();
-            $('#submit-fail .msg').text(err);
-            $('#submit-fail').show();
-            console.log("Error adding submission", err);
-          });;
+              console.log('Error adding submission', err);
+            });
         });
         //Get Help
         $('#explorer-help')
@@ -399,6 +406,10 @@ function KeTTMap() {
                 dispatch(updateStartDate(`${min}`));
                 dispatch(updateEndDate(`${max}`));
                 dispatch(updateReset(true));
+                console.log(
+                  'GETLIST: /Explorer/Map/index.js',
+                  'Map Overlay Picker List Item Click Event'
+                );
                 dispatch(getList({}));
               }
             );
@@ -792,6 +803,10 @@ function KeTTMap() {
                 updateTimeline(mapyear);
                 gotoMarker(point, itemId, recnumber, markerid, loctype, type);
                 dispatch(updateSearch(title));
+                console.log(
+                  'GETLIST: /Explorer/Map/index.js',
+                  'History List Click Event'
+                );
                 dispatch(getList({ title }));
               } else {
                 console.log('Sorry, id or recumber is missing');
@@ -812,6 +827,10 @@ function KeTTMap() {
               dispatch(setActiveTab(''));
               $('.detail-related-content').outerHeight(0);
               dispatch(updateSearch(title));
+              console.log(
+                'GETLIST: /Explorer/Map/index.js',
+                'Helper Functions loadDetails'
+              );
               dispatch(getList({}));
             }
             function listClick(item) {
@@ -945,6 +964,10 @@ function KeTTMap() {
               dispatch(updateStartDate(`${min}`));
               dispatch(updateEndDate(`${max}`));
               dispatch(updateReset(false));
+              console.log(
+                'GETLIST: /Explorer/Map/index.js',
+                'Helper Functions resetTimeline'
+              );
               dispatch(getList({}));
             }
             function landingSearch() {
@@ -1092,6 +1115,7 @@ function KeTTMap() {
               dispatch(updateStartDate(`${min}`));
               dispatch(updateEndDate(`${max}`));
               dispatch(updateReset(true));
+              console.log('GETLIST: /Explorer/Map/index.js', 'moveThroughTime');
               dispatch(getList({}));
               //UPDATE MARKER POPUP
               asyncMarkerPopUp().then(function (res) {
@@ -1145,8 +1169,12 @@ function KeTTMap() {
           });
 
         view.on('click', function (event) {
-          if(sharingStory.current) { //sharing story, capture geo location for story
-            $('#story-form').data('geo', {lat: event.mapPoint.latitude, lon: event.mapPoint.longitude})
+          if (sharingStory.current) {
+            //sharing story, capture geo location for story
+            $('#story-form').data('geo', {
+              lat: event.mapPoint.latitude,
+              lon: event.mapPoint.longitude,
+            });
             sharingStory.current = false;
             $('#story-instructions').removeClass('show').addClass('hide');
             $('#story-form').addClass('show').removeClass('hide');
@@ -2162,52 +2190,54 @@ function KeTTMap() {
       }
     );
   }, [dispatch]);
-  
+
   /****************************************************************
    * Adds attachment-related utility functions to a point
    ***************************************************************/
   function attachmentifyPoint(pt) {
-      if ('attachmentified' in pt && pt.attachmentified) {
-          return;
+    if ('attachmentified' in pt && pt.attachmentified) {
+      return;
+    }
+    pt.attachmentified = true;
+    pt.featureURL =
+      Api.STORY_SUBMIT + '/' + pt.graphic.attributes.objectid + '/';
+    pt.attachURL = pt.featureURL + 'attachments';
+    // Gets a list of attachments associated with the point
+    pt.getAttachments = function (onRetrieve) {
+      if ('attachments' in pt && pt.attachments != null) {
+        onRetrieve(pt.attachments);
+      } else {
+        pt.updateAttachments(onRetrieve);
       }
-      pt.attachmentified = true;
-      pt.featureURL = Api.STORY_SUBMIT + '/' + pt.graphic.attributes.objectid + '/';
+    };
+    // Forces an update of the attachments, even if they were already cached
+    pt.updateAttachments = function (onRetrieve) {
+      const attachListURL = pt.attachURL + '?f=json';
+      $.getJSON(attachListURL).then(function (resp) {
+        pt.attachments = resp['attachmentInfos'];
+        onRetrieve(pt.attachments);
+      });
+    };
+    pt.addAttachment = function (file, onAdded, filename) {
+      pt.featureURL =
+        Api.STORY_SUBMIT + '/' + pt.graphic.attributes.objectid + '/';
       pt.attachURL = pt.featureURL + 'attachments';
-      // Gets a list of attachments associated with the point
-      pt.getAttachments = function (onRetrieve) {
-          if ('attachments' in pt && pt.attachments != null) {
-              onRetrieve(pt.attachments);
-          } else {
-              pt.updateAttachments(onRetrieve);
-          }
-      };
-      // Forces an update of the attachments, even if they were already cached
-      pt.updateAttachments = function (onRetrieve) {
-          const attachListURL = pt.attachURL + '?f=json';
-          $.getJSON(attachListURL).then(function (resp) {
-              pt.attachments = resp['attachmentInfos'];
-              onRetrieve(pt.attachments);
-          });
+      var formData = new FormData();
+      formData.append('f', 'json');
+      if (filename != null) {
+        formData.append('attachment', file, filename);
+      } else {
+        formData.append('attachment', file);
       }
-      pt.addAttachment = function (file, onAdded, filename) {
-          pt.featureURL = Api.STORY_SUBMIT + '/' + pt.graphic.attributes.objectid + '/';
-          pt.attachURL = pt.featureURL + 'attachments';
-          var formData = new FormData();
-          formData.append("f", "json");
-          if (filename != null) {
-              formData.append("attachment", file, filename);
-          } else {
-              formData.append("attachment", file);
-          }
-          var request = new XMLHttpRequest();
-          request.onreadystatechange = function () {
-              if (request.readyState == 4 && request.status == 200) {
-                  pt.updateAttachments(onAdded);
-              }
-          };
-          request.open("POST", pt.featureURL + 'addAttachment');
-          request.send(formData);
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+          pt.updateAttachments(onAdded);
+        }
       };
+      request.open('POST', pt.featureURL + 'addAttachment');
+      request.send(formData);
+    };
   }
 
   //POPUP - When grid item is clicked

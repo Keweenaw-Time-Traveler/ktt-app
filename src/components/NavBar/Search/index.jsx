@@ -63,6 +63,7 @@ export default function Search() {
       if (!showList) {
         dispatch(toggleList('show'));
       }
+      console.log('GETLIST: /NavBar/Search/index.jsx');
       dispatch(getList({}));
       dispatch(updateListItem({ id: '', recnumber: '' }));
       dispatch(toggleDetails('hide'));

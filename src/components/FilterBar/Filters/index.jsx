@@ -38,6 +38,7 @@ export default function Filters() {
   const handleRadioChange = (e) => {
     setType(e.target.value);
     dispatch(updateType(e.target.value));
+    console.log('GETLIST: /FilterBar/Filters/index.jsx', 'handleRadioChange');
     dispatch(getList({}));
   };
 
@@ -46,6 +47,7 @@ export default function Filters() {
       case 'photos':
         setPhotos(checked);
         dispatch(updatePhotos(`${checked}`));
+        console.log('GETLIST: /FilterBar/Filters/index.jsx', 'handleChange');
         dispatch(getList({}));
         break;
       case 'featured':

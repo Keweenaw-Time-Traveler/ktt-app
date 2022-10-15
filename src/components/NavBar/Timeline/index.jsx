@@ -63,6 +63,7 @@ export default function Timeline() {
     dispatch(updateEndDate(`${max}`));
     dispatch(updateReset(true));
     if (!listRemove) {
+      console.log('GETLIST: /NavBar/Timeline/index.jsx', 'handleSegmentClick');
       dispatch(getList({}));
     }
   };
@@ -77,6 +78,7 @@ export default function Timeline() {
     dispatch(updateEndDate(`${timeline.max}`));
     dispatch(updateReset(false));
     if (!listRemove) {
+      console.log('GETLIST: /NavBar/Timeline/index.jsx', 'handleResetClick');
       dispatch(getList({}));
     }
   };

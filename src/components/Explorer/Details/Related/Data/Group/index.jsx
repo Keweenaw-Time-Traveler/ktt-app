@@ -42,6 +42,7 @@ export default function Group(props) {
     $('.detail-related-content').outerHeight(0);
     dispatch(updateListItem({ recnumber, loctype }));
     dispatch(updateSearch(title));
+    console.log('GETLIST: /Explorer/Details/Related/Data/Group/index.jsx');
     dispatch(getList({}));
   };
 
