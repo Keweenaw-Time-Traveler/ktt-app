@@ -9640,8 +9640,10 @@ fsevents@^1.2.7:
     react-copy-to-clipboard: ^5.1.0
     react-dom: latest
     react-image-lightbox: ^5.1.4
+    react-image-video-lightbox: ^3.0.0
     react-infinite-scroll-component: ^6.1.0
     react-is: ^16.13.1
+    react-linkify: ^1.0.0-alpha
     react-masonry-css: ^1.0.16
     react-redux: ^7.2.4
     react-router-dom: ^5.2.0
@@ -9717,6 +9719,15 @@ fsevents@^1.2.7:
   version: 1.1.6
   resolution: "lines-and-columns@npm:1.1.6"
   checksum: 798b80ed7ae3fba34d43fe29591ccb4f16f6fca1da4e1f9922b92264b91d931012433c248daf8e44caa74feb40c0eaa0f27a14f8ee68b6ffb425f3c3f785af27
+  languageName: node
+  linkType: hard
+
+"linkify-it@npm:^2.0.3":
+  version: 2.2.0
+  resolution: "linkify-it@npm:2.2.0"
+  dependencies:
+    uc.micro: ^1.0.1
+  checksum: 7905b34078d1fd85d4310c5c5381164cbdf781835e0cb5ac73d13ff14d0c87347e02655bdff5cec63631949a3b586c5f8e1e81ee0ce62ae799df58178748eb3e
   languageName: node
   linkType: hard
 
@@ -12844,6 +12855,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-image-video-lightbox@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "react-image-video-lightbox@npm:3.0.0"
+  peerDependencies:
+    react: 16.x
+  checksum: d9786fd4b1d3529ac0c34a96afc36b0987f9736586b0a37c2b3685a5f271d7c9eab270d8f50f0327e902274d4f9d70479999750ab4624a3d7c035b4dbc2544f0
+  languageName: node
+  linkType: hard
+
 "react-infinite-scroll-component@npm:^6.1.0":
   version: 6.1.0
   resolution: "react-infinite-scroll-component@npm:6.1.0"
@@ -12873,6 +12893,16 @@ fsevents@^1.2.7:
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
   checksum: 82176a55ef7526414d770d5e07dc1d28b4c7f20281f22c6f53f3a98df9dbbb5d70c94bebee57b4ea8ccc2eee430b907ca7b564a42fbdd0ed21e7c43bfee35404
+  languageName: node
+  linkType: hard
+
+"react-linkify@npm:^1.0.0-alpha":
+  version: 1.0.0-alpha
+  resolution: "react-linkify@npm:1.0.0-alpha"
+  dependencies:
+    linkify-it: ^2.0.3
+    tlds: ^1.199.0
+  checksum: ff6b6153bd150342d5fac587517578cae9542d98b29ef48697d2d15e833e231d720a29449402349b99bcd84c40fd611828ea5abbbb7cf6c3b9afb75428626de7
   languageName: node
   linkType: hard
 
@@ -15138,6 +15168,15 @@ resolve@1.15.0:
   languageName: node
   linkType: hard
 
+"tlds@npm:^1.199.0":
+  version: 1.231.0
+  resolution: "tlds@npm:1.231.0"
+  bin:
+    tlds: bin.js
+  checksum: ecd72714790f5ea82cdfb969e92f0584e26bacffceb5fd38788fb863413be6a2bf82199951a28c9af3f16394c55a99166ec7610caca20a32a765e923ca19813b
+  languageName: node
+  linkType: hard
+
 "tmp@npm:^0.0.33":
   version: 0.0.33
   resolution: "tmp@npm:0.0.33"
@@ -15366,6 +15405,13 @@ resolve@1.15.0:
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
   checksum: c9ef0176aaf32593514c31e5c6edc1db970847aff6e1f0a0570a6ac0cc996335792f394c2fcec59cc76691d22a01888ea073a2f3c6930cfcf7c519addf4e2ad7
+  languageName: node
+  linkType: hard
+
+"uc.micro@npm:^1.0.1":
+  version: 1.0.6
+  resolution: "uc.micro@npm:1.0.6"
+  checksum: 9dfe5ad0a08059c3eb6ded70b7cfb6fdcb5908b385af9d4717cee7f140571f5c2bb89405093ace07cfd0e283f409495d2feafd321b4b703c1fa3014e129dab27
   languageName: node
   linkType: hard
 

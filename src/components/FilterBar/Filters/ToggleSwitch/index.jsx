@@ -21,7 +21,7 @@ const ToggleSwitch = ({
   function handleKeyPress(e) {
     if (e.keyCode !== 32) return;
 
-    e.preventDefault();
+    // e.preventDefault();
     onChange(!checked);
   }
 

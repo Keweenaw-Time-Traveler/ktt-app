@@ -12,11 +12,15 @@
   text-align: left;
   box-shadow: 10px 1px 20px rgba(0, 0, 0, 0.3);
   @media screen and (max-width: 1280px) {
-    width: 280px;
+    width: 100%;
   }
   &.show {
+    display: block;
+    z-index: 1;
   }
   &.hide {
+    display: none;
+    z-index: -1;
   }
 }
 .details-map {

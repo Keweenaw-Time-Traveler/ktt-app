@@ -45,8 +45,9 @@ import Data from './Data';
 import Map from './Map';
 import Related from './Related';
 import Masonry from 'react-masonry-css';
-import Lightbox from 'react-image-lightbox';
+import { default as Lightbox } from 'react-image-video-lightbox';
 import Share from './Share';
+import Flag from './Flag';
 
 const Details = (props) => {
   const dispatch = useDispatch();
@@ -62,7 +63,7 @@ const Details = (props) => {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   let thumbs = [];
-  let images = [];
+  let media = [];
 
   useEffect(() => {
     if (status === 'success') {
@@ -87,13 +88,38 @@ const Details = (props) => {
 
   if (attachments) {
     thumbs = attachments.map(function (item, index) {
-      return (
-        <div key={index} onClick={() => handleThumbClick(index)}>
-          <img src={item.url} alt={item.name} />
-        </div>
-      );
+      if (item.content_type === 'image/jpeg' || item.content_type === 'image/png') {
+        return (
+          <div className="image-thumbnail" key={index} onClick={() => handleThumbClick(index)}>
+            <div className="img-overlay-icon"/>
+            <img src={item.url} alt={item.name} />
+          </div>
+        );
+      } else {
+        return (
+          <div className="video-thumbnail" key={index} onClick={() => handleThumbClick(index)}>
+            <div className="vid-overlay-icon"/>
+            <video src={item.url} alt={item.name}/>
+          </div>
+        );
+      }
     });
-    images = attachments.map((item) => item.url);
+    attachments.map(function (item, index) {
+      if (item.content_type === 'image/jpeg' || item.content_type === 'image/png') {
+        media.push({
+          url: item.url,
+          type: "photo",
+          altTag: item.name,
+        });
+      } else {
+        media.push({
+          url: item.url,
+          type: "video",
+          altTag: item.name,
+        });
+      }
+    }
+    );
   }
 
   // Event - Reset Timeline
@@ -108,6 +134,13 @@ const Details = (props) => {
         $('#story-form').show();
         dispatch(toggleSubmit({visibility: 'show', id: $(this).data('id')}));
       });
+
+  // Close lightbox if clicking outside the image/video frame
+  $(document).on('click', function (e) {
+    if ($(e.target).is('.lightbox-overlay div:first')) {
+      setIsLightboxOpen(false);
+    }
+  });
 
   function handleSourceChange(event) {
     dispatch(toggleRelated('hide'));
@@ -140,6 +173,7 @@ const Details = (props) => {
   function handleThumbClick(index) {
     setPhotoIndex(index);
     setIsLightboxOpen(true);
+    console.log(media);
   }
 
   function handleUrlOpen(url) {
@@ -191,6 +225,9 @@ const Details = (props) => {
         </div>
         <div className="detail-actions">
           <button id="share-related" className="share-related-story" data-id={id}>Share Related Story</button>
+          <Tooltip className={type == 'story' ? 'show' : 'hide'} content="Flag this story for innappropriate or incorrect data" direction="up">
+            <Flag />
+          </Tooltip>
           <Tooltip content="Data Resources" direction="up">
             <button
               className="action-icon data"
@@ -224,18 +261,27 @@ const Details = (props) => {
       </div>
       <Map show={showMap} />
       {isLightboxOpen && (
-        <Lightbox
-          mainSrc={images[photoIndex]}
-          nextSrc={images[(photoIndex + 1) % images.length]}
-          prevSrc={images[(photoIndex + images.length - 1) % images.length]}
-          onCloseRequest={() => setIsLightboxOpen(false)}
-          onMovePrevRequest={() => {
-            setPhotoIndex((photoIndex + images.length - 1) % images.length);
-          }}
-          onMoveNextRequest={() => {
-            setPhotoIndex((photoIndex + 1) % images.length);
-          }}
-        />
+        // <Lightbox
+        //   mainSrc={images[photoIndex]}
+        //   nextSrc={images[(photoIndex + 1) % images.length]}
+        //   prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+        //   onCloseRequest={() => setIsLightboxOpen(false)}
+        //   onMovePrevRequest={() => {
+        //     setPhotoIndex((photoIndex + images.length - 1) % images.length);
+        //   }}
+        //   onMoveNextRequest={() => {
+        //     setPhotoIndex((photoIndex + 1) % images.length);
+        //   }}
+        // />
+        <div className="lightbox-overlay">
+          <Lightbox
+            className="lightbox"
+            data={media}
+            showResouceCount={true}
+            startIndex={photoIndex}
+            onCloseCallback={() => setIsLightboxOpen(false)}
+          />
+        </div>
       )}
     </>
   );
