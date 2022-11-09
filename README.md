@@ -1,8 +1,7 @@
 # KeTT Application
-Need introductionary paragragh:
-* Describe the app
-* Purpose of app
-* Go ahead and fork, but don't clone. We don't expect contributions.
+The Keweenaw Time Traveler Web App is the public facing interface for the Copper Country Historical Spatial Data Infrastructure Project housed at Michigan Technological University.  You can learn more about the project at www.keweenawhistory.com.  This web app is designed to allow users to map historical archival data upon historical base map imagery.  The web app includes basic map navigation and selection functions, a search tool, and a number of visualization tools for displaying the historical archival data.  Tabular and spatial/temporal links can be followed using 'related items' tools.  The web app also includes a story submission feature which allows users to either place a new multimedia story on on of the historical base map images or to attach a story to one of the existing historical archival datasets.
+
+Please fork!
 
 ## Code Documentation
 Resources documenting the project code and installation assistance. The KeTT app
