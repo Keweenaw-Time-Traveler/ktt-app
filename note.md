@@ -10,4 +10,5 @@ and to add notes and comments.
   1. Made docs directory with sub-directory for each markdown file.
   2. Moved original README.md to docs/original-installation
   3. Made new toplevel README.md
-  4. 
+  4. Add to toplevel .gitignore
+  5. Push to github and track docs branch 
