@@ -29,3 +29,10 @@ yarn-error.log*
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+
+# RLP adds, 11/9/2022
+# See https://github.com/yarnpkg/berry/issues/454
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*
