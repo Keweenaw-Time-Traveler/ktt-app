@@ -11,4 +11,4 @@ and to add notes and comments.
   2. Moved original README.md to docs/original-installation
   3. Made new toplevel README.md
   4. Add to toplevel .gitignore
-  5. Push to github and track docs branch 
+  5. Push to github and track docs branch (git push -u origin docs)
