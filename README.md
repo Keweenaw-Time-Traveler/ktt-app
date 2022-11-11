@@ -10,3 +10,7 @@ and maps and feature servers.
 * [Website JavaScript documentation](docs/js/README.md)
 * [Installation directions for JavaScript project (original README)](docs/original-installation/README.md)
 * [API description for geodatabae and map servers](docs/api/README.md)
+
+## License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (GNU). 
