@@ -75,7 +75,7 @@ export default function Share(props) {
   const shareQuote = !details ? '' : `Share ${details.historyname}`;
   const shareUrl = !details
     ? ''
-    : `${protocol}//${hostName}${port}?id=${details.id}&recnumber=${details.recnumber}&loctype=${details.loctype}&title=${encodedTitle}&mapyear=${details.mapyear}&x=${details.x}&y=${details.y}&markerid=${details.markerid.replace(/\|/g, '%7C')}&type=${details.type}`;
+    : `${protocol}//${hostName}${port}?id=${details.id}&recnumber=${details.recnumber}&loctype=${details.loctype}&title=${encodedTitle}&mapyear=${details.mapyear}&x=${details.x}&y=${details.y}&markerid=${details.markerid}&type=${details.type}`.replace(/\|/g, '%7C');
 
   useEffect(() => {
     setValue(shareUrl);
