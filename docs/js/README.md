@@ -132,6 +132,21 @@ The src directory structure mimics the old style directory structure for a React
 
 The file index.js in the `src/` directory is the starting point and only wraps the `App` component with the react-redux `Provider`. The other JS file in `src/` directory is `App.js` which defines the `App` component, and its role is to provide routing structure to React-Router.
 
+The `config` directory has only one file, `data.js` whhich has constants for the API:
+
+* `GRID`: 'https://geospatialresearch.mtu.edu/grid.php', data for drawing the grid.
+* `GRID_CELL`: 'https://geospatialresearch.mtu.edu/grid_cell.php', content for grid popup. 
+* `MARKERS`: 'https://geospatialresearch.mtu.edu/markers.php', marker/icon locations and categories.
+* `MARKER_INFO`: 'https://geospatialresearch.mtu.edu/marker_info.php', content for marker popup.
+* `MAP_PICKER`: 'https://geospatialresearch.mtu.edu/map_picker.php', Metadata of historical maps.
+* `LIST`: 'https://geospatialresearch.mtu.edu/list.php', search result list content.
+* `FULL_DETAILS`: 'https://geospatialresearch.mtu.edu/full_details.php', content for FullDetails component, geodatabase entry.
+* `RELATED_CONTENT`: 'https://geospatialresearch.mtu.edu/related_content.php', 
+* `DATE_PICKER`: 'https://geospatialresearch.mtu.edu/date_picker.php',
+* `FLAG`: 'https://geospatialresearch.mtu.edu/flag.php',
+* `PLACE_NAME`: 'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/cchsdi_placenames/FeatureServer/0/query',
+* `STORY_SUBMIT`: 'https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0'
+
 The `components/` directory contains all the React components except `App.js` which is in the `src/` directory and the components used by react-router which are in the `pages/` directory.
 
 The `pages/` directory contains all the top level React components used by react-router in App.js
@@ -152,9 +167,7 @@ The redux directory contains `store.js` and the `reducers/` subdirectory. The `s
 
 The `reducers/` directory contains all the slice reducers:
 
-
-
-* **<code>dataSlice.js</code></strong> - for storing and handling <strong><code>FULL_DETAILS</code></strong> data from PHP API POST calls to data URL. Defines <code>getDetails</code> thunk. The Redux Toolkit builder is used to construct the extra reducers, [https://redux-toolkit.js.org/api/createAsyncThunk](https://redux-toolkit.js.org/api/createAsyncThunk).
+* <strong><code>dataSlice.js</code></strong> - for storing and handling <strong><code>FULL_DETAILS</code></strong> data from PHP API POST calls to data URL. Defines <code>getDetails</code> thunk. The Redux Toolkit builder is used to construct the extra reducers, [https://redux-toolkit.js.org/api/createAsyncThunk](https://redux-toolkit.js.org/api/createAsyncThunk).
 * <strong><code>filtersSlice.js</code></strong> - for storing and handling search data from PHP API GET calls. Defines Thunks get getPlaceName for PLACE_NAME.
 * <strong><code>historySlice.js</code></strong> - for managing user search history. Stores the search keywords(?) in localStorage for persistent storage across sessions.
 * <strong><code>landingSlice.js</code></strong> - for managing Landing page.
@@ -217,8 +230,6 @@ These are all the React components for searching the database and manipulating t
 This document will focus on these components.
 
 At the top level, there are 4 major React Components
-
-
 
 * `Landing`
 * `NavBar`
