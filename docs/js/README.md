@@ -1,6 +1,6 @@
 # Keweenaw Time Travel Explorer Code Documentation
 
-Robert Pastel, 9/10/2022, 11/7/2022, 11/28/2022
+Robert Pastel, 9/10/2022, 11/7/2022, 11/28/2022, 12/14/2022
 
 
 ## Application and User Description
