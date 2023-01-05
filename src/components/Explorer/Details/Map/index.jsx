@@ -782,7 +782,7 @@ export default function Map(props) {
   }, []);
 
   return (
-    <div className={`details-map-container ${show ? 'show' : 'hide'}`}>
+    <div className={`details-map-container`}>
       <div className="details-map" ref={mapRef} />
       {loadingMap && <Loader />}
     </div>
