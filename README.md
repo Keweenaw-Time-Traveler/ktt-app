@@ -4,11 +4,7 @@ Lots of example of things that can done with ArcGIS: [Link](https://developers.a
 
 ### ArcGIS Map Styles Editor
 
-Same idea as what we do when styling Google Maps: [Link](https://developers.arcgis.com/vector-tile-style-editor/)
-
-### ArcGIS Story Maps
-
-This is what KTT folks use to create featured stories: [Link](https://storymaps.arcgis.com/)
+Creating ArcGIS vector tile styles for basemaps: [Link](https://developers.arcgis.com/vector-tile-style-editor/)
 
 ## KTT Project
 
