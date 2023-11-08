@@ -8,7 +8,7 @@ Creating ArcGIS vector tile styles for basemaps: [Link](https://developers.arcgi
 
 ## KTT Project
 
-Keweenaw Time Travelers App
+Keweenaw Time Traveler App
 
 ### Installing Yarn
 
