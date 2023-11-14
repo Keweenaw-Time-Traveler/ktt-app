@@ -1,3 +1,7 @@
+### Code Documentation
+
+For the code documentation, see [Keweenaw Time Traveler Code Documentation](https://github.com/Keweenaw-Time-Traveler/ktt-app/blob/master/keweenaw-time-traveler-code-documentation-v1.1.pdf).
+
 ### ArcGIS Tutorials
 
 Lots of example of things that can done with ArcGIS: [Link](https://developers.arcgis.com/labs/browse/?product=arcgis-online&topic=any)
@@ -77,8 +81,6 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-
-For the code documentation, see [Keweenaw Time Traveler Code Documentation](https://github.com/Keweenaw-Time-Traveler/ktt-app/blob/master/keweenaw-time-traveler-code-documentation-v1.1.pdf).
 
 ### Code Splitting
 
